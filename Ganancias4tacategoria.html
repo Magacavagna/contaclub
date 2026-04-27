@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ganancias 4ta Categoría — Relación de Dependencia · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#8B0000;--crimson-ultra:#F5E0E0;
+  --burgundy:#2D0A0A;--hueso:#F5ECD7;--arena:#C8B89A;--cream:#FAF5EE;
+  --ink:#1A0A0A;--ink-mid:#4A2A2A;--ink-muted:#8A6A6A;
+  --verde-bg:#EFF5E8;--verde-t:#2A4A0A;--verde-b:#639922;
+  --ambar-bg:#FDF3E0;--ambar-t:#5A3800;--ambar-b:#BA7517;
+  --serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--cream)}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cream);min-height:100vh;padding:1.5rem}
+.sys{max-width:880px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--burgundy);border-radius:12px;margin-bottom:1.5rem}
+.logo-cc{font-family:var(--serif);font-size:18px;color:var(--hueso);line-height:1.3}
+.logo-sub{font-size:10px;color:var(--arena);letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-top:3px}
+.periodo-top{font-size:12px;color:var(--arena);text-align:right;line-height:1.5}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cream);border:1px solid var(--arena);border-radius:10px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-btn{font-size:12px;font-weight:500;padding:7px 12px;border:none;background:none;cursor:pointer;color:var(--ink-muted);border-radius:7px;white-space:nowrap;transition:all .15s;font-family:var(--sans)}
+.nav-btn.on{background:var(--crimson);color:var(--hueso)}
+.nav-btn:hover:not(.on){background:var(--hueso);color:var(--ink)}
+.panel{display:none}.panel.on{display:block}
+.sec-title{font-size:10px;font-weight:500;color:var(--ink-muted);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--arena);padding-bottom:6px}
+.sec-title:first-child{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cream);border:1px solid var(--arena);border-radius:10px;padding:12px 16px}
+.kpi-label{font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kpi-val{font-family:var(--serif);font-size:20px;color:var(--burgundy)}
+.kpi-val.warn{color:var(--crimson)}.kpi-val.ok{color:var(--verde-t)}
+.kpi-sub{font-size:11px;color:var(--ink-muted);margin-top:3px}
+.card{background:var(--cream);border:1px solid var(--arena);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.alerta{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.al-ok{background:var(--verde-bg);color:var(--verde-t);border-left-color:var(--verde-b)}
+.al-warn{background:var(--ambar-bg);color:var(--ambar-t);border-left-color:var(--ambar-b)}
+.al-err{background:var(--crimson-ultra);color:var(--burgundy);border-left-color:var(--crimson)}
+.al-info{background:var(--hueso);color:var(--burgundy);border-left-color:var(--arena)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--ink-muted)}
+.field input,.field select{font-size:13px;background:var(--hueso);border:1px solid var(--arena);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--crimson)}
+.campo-calc{font-size:13px;background:var(--cream);border:1px solid var(--arena);border-radius:6px;padding:7px 10px;color:var(--burgundy);height:34px;font-weight:500;display:flex;align-items:center}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--burgundy);color:var(--hueso);font-size:10px;font-weight:500;padding:7px 10px;border:1px solid var(--burgundy);text-align:left;letter-spacing:.04em;text-transform:uppercase}
+.tbl th.tr{text-align:right}
+.tbl td{padding:6px 10px;border:1px solid var(--arena);vertical-align:middle;color:var(--ink)}
+.tbl td.tr{text-align:right;font-weight:500;color:var(--burgundy)}
+.tbl td.neg{text-align:right;color:var(--crimson);font-weight:500}
+.tbl td.warn-cell{background:var(--ambar-bg);color:var(--ambar-t);font-weight:500}
+.tbl td.ok-cell{background:var(--verde-bg);color:var(--verde-t);font-weight:500}
+.tbl tr:nth-child(even){background:#FDF8F0}
+.tbl tr.subtot td{font-weight:500;background:var(--hueso);color:var(--burgundy)}
+.tbl tr.tot-final td{font-weight:500;background:var(--burgundy);color:var(--hueso);font-size:13px}
+.tbl tr.tramo-activo td{background:#FFF5F5}
+.nav-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--arena)}
+.btn-p{background:var(--crimson);color:var(--hueso);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.btn-p:hover{background:var(--burgundy)}
+.btn-s{background:transparent;color:var(--ink-muted);border:1px solid var(--arena);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.btn-s:hover{background:var(--hueso)}
+.btn-print{background:var(--verde-bg);color:var(--verde-t);border:1px solid var(--verde-b);padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.step-hint{font-size:12px;color:var(--ink-muted)}
+.switch-row{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.switch-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--arena);background:var(--cream);color:var(--ink-muted);font-family:var(--sans)}
+.switch-btn.on{background:var(--crimson);color:var(--hueso);border-color:var(--crimson)}
+.onboarding{text-align:center;padding:3rem 1rem}
+.onboarding h2{font-family:var(--serif);font-size:26px;color:var(--burgundy);margin-bottom:.5rem}
+.tagline{font-size:13px;color:var(--ink-muted);max-width:460px;margin:0 auto 2rem;line-height:1.6}
+.checklist{text-align:left;max-width:440px;margin:0 auto 1.5rem;background:var(--cream);border:1px solid var(--arena);border-radius:12px;padding:1rem}
+.checklist-item{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--arena);font-size:13px;color:var(--ink);line-height:1.4}
+.checklist-item:last-child{border-bottom:none}
+.ci-num{width:22px;height:22px;border-radius:50%;background:var(--crimson);color:var(--hueso);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.start-btn{background:var(--crimson);color:var(--hueso);border:none;padding:12px 36px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.start-btn:hover{background:var(--burgundy)}
+.disclaimer{font-size:11px;color:var(--ink-muted);background:var(--hueso);border:1px solid var(--arena);border-radius:8px;padding:10px 14px;margin-top:1rem;line-height:1.5;text-align:left;max-width:440px;margin:1rem auto 1.5rem}
+.tope-row{display:flex;align-items:center;gap:8px;margin-top:4px}
+.tope-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px}
+.tope-ok{background:var(--verde-bg);color:var(--verde-t)}
+.tope-warn{background:var(--ambar-bg);color:var(--ambar-t)}
+.tope-err{background:var(--crimson-ultra);color:var(--burgundy)}
+.tramo-info{background:var(--hueso);border:1px solid var(--arena);border-radius:10px;padding:14px 16px;margin-bottom:1rem}
+.tramo-info-title{font-size:11px;font-weight:500;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.tramo-actual{font-family:var(--serif);font-size:18px;color:var(--burgundy);margin-bottom:4px}
+.tramo-prox{font-size:12px;color:var(--ink-muted)}
+.ret-analisis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem}
+.ret-card{border-radius:10px;padding:12px 14px;border:1px solid}
+.ret-ok{background:var(--verde-bg);border-color:var(--verde-b)}
+.ret-warn{background:var(--ambar-bg);border-color:var(--ambar-b)}
+.ret-err{background:var(--crimson-ultra);border-color:var(--crimson)}
+.ipc-field{background:var(--hueso);border:1px solid var(--arena);border-radius:8px;padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ipc-label{font-size:11px;color:var(--ink-muted);flex-shrink:0}
+.ipc-input{width:90px;font-size:13px;text-align:center}
+.ipc-fecha{font-size:11px;color:var(--ink-muted)}
+@media print{.nav,.nav-bar{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+.tooltip-wrap{position:relative;display:inline-block;cursor:help;border-bottom:1px dashed var(--arena)}
+.tooltip-wrap .tooltip-txt{visibility:hidden;opacity:0;background:var(--burgundy);color:var(--hueso);font-size:11px;font-weight:400;line-height:1.5;padding:8px 12px;border-radius:8px;position:absolute;z-index:10;bottom:125%;left:50%;transform:translateX(-50%);width:220px;pointer-events:none;transition:opacity .2s;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tooltip-wrap:hover .tooltip-txt{visibility:visible;opacity:1}
+@media(max-width:600px){.grid2,.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.ret-analisis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo-cc">Ganancias 4ta categoría<br>Relación de dependencia</div>
+    <div class="logo-sub">Conta Club · v2</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+    <div id="periodo-top" class="periodo-top"></div>
+    <button onclick="limpiarDatos()" style="font-size:10px;color:var(--arena);background:transparent;border:0.5px solid var(--arena);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)">Limpiar</button>
+  </div>
+</div>
+
+<div class="nav" id="main-nav">
+  <button class="nav-btn on" data-tab="0">Inicio</button>
+  <button class="nav-btn" data-tab="1">Datos</button>
+  <button class="nav-btn" data-tab="2">Remuneraciones</button>
+  <button class="nav-btn" data-tab="3">Deducciones</button>
+  <button class="nav-btn" data-tab="4">Liquidación</button>
+  <button class="nav-btn" data-tab="5">Retenciones</button>
+  <button class="nav-btn" data-tab="6">Régimen simplificado</button>
+</div>
+
+<!-- INICIO -->
+<div class="panel on" id="t0">
+  <div class="onboarding">
+    <h2>Papel de trabajo<br>Ganancias — Relación de dependencia</h2>
+    <p class="tagline">Período fiscal 2025 (DJA anual) y retención mensual 2026. Topes reales, alertas automáticas y lectura de escala progresiva.</p>
+    <div class="checklist">
+      <div class="checklist-item"><div class="ci-num">1</div><span>Datos del empleado y situación familiar</span></div>
+      <div class="checklist-item"><div class="ci-num">2</div><span>Remuneraciones brutas, SAC y otros conceptos</span></div>
+      <div class="checklist-item"><div class="ci-num">3</div><span>Deducciones con topes reales y alertas automáticas</span></div>
+      <div class="checklist-item"><div class="ci-num">4</div><span>Liquidación con lectura de escala y tramo actual</span></div>
+      <div class="checklist-item"><div class="ci-num">5</div><span>Análisis de retenciones: subretención, sobreretención, saldo</span></div>
+      <div class="checklist-item"><div class="ci-num">6</div><span>Verificador de elegibilidad — Régimen simplificado RG 5820/26</span></div>
+    </div>
+    <div class="disclaimer">Esta herramienta no reemplaza el criterio profesional. Te ayuda a ordenar y validar. La responsabilidad de la liquidación es del contador matriculado.</div>
+    <button class="start-btn" data-tab="1">Empezar</button>
+    <div style="margin-top:.75rem">
+      <button onclick="limpiarDatos()" style="background:transparent;color:var(--ink-muted);border:1px solid var(--arena);padding:7px 18px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans)">🗑 Limpiar datos (nuevo cliente)</button>
+    </div>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="panel" id="t1">
+  <div class="ipc-field">
+    <span class="ipc-label">Coeficiente IPC de actualización 2026 (editable trimestralmente):</span>
+    <input type="number" class="ipc-input field" id="ipc-coef" value="1.1429" step="0.0001" oninput="recalc()">
+    <span class="ipc-fecha" id="ipc-fecha-txt">Fuente: ARCA — actualizado ene 2026 (+14,29%)</span>
+  </div>
+  <div class="switch-row">
+    <span style="font-size:12px;color:var(--ink-muted)">Liquidar:</span>
+    <button class="switch-btn on" id="btn25" onclick="setPeriodo(2025)">Período fiscal 2025 (DJA anual)</button>
+    <button class="switch-btn" id="btn26" onclick="setPeriodo(2026)">Retención mensual 2026</button>
+  </div>
+  <div id="mes-row" style="display:none;margin-bottom:1rem">
+    <div class="field" style="max-width:200px">
+      <label>Mes a liquidar</label>
+      <select id="mes-sel" onchange="recalc()">
+        <option value="1">Enero</option><option value="2">Febrero</option>
+        <option value="3">Marzo</option><option value="4" selected>Abril</option>
+        <option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option>
+        <option value="9">Septiembre</option><option value="10">Octubre</option>
+        <option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+    </div>
+  </div>
+  <p class="sec-title">Datos del empleado</p>
+  <div class="grid2" style="gap:10px;margin-bottom:12px">
+    <div class="field" style="grid-column:span 2"><label>Apellido y nombre</label><input type="text" id="nombre" placeholder="Ej: García, Juan Carlos" oninput="updateTop()"></div>
+    <div class="field"><label>CUIL</label><input type="text" id="cuil" placeholder="20-12345678-9" oninput="validarCUIL()"></div>
+    <div class="field"><label>CUIT empleador</label><input type="text" id="cuit-emp" placeholder="30-12345678-9"></div>
+    <div class="field"><label>Categoría / convenio</label><input type="text" id="categoria" placeholder="Ej: Comercio — Cat. B"></div>
+  </div>
+  <div id="cuil-alerta" style="display:none"></div>
+  <p class="sec-title">Situación familiar</p>
+  <div class="grid3" style="gap:10px">
+    <div class="field"><label>Cónyuge/conviviente a cargo</label>
+      <select id="conyuge" onchange="recalc()"><option value="no">No</option><option value="si">Sí</option></select></div>
+    <div class="field"><label>Hijos menores de 18</label>
+      <select id="hijos" onchange="recalc()"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+    <div class="field"><label>Hijos incapacitados</label>
+      <select id="hijos-inc" onchange="recalc()"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></div>
+    <div class="field"><label>Tipo de deducción especial</label>
+      <select id="tipo-ded-esp" onchange="recalc()">
+        <option value="rd">Relación de dependencia (Art. 30 c ap.2)</option>
+        <option value="np">Nuevo profesional/emprendedor (primeros 3 años)</option>
+      </select></div>
+    <div class="field"><label>Zona patagónica (+22%)</label>
+      <select id="patagonia" onchange="recalc()"><option value="no">No</option><option value="si">Sí</option></select></div>
+  </div>
+  <div class="nav-bar">
+    <span class="step-hint">Paso 1 de 6</span>
+    <button class="btn-p" data-tab="2">Continuar</button>
+  </div>
+</div>
+
+<!-- REMUNERACIONES -->
+<div class="panel" id="t2">
+  <p class="sec-title" id="rem-titulo">Remuneraciones</p>
+  <div id="rem-2025">
+    <p style="font-size:12px;color:var(--ink-muted);margin-bottom:12px">Ingresá los totales anuales del período fiscal 2025.</p>
+    <div class="grid2" style="gap:10px;margin-bottom:12px">
+      <div class="field"><label>Sueldo bruto anual ($)</label><input type="number" id="bruto-anual" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>SAC — aguinaldo anual ($)</label><input type="number" id="sac-anual" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Horas extras gravadas ($)</label><input type="number" id="extras" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Otros conceptos gravados ($)</label><input type="number" id="otros-grav" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Conceptos exentos ($)</label><input type="number" id="exentos" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Retenciones ya practicadas ($)</label><input type="number" id="ret-previas" placeholder="0" oninput="recalc()"></div>
+    </div>
+  </div>
+  <div id="rem-2026" style="display:none">
+    <p style="font-size:12px;color:var(--ink-muted);margin-bottom:12px">Ingresá los importes acumulados hasta el mes seleccionado.</p>
+    <div class="grid2" style="gap:10px;margin-bottom:12px">
+      <div class="field"><label>Remuneración bruta acumulada ($)</label><input type="number" id="bruto-ac" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>SAC proporcional acumulado ($)</label><input type="number" id="sac-ac" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Otros conceptos gravados acumulados ($)</label><input type="number" id="otros-ac" placeholder="0" oninput="recalc()"></div>
+      <div class="field"><label>Retenciones acumuladas practicadas ($)</label><input type="number" id="ret-ac" placeholder="0" oninput="recalc()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="grid2" style="gap:10px">
+      <div><div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">Total remuneraciones gravadas</div><div id="total-rem-calc" class="campo-calc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">Aportes obligatorios estimados (17%)</div><div id="aportes-calc" class="campo-calc">$ 0</div></div>
+    </div>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" data-tab="1">Volver</button>
+    <button class="btn-p" data-tab="3">Continuar</button>
+  </div>
+</div>
+
+<!-- DEDUCCIONES -->
+<div class="panel" id="t3">
+  <p class="sec-title">Deducciones personales — valores oficiales ARCA</p>
+  <div class="card">
+    <table class="tbl" id="ded-pers-tbl">
+      <thead><tr><th>Concepto</th><th class="tr">Importe ($)</th><th>Estado</th></tr></thead>
+      <tbody id="ded-pers-body"></tbody>
+    </table>
+  </div>
+  <p class="sec-title">Deducciones generales — F.572 / SIRADIG (con topes reales)</p>
+  <div id="ded-gen-fields"></div>
+  <div class="card" style="margin-top:.5rem">
+    <div class="grid3" style="gap:10px">
+      <div><div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">Deducciones personales</div><div id="tot-ded-pers" class="campo-calc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">Deducciones generales computables</div><div id="tot-ded-gen" class="campo-calc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">Total deducciones</div><div id="tot-ded" class="campo-calc" style="color:var(--crimson)">$ 0</div></div>
+    </div>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" data-tab="2">Volver</button>
+    <button class="btn-p" data-tab="4">Ver liquidación</button>
+  </div>
+</div>
+
+<!-- LIQUIDACIÓN -->
+<div class="panel" id="t4">
+  <div id="tramo-info" class="tramo-info" style="display:none"></div>
+  <div id="liq-alertas"></div>
+  <p class="sec-title">Determinación del impuesto</p>
+  <div class="card">
+    <table class="tbl"><thead><tr><th>Concepto</th><th class="tr">Importe ($)</th></tr></thead>
+    <tbody id="liq-body"></tbody></table>
+  </div>
+  <p class="sec-title"><span class="tooltip-wrap">Escala progresiva aplicada — Art. 94 LIG<span class="tooltip-txt">La escala del Art. 94 es progresiva: cada tramo aplica su alícuota solo sobre la porción de GNI que cae en ese tramo, no sobre el total. El tramo activo es el más alto que alcanza la GNI del contribuyente.</span></span></p>
+  <div class="card">
+    <table class="tbl"><thead><tr><th>Tramo</th><th class="tr">Base en tramo ($)</th><th class="tr">Alícuota</th><th class="tr">Impuesto ($)</th><th>Estado</th></tr></thead>
+    <tbody id="escala-body"></tbody></table>
+  </div>
+  <div id="resumen-kpis" style="margin-top:1rem"></div>
+  <div class="nav-bar">
+    <button class="btn-s" data-tab="3">Volver</button>
+    <button class="btn-p" data-tab="5">Análisis retenciones</button>
+  </div>
+</div>
+
+<!-- RETENCIONES -->
+<div class="panel" id="t5">
+  <p class="sec-title">Análisis de retenciones practicadas</p>
+  <div id="ret-analisis-panel"></div>
+  <div id="ret-tabla-wrap"></div>
+  <p class="sec-title" style="margin-top:1.5rem">Proyección de retenciones — meses faltantes del período</p>
+  <div class="al-info alerta" style="margin-bottom:1rem">Proyección estimada sujeta a variaciones salariales y de deducciones. Útil para anticipar el saldo al cierre del año.</div>
+  <div class="grid3" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Remuneración mensual estimada próximos meses ($)</label><input type="number" id="rem-proy" placeholder="0" oninput="calcProy()"></div>
+    <div class="field"><label>Mes actual (número)</label><select id="mes-proy" onchange="calcProy()">
+      <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+      <option value="4" selected>Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+      <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+      <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+    </select></div>
+    <div class="field"><label>Meses faltantes para diciembre</label><div id="meses-faltantes" class="campo-calc" style="font-size:13px;background:var(--cream);border:1px solid var(--arena);border-radius:6px;padding:7px 10px;height:34px;display:flex;align-items:center;color:var(--burgundy);font-weight:500">—</div></div>
+  </div>
+  <div id="proy-result"></div>
+  <div class="nav-bar">
+    <button class="btn-s" data-tab="4">Volver</button>
+    <button class="btn-p" data-tab="6">Régimen simplificado</button>
+  </div>
+</div>
+
+<!-- RÉGIMEN SIMPLIFICADO -->
+<div class="panel" id="t6">
+  <p class="sec-title">Verificador — Régimen simplificado RG 5820/26 (Ley 27.799)</p>
+  <div class="alerta al-info" style="margin-bottom:1rem">Régimen optativo para personas humanas. La DDJJ la precarga ARCA — el contador revisa y confirma. Adhesión hasta el vencimiento general de la DJA.</div>
+  <div class="grid2" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Ingresos totales — máximo últimos 3 años ($) <span style="color:var(--crimson)">Tope editable</span></label><input type="number" id="tope-ing" value="1000000000" oninput="calcSimp()"></div>
+    <div class="field"><label>Patrimonio total al 31/12 ($) <span style="color:var(--crimson)">Tope editable</span></label><input type="number" id="tope-pat" value="10000000000" oninput="calcSimp()"></div>
+    <div class="field"><label>Ingresos del contribuyente ($)</label><input type="number" id="ing-simp" placeholder="0" oninput="calcSimp()"></div>
+    <div class="field"><label>Patrimonio del contribuyente ($)</label><input type="number" id="pat-simp" placeholder="0" oninput="calcSimp()"></div>
+    <div class="field"><label>¿Es gran contribuyente nacional?</label>
+      <select id="gran-contrib" onchange="calcSimp()"><option value="no">No</option><option value="si">Sí</option></select></div>
+    <div class="field"><label>¿CUIT con estado limitado?</label>
+      <select id="cuit-lim" onchange="calcSimp()"><option value="no">No</option><option value="si">Sí</option></select></div>
+  </div>
+  <div id="simp-resultado"></div>
+  <p class="sec-title" style="margin-top:1.5rem">¿Te conviene adherir?</p>
+  <div id="simp-conviene" class="card"></div>
+  <p class="sec-title">Condiciones clave</p>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td>Efecto liberatorio</td><td>Presentación y pago en término generan inmunidad fiscal para ese período</td></tr>
+        <tr><td>Presunción de exactitud</td><td>Se extiende a DJA de Ganancias e IVA de períodos no prescriptos</td></tr>
+        <tr><td>Pérdida del beneficio</td><td>Discrepancia mayor al 15% o uso de comprobantes apócrifos</td></tr>
+        <tr><td>Operaciones financieras</td><td>Obligación de canalizar operaciones por sistema financiero formal</td></tr>
+        <tr><td>Patrimonio</td><td>Contribuyentes adheridos quedan exceptuados de informar patrimonio</td></tr>
+        <tr><td>Cuándo NO conviene</td><td>Si tenés quebrantos previos que querés trasladar, si la precarga de ARCA tiene errores significativos, o si tus ingresos son muy variables y difieren de lo precargado</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" data-tab="5">Volver</button>
+    <button class="btn-print" onclick="window.print()">Imprimir / Exportar PDF</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ── Valores ARCA dec 2025 ─────────────────────────────────────
+const MNI_BASE = 3916268.37;
+const DED25 = {
+  get mni(){return MNI_BASE*(parseFloat(document.getElementById('ipc-coef')?.value)||1);}, conyuge:3688339.32, hijo:1860042.98,
+  hijo_inc:3720085.95, ded_esp_rd:18798088.20,
+  ded_esp_np:15665073.50,
+  dom_tope:3916268.37,
+};
+
+// Escala anual 2025
+const ESC25=[
+  {d:0,          h:24002757.48,  f:0,           p:0.05},
+  {d:24002757.48, h:48005514.96,  f:1200137.87,  p:0.09},
+  {d:48005514.96, h:72008272.44,  f:3360193.22,  p:0.12},
+  {d:72008272.44, h:108012408.70, f:6240716.27,  p:0.15},
+  {d:108012408.70,h:216024817.30, f:11640892.48, p:0.19},
+  {d:216024817.30,h:324037225.90, f:32184379.78, p:0.23},
+  {d:324037225.90,h:486055838.90, f:57001283.52, p:0.27},
+  {d:486055838.90,h:729083758.30, f:100741514.80,p:0.31},
+  {d:729083758.30,h:1e15,         f:176262661.70,p:0.35},
+];
+
+// Escala mensual 2026 — tabla acumulada ARCA ene-jun
+const ESC26={
+  1:[{d:0,h:166669.17,f:0,p:.05},{d:166669.17,h:333338.35,f:8333.46,p:.09},{d:333338.35,h:500007.52,f:23333.68,p:.12},{d:500007.52,h:750011.28,f:43333.99,p:.15},{d:750011.28,h:1500022.57,f:80834.55,p:.19},{d:1500022.57,h:2250033.85,f:223336.69,p:.23},{d:2250033.85,h:3375050.77,f:395839.29,p:.27},{d:3375050.77,h:5062576.16,f:699593.86,p:.31},{d:5062576.16,h:1e15,f:1222726.73,p:.35}],
+  2:[{d:0,h:333338.35,f:0,p:.05},{d:333338.35,h:666676.69,f:16666.92,p:.09},{d:666676.69,h:1000015.04,f:46667.37,p:.12},{d:1000015.04,h:1500022.57,f:86667.97,p:.15},{d:1500022.57,h:3000045.13,f:161669.10,p:.19},{d:3000045.13,h:4500067.70,f:446673.39,p:.23},{d:4500067.70,h:6750101.55,f:791678.58,p:.27},{d:6750101.55,h:10125152.33,f:1399187.72,p:.31},{d:10125152.33,h:1e15,f:2445453.46,p:.35}],
+  3:[{d:0,h:500007.52,f:0,p:.05},{d:500007.52,h:1000015.04,f:25000.38,p:.09},{d:1000015.04,h:1500022.56,f:70001.05,p:.12},{d:1500022.56,h:2250033.85,f:130001.96,p:.15},{d:2250033.85,h:4500067.70,f:242503.65,p:.19},{d:4500067.70,h:6750101.55,f:670010.08,p:.23},{d:6750101.55,h:10125152.32,f:1187517.87,p:.27},{d:10125152.32,h:15187728.49,f:2098781.57,p:.31},{d:15187728.49,h:1e15,f:3668180.19,p:.35}],
+  4:[{d:0,h:666676.70,f:0,p:.05},{d:666676.70,h:1333353.39,f:33333.83,p:.09},{d:1333353.39,h:2000030.09,f:93334.74,p:.12},{d:2000030.09,h:3000045.13,f:173335.94,p:.15},{d:3000045.13,h:6000090.27,f:323338.20,p:.19},{d:6000090.27,h:9000135.40,f:893346.77,p:.23},{d:9000135.40,h:13500203.10,f:1583357.15,p:.27},{d:13500203.10,h:20250304.65,f:2798375.43,p:.31},{d:20250304.65,h:1e15,f:4890906.91,p:.35}],
+  5:[{d:0,h:833345.87,f:0,p:.05},{d:833345.87,h:1666691.74,f:41667.29,p:.09},{d:1666691.74,h:2500037.61,f:116668.42,p:.12},{d:2500037.61,h:3750056.42,f:216669.93,p:.15},{d:3750056.42,h:7500112.83,f:404172.75,p:.19},{d:7500112.83,h:11250169.25,f:1116683.47,p:.23},{d:11250169.25,h:16875253.87,f:1979196.44,p:.27},{d:16875253.87,h:25312880.81,f:3497969.29,p:.31},{d:25312880.81,h:1e15,f:6113633.64,p:.35}],
+  6:[{d:0,h:1000015.04,f:0,p:.05},{d:1000015.04,h:2000030.08,f:50000.75,p:.09},{d:2000030.08,h:3000045.13,f:140002.11,p:.12},{d:3000045.13,h:4500067.70,f:260003.91,p:.15},{d:4500067.70,h:9000135.40,f:485007.30,p:.19},{d:9000135.40,h:13500203.10,f:1340020.16,p:.23},{d:13500203.10,h:20250304.65,f:2375035.73,p:.27},{d:20250304.65,h:30375456.98,f:4197563.15,p:.31},{d:30375456.98,h:1e15,f:7336360.37,p:.35}],
+};
+
+const MESES=['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let periodo=2025;
+
+function fmt(v){if(!v||v===0)return'$ 0';return'$ '+Math.round(v).toLocaleString('es-AR')}
+function fmtPct(v){return(v*100).toFixed(2)+'%'}
+function fmtPct1(v){return(v*100).toFixed(1)+'%'}
+function g(id){return parseFloat(document.getElementById(id)?.value)||0}
+function el(id){return document.getElementById(id)}
+
+function setPeriodo(p){
+  periodo=p;
+  el('btn25').classList.toggle('on',p===2025);
+  el('btn26').classList.toggle('on',p===2026);
+  el('mes-row').style.display=p===2026?'block':'none';
+  el('rem-2025').style.display=p===2025?'block':'none';
+  el('rem-2026').style.display=p===2026?'block':'none';
+  updateTop(); recalc();
+}
+
+function tab(i){
+  for(let j=0;j<=6;j++){const p=el('t'+j);if(p)p.classList.toggle('on',j===i);}
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
+  if(i===3)renderDeducciones();
+  if(i===4)renderLiq();
+  if(i===5)renderRetenciones();
+}
+
+function updateTop(){
+  const n=el('nombre').value.trim();
+  const p=periodo===2025?'Período 2025':'Retención 2026';
+  el('periodo-top').textContent=[n,p].filter(Boolean).join('\n');
+}
+
+function validarCUIL(){
+  const v=el('cuil').value.replace(/[-\s]/g,'');
+  const al=el('cuil-alerta');
+  if(v.length===0){al.style.display='none';return;}
+  const ok=/^\d{11}$/.test(v);
+  al.style.display='block';
+  al.className='alerta '+(ok?'al-ok':'al-err');
+  al.textContent=ok?'Formato de CUIL correcto.':'El CUIL debe tener 11 dígitos numéricos (sin guiones).';
+}
+
+function getTotalRem(){
+  if(periodo===2025) return g('bruto-anual')+g('sac-anual')+g('extras')+g('otros-grav');
+  return g('bruto-ac')+g('sac-ac')+g('otros-ac');
+}
+function getRetPrev(){return periodo===2025?g('ret-previas'):g('ret-ac');}
+function getAportes(rem){return rem*0.17;}
+
+function getDedPers(){
+  const ipc=g('ipc-coef')||1;
+  const conj=el('conyuge').value==='si';
+  const hijos=parseInt(el('hijos').value)||0;
+  const hijosInc=parseInt(el('hijos-inc').value)||0;
+  const np=el('tipo-ded-esp').value==='np';
+  const pat=el('patagonia').value==='si';
+  const mult=pat?1.22:1;
+  return{
+    mni:DED25.mni*mult,
+    conyuge:conj?DED25.conyuge*mult:0,
+    hijos:hijos*DED25.hijo*mult,
+    hijosInc:hijosInc*DED25.hijo_inc*mult,
+    dedEsp:(np?DED25.ded_esp_np:DED25.ded_esp_rd)*mult,
+    get total(){return this.mni+this.conyuge+this.hijos+this.hijosInc+this.dedEsp}
+  };
+}
+
+function getDedGen(gni){
+  const prepaga=g('prepaga-inp');
+  const topePrepaga=gni*0.05;
+  const prepagareal=Math.min(prepaga,topePrepaga);
+  const alquiler=g('alquiler-inp');
+  const topeAlq=DED25.mni*0.40;
+  const alquilerReal=Math.min(alquiler,topeAlq);
+  const honMed=g('hon-med-inp')*0.40;
+  const donaciones=g('donaciones-inp');
+  const topeDon=gni*0.05;
+  const donReal=Math.min(donaciones,topeDon);
+  const sepelio=g('sepelio-inp');
+  const topeSepelio=DED25.mni*0.10;
+  const sepelioReal=Math.min(sepelio,topeSepelio);
+  const hipotecario=g('hipotecario-inp');
+  const topeHip=DED25.mni*2;
+  const hipotecarioReal=Math.min(hipotecario,topeHip);
+  const educacion=g('educacion-inp');
+  const topeEdu=DED25.mni*0.40;
+  const educacionReal=Math.min(educacion,topeEdu);
+  const dom=g('dom-inp');
+  const domReal=Math.min(dom,DED25.dom_tope);
+  const seguros=g('seguros-inp');
+  const topeSeguro=DED25.mni*0.10;
+  const segurosReal=Math.min(seguros,topeSeguro);
+  const otros=g('otros-inp');
+  return{
+    items:[
+      {nombre:'Alquiler de vivienda (40% de lo pagado)',ingresado:alquiler,tope:topeAlq,computable:alquilerReal,nota:'Tope: 40% del MNI'},
+      {nombre:'Medicina prepaga',ingresado:prepaga,tope:topePrepaga,computable:prepagareal,nota:'Tope: 5% de la GNI'},
+      {nombre:'Honorarios médicos (40%)',ingresado:g('hon-med-inp'),tope:null,computable:honMed,nota:'Se computa el 40% de lo pagado'},
+      {nombre:'Donaciones autorizadas',ingresado:donaciones,tope:topeDon,computable:donReal,nota:'Tope: 5% de la GNI'},
+      {nombre:'Gastos de sepelio',ingresado:sepelio,tope:topeSepelio,computable:sepelioReal,nota:'Tope: 10% del MNI'},
+      {nombre:'Intereses crédito hipotecario',ingresado:hipotecario,tope:topeHip,computable:hipotecarioReal,nota:'Tope: 2 × MNI'},
+      {nombre:'Gastos educativos',ingresado:educacion,tope:topeEdu,computable:educacionReal,nota:'Tope: 40% del MNI'},
+      {nombre:'Personal doméstico',ingresado:dom,tope:DED25.dom_tope,computable:domReal,nota:'Tope: 1 × MNI'},
+      {nombre:'Seguros de vida y retiro',ingresado:seguros,tope:topeSeguro,computable:segurosReal,nota:'Tope: 10% del MNI'},
+      {nombre:'Otros deducibles F.572',ingresado:otros,tope:null,computable:otros,nota:'Sin tope específico — verificar'},
+    ],
+    get total(){return this.items.reduce((a,b)=>a+b.computable,0)}
+  };
+}
+
+function recalc(){
+  const rem=getTotalRem();
+  const ap=getAportes(rem);
+  if(el('total-rem-calc'))el('total-rem-calc').textContent=fmt(rem);
+  if(el('aportes-calc'))el('aportes-calc').textContent=fmt(ap);
+  // Actualizar campos de deducciones si están visibles
+  const dp=getDedPers();
+  const gniProv=Math.max(rem-ap-dp.total,0);
+  const dg=getDedGen(gniProv);
+  if(el('tot-ded-pers'))el('tot-ded-pers').textContent=fmt(dp.total);
+  if(el('tot-ded-gen'))el('tot-ded-gen').textContent=fmt(dg.total);
+  if(el('tot-ded'))el('tot-ded').textContent=fmt(dp.total+ap+dg.total);
+}
+
+function renderDeducciones(){
+  recalc();
+  const rem=getTotalRem();
+  const ap=getAportes(rem);
+  const dp=getDedPers();
+  const conj=el('conyuge').value==='si';
+  const hijos=parseInt(el('hijos').value)||0;
+  const hijosInc=parseInt(el('hijos-inc').value)||0;
+  const np=el('tipo-ded-esp').value==='np';
+  const pat=el('patagonia').value==='si';
+
+  // Tabla deducciones personales
+  const rows=[
+    ['Mínimo no imponible (Art. 30 a)',fmt(dp.mni),'Siempre computable','ok-cell'],
+    [`Deducción especial ${np?'nuevos profesionales':'RD (Art. 30 c ap.2)'}`,fmt(dp.dedEsp),np?'Primeros 3 años actividad':'RD — siempre computable','ok-cell'],
+    ['Cónyuge/unión convivencial',fmt(dp.conyuge),conj?'Computable':'No computable',conj?'ok-cell':'warn-cell'],
+    [`Hijos menores 18 (${hijos})`,fmt(dp.hijos),hijos>0?'Computable':'No computable',hijos>0?'ok-cell':'warn-cell'],
+    [`Hijos incapacitados (${hijosInc})`,fmt(dp.hijosInc),hijosInc>0?'Computable':'No computable',hijosInc>0?'ok-cell':'warn-cell'],
+  ];
+  if(pat)rows.push(['Incremento zona patagónica (+22%)','—','Aplicado a todas las deducciones','ok-cell']);
+  el('ded-pers-body').innerHTML=rows.map(([c,v,s,cls])=>
+    `<tr><td>${c}</td><td class="tr">${v}</td><td class="${cls}">${s}</td></tr>`
+  ).join('')+`<tr class="subtot"><td>Total deducciones personales</td><td class="tr">${fmt(dp.total)}</td><td></td></tr>`;
+
+  // Campos deducciones generales con topes
+  const gniProv=Math.max(rem-ap-dp.total,0);
+  const dg=getDedGen(gniProv);
+  const campos=[
+    {id:'alquiler-inp',label:'Alquiler de vivienda — 40% de lo pagado'},
+    {id:'prepaga-inp',label:'Medicina prepaga'},
+    {id:'hon-med-inp',label:'Honorarios médicos (se computa el 40%)'},
+    {id:'donaciones-inp',label:'Donaciones autorizadas'},
+    {id:'sepelio-inp',label:'Gastos de sepelio'},
+    {id:'hipotecario-inp',label:'Intereses crédito hipotecario'},
+    {id:'educacion-inp',label:'Gastos educativos'},
+    {id:'dom-inp',label:'Personal doméstico — sueldos y aportes'},
+    {id:'seguros-inp',label:'Seguros de vida y retiro'},
+    {id:'otros-inp',label:'Otros deducibles F.572'},
+  ];
+  const wrap=el('ded-gen-fields');
+  if(!wrap.hasChildNodes()){
+    wrap.innerHTML=`<div class="grid2" style="gap:10px;margin-bottom:1rem">${campos.map(c=>`
+      <div class="field">
+        <label>${c.label}</label>
+        <input type="number" id="${c.id}" placeholder="0" oninput="renderDeducciones()">
+        <div id="${c.id}-tope" class="tope-row" style="display:none"></div>
+      </div>`).join('')}</div>`;
+  }
+
+  // Actualizar badges de topes
+  dg.items.forEach((item,i)=>{
+    const topeEl=el(campos[i].id+'-tope');
+    if(!topeEl)return;
+    const ing=item.ingresado;
+    if(ing===0){topeEl.style.display='none';return;}
+    topeEl.style.display='flex';
+    const excede=item.tope!==null && ing>item.tope;
+    const cls=excede?'tope-err':'tope-ok';
+    const txt=excede
+      ?`⚠️ Ingresaste ${fmt(ing)} — solo podés computar ${fmt(item.computable)} (${item.nota})`
+      :`✓ Computable: ${fmt(item.computable)} — ${item.nota}`;
+    topeEl.innerHTML=`<span class="tope-badge ${cls}">${txt}</span>`;
+    // Colorear el input según excede o no
+    const inputEl=el(campos[i].id);
+    if(inputEl&&ing>0){
+      if(excede){
+        inputEl.style.border='2px solid var(--crimson)';
+        inputEl.style.background='#FFF0F0';
+      } else {
+        inputEl.style.border='1px solid #639922';
+        inputEl.style.background='#F0FBF0';
+      }
+    }
+  });
+
+  // Totales
+  el('tot-ded-pers').textContent=fmt(dp.total);
+  el('tot-ded-gen').textContent=fmt(dg.total);
+  el('tot-ded').textContent=fmt(dp.total+ap+dg.total);
+}
+
+function getEscala(){
+  if(periodo===2025)return ESC25;
+  const mes=parseInt(el('mes-sel')?.value)||4;
+  return ESC26[mes]||ESC26[4];
+}
+
+function calcImpuesto(gni){
+  const escala=getEscala();
+  let imp=0,tramoActual=null;
+  for(const t of escala){
+    if(gni>t.d){
+      tramoActual=t;
+      imp=t.f+(Math.min(gni,t.h)-t.d)*t.p;
+    }
+  }
+  return{imp:Math.max(imp,0),tramoActual,escala};
+}
+
+function renderLiq(){
+  renderDeducciones();
+  const rem=getTotalRem();
+  const ap=getAportes(rem);
+  const dp=getDedPers();
+  const gniProv=Math.max(rem-ap-dp.total,0);
+  const dg=getDedGen(gniProv);
+  const totDed=dp.total+ap+dg.total;
+  const gni=Math.max(rem-totDed,0);
+  const {imp,tramoActual,escala}=calcImpuesto(gni);
+  const retPrev=getRetPrev();
+  const saldo=Math.max(imp-retPrev,0);
+  const aFavor=retPrev>imp?retPrev-imp:0;
+
+  // Info tramo
+  const tiEl=el('tramo-info');
+  if(tramoActual&&gni>0){
+    tiEl.style.display='block';
+    const pctEfectivo=gni>0?imp/gni:0;
+    const siguiente=escala[escala.indexOf(tramoActual)+1];
+    const distSig=tramoActual.h<1e14?tramoActual.h-gni:null;
+    tiEl.innerHTML=`<div class="tramo-info-title">Lectura de escala</div>
+      <div class="tramo-actual"><span class="tooltip-wrap">Tramo actual:<span class="tooltip-txt">Tramo marginal: la alícuota que se aplica sobre el último peso de GNI. NO es la carga efectiva total, que siempre es menor. Un contribuyente en el tramo del 27% puede tener una carga efectiva del 15%.</span></span> ${(tramoActual.p*100).toFixed(0)}% marginal · ${fmtPct(pctEfectivo)} efectivo sobre GNI</div>
+      <div class="tramo-prox">${distSig!==null&&distSig>0
+        ?`Faltan ${fmt(distSig)} para pasar al tramo del ${(escala[escala.indexOf(tramoActual)+1]?.p*100||35).toFixed(0)}%`
+        :'En el tramo máximo del 35%'}</div>`;
+  } else {
+    tiEl.style.display='none';
+  }
+
+  // Tabla liquidación
+  el('liq-body').innerHTML=[
+    ['Remuneraciones gravadas',rem,''],
+    ['(-) Aportes obligatorios (17%)',ap,'neg'],
+    ['(-) Deducciones personales',dp.total,'neg'],
+    ['(-) Deducciones generales F.572',dg.total,'neg'],
+    ['Ganancia neta imponible',gni,'subtot'],
+    ['Impuesto determinado (escala Art.94)',imp,''],
+    ['(-) Retenciones practicadas',retPrev,'neg'],
+  ].map(([c,v,cls])=>{
+    if(cls==='subtot')return`<tr class="subtot"><td>${c}</td><td class="tr">${fmt(v)}</td></tr>`;
+    if(cls==='neg')return`<tr><td>${c}</td><td class="neg">(${fmt(v)})</td></tr>`;
+    return`<tr><td>${c}</td><td class="tr">${fmt(v)}</td></tr>`;
+  }).join('')+(saldo>0
+    ?`<tr class="tot-final"><td>SALDO A INGRESAR</td><td class="tr">${fmt(saldo)}</td></tr>`
+    :`<tr class="tot-final"><td>SALDO A FAVOR DEL EMPLEADO</td><td class="tr">${fmt(aFavor)}</td></tr>`);
+
+  // Escala
+  el('escala-body').innerHTML=escala.map((t,i)=>{
+    const base=Math.max(Math.min(gni,t.h<1e14?t.h:gni)-t.d,0);
+    const impT=base*t.p;
+    const activo=gni>t.d&&base>0;
+    return`<tr class="${activo?'tramo-activo':''}">
+      <td class="tc">${(t.p*100).toFixed(0)}%</td>
+      <td class="tr">${base>0?fmt(base):'No alcanza'}</td>
+      <td class="tr">${(t.p*100).toFixed(0)}%</td>
+      <td class="tr">${impT>0?fmt(impT):'—'}</td>
+      <td class="${activo?'ok-cell':''}">${activo?'Tramo activo':'—'}</td>
+    </tr>`;
+  }).join('');
+
+  // Alertas
+  let alertas='';
+  if(rem===0)alertas+=`<div class="alerta al-warn">No se ingresaron remuneraciones.</div>`;
+  if(gni===0&&rem>0)alertas+=`<div class="alerta al-ok">Las deducciones superan las remuneraciones. No hay impuesto a pagar.</div>`;
+  if(aFavor>0)alertas+=`<div class="alerta al-info">Saldo a favor del empleado: ${fmt(aFavor)}. El empleador debe reintegrar esta diferencia.</div>`;
+  el('liq-alertas').innerHTML=alertas;
+
+  // KPIs
+  el('resumen-kpis').innerHTML=`<div class="grid4">
+    <div class="kpi"><div class="kpi-label"><span class="tooltip-wrap">GNI<span class="tooltip-txt">Ganancia Neta Imponible: es la base sobre la que se aplica la escala. Se obtiene restando los aportes y todas las deducciones a las remuneraciones brutas.</span></span></div><div class="kpi-val">${fmt(gni)}</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="tooltip-wrap">Impuesto det.<span class="tooltip-txt">Impuesto determinado: resultado de aplicar la escala progresiva del Art. 94 LIG sobre la GNI. No es necesariamente lo que paga — se le restan las retenciones practicadas.</span></span></div><div class="kpi-val">${fmt(imp)}</div></div>
+    <div class="kpi"><div class="kpi-label">${saldo>0?'A ingresar':'A favor'}</div><div class="kpi-val ${saldo>0?'warn':'ok'}">${fmt(saldo||aFavor)}</div></div>
+    <div class="kpi"><div class="kpi-label"><span class="tooltip-wrap">Carga efectiva<span class="tooltip-txt">Porcentaje del impuesto determinado sobre el ingreso bruto total. Es el indicador real de cuánto paga el empleado en relación a su sueldo.</span></span></div><div class="kpi-val">${rem>0?fmtPct1(imp/rem):'—'}</div></div>
+  </div>`;
+}
+
+function renderRetenciones(){
+  renderDeducciones();
+  const rem=getTotalRem();
+  const ap=getAportes(rem);
+  const dp=getDedPers();
+  const gniProv=Math.max(rem-ap-dp.total,0);
+  const dg=getDedGen(gniProv);
+  const totDed=dp.total+ap+dg.total;
+  const gni=Math.max(rem-totDed,0);
+  const {imp}=calcImpuesto(gni);
+  const retPrev=getRetPrev();
+  const dif=retPrev-imp;
+  const pctDif=imp>0?Math.abs(dif)/imp:0;
+
+  let estado,cls,titulo,detalle;
+  if(imp===0&&retPrev===0){estado='neutral';cls='al-info';titulo='Sin datos suficientes';detalle='Completá los datos de remuneraciones para ver el análisis.';}
+  else if(Math.abs(dif)<imp*0.02){estado='ok';cls='al-ok';titulo='Retención adecuada';detalle=`Diferencia de ${fmt(Math.abs(dif))} (${fmtPct(pctDif)}). Dentro del margen aceptable.`;}
+  else if(dif>0){estado='sobre';cls='al-info';titulo='Sobreretención';detalle=`Se retuvo ${fmt(retPrev)} vs impuesto de ${fmt(imp)}. Diferencia a favor del empleado: ${fmt(dif)}.`;}
+  else{estado='sub';cls='al-err';titulo='Subretención';detalle=`Se retuvo ${fmt(retPrev)} vs impuesto de ${fmt(imp)}. Déficit de ${fmt(Math.abs(dif))} — puede generar saldo a pagar.`;}
+
+  el('ret-analisis-panel').innerHTML=`
+    <div class="alerta ${cls}" style="font-size:13px;margin-bottom:1rem"><strong>${titulo}.</strong> ${detalle}</div>
+    <div class="ret-analisis">
+      <div class="ret-card ${estado==='ok'?'ret-ok':estado==='sobre'?'ret-ok':'ret-warn'}">
+        <div class="kpi-label">Impuesto determinado</div>
+        <div class="kpi-val" style="font-size:17px">${fmt(imp)}</div>
+      </div>
+      <div class="ret-card ${estado==='ok'?'ret-ok':estado==='sobre'?'ret-ok':'ret-err'}">
+        <div class="kpi-label">Retenciones practicadas</div>
+        <div class="kpi-val" style="font-size:17px">${fmt(retPrev)}</div>
+      </div>
+      <div class="ret-card ${dif>=0?'ret-ok':'ret-err'}">
+        <div class="kpi-label">${dif>=0?'A favor del empleado':'Saldo a pagar'}</div>
+        <div class="kpi-val" style="font-size:17px;color:${dif>=0?'var(--verde-t)':'var(--crimson)'}">${fmt(Math.abs(dif))}</div>
+        <div class="kpi-sub">${fmtPct(pctDif)} de desvío</div>
+      </div>
+    </div>
+    <div class="alerta ${imp>0&&pctDif>0.15?'al-err':imp>0&&pctDif>0.05?'al-warn':'al-ok'}">
+      ${imp===0?'Sin impuesto determinado.':pctDif>0.15?`⚠️ Desvío mayor al 15% — revisar con urgencia antes del vencimiento de la DJA.`:pctDif>0.05?`⚠️ Desvío entre 5% y 15% — monitorear hasta el cierre del período.`:`✓ Desvío dentro del margen aceptable.`}
+    </div>`;
+}
+
+function calcSimp(){
+  const topeIng=parseFloat(el('tope-ing')?.value)||1000000000;
+  const topePat=parseFloat(el('tope-pat')?.value)||10000000000;
+  const ing=g('ing-simp');
+  const pat=g('pat-simp');
+  const gran=el('gran-contrib').value==='si';
+  const lim=el('cuit-lim').value==='si';
+  if(ing===0&&pat===0){
+    el('simp-resultado').innerHTML='<div class="alerta al-info">Completá los datos para ver el resultado.</div>';
+    el('simp-conviene').innerHTML='<p style="font-size:13px;color:var(--ink-muted)">Completá los datos primero.</p>';
+    return;
+  }
+  const motivos=[];
+  if(ing>topeIng)motivos.push(`Ingresos ${fmt(ing)} superan el tope de ${fmt(topeIng)}`);
+  if(pat>topePat)motivos.push(`Patrimonio ${fmt(pat)} supera el tope de ${fmt(topePat)}`);
+  if(gran)motivos.push('Es gran contribuyente nacional');
+  if(lim)motivos.push('CUIT con estado limitado');
+  const elegible=motivos.length===0;
+  el('simp-resultado').innerHTML=`<div class="alerta ${elegible?'al-ok':'al-err'}">
+    ${elegible
+      ?'<strong>Elegible.</strong> Cumple todos los requisitos para adherir al régimen simplificado (RG 5820/26).'
+      :`<strong>No elegible.</strong> ${motivos.join('. ')}.`}
+  </div>`;
+  el('simp-conviene').innerHTML=`
+    <p class="sec-title" style="margin-top:0;border:none;padding:0;margin-bottom:.75rem">Análisis de conveniencia</p>
+    <table class="tbl">
+      <thead><tr><th>Situación</th><th>¿Conviene adherir?</th></tr></thead>
+      <tbody>
+        <tr><td>Datos de ARCA coinciden con la realidad del contribuyente</td><td class="ok-cell">Sí — es el escenario ideal</td></tr>
+        <tr><td>Hay quebrantos previos que querés trasladar</td><td class="warn-cell">No — el régimen simplificado los cancela</td></tr>
+        <tr><td>La precarga de ARCA tiene errores significativos</td><td class="warn-cell">No — mejor corregir y presentar por régimen general</td></tr>
+        <tr><td>Ingresos muy variables o difieren del promedio precargado</td><td class="warn-cell">Analizar caso a caso</td></tr>
+        <tr><td>Operaciones relevantes fuera del sistema financiero formal</td><td class="warn-cell">No — genera riesgo de pérdida del beneficio</td></tr>
+        <tr><td>Contribuyente quiere simplificar su carga administrativa</td><td class="ok-cell">Sí — reduce tiempo y riesgo de error</td></tr>
+      </tbody>
+    </table>`;
+}
+
+setPeriodo(2025);
+recalc();
+
+// Navegación robusta con event listeners
+document.addEventListener('click',function(e){
+  const btn=e.target.closest('[data-tab]');
+  if(btn)tab(parseInt(btn.getAttribute('data-tab')));
+});
+
+function limpiarDatos(){
+  if(!confirm('¿Limpiar todos los datos? Esto borra la liquidación actual.'))return;
+  // Limpiar arrays
+  cI.fill(0);cG.fill(0);
+  ingA.fill(0);ingAnt.fill(0);ingAP.fill(0);
+  al1.fill(0);al2.fill(0);
+  ret.fill(0);per.fill(0);sir.fill(0);
+
+  // Limpiar inputs de texto
+  ['nombre','cuil','cuit-emp','categoria','resp','per','per_ant','per_ap',
+   'bruto-anual','sac-anual','extras','otros-grav','exentos','ret-previas',
+   'bruto-ac','sac-ac','otros-ac','ret-ac',
+   'alquiler-inp','prepaga-inp','hon-med-inp','donaciones-inp','sepelio-inp',
+   'hipotecario-inp','educacion-inp','dom-inp','seguros-inp','otros-inp',
+   'ing-simp','pat-simp','rem-proy'].forEach(id=>{
+     const e=el(id); if(e)e.value='';
+  });
+
+  // Limpiar campos de deduccion generales si ya fueron renderizados
+  document.querySelectorAll('#ded-gen-fields input[type="number"]').forEach(e=>e.value='');
+  document.querySelectorAll('#ded-gen-fields input').forEach(e=>{
+    e.style.border='1px solid var(--arena)';
+    e.style.background='var(--hueso)';
+  });
+  document.querySelectorAll('.tope-row').forEach(e=>e.style.display='none');
+
+  el('periodo-top').textContent='';
+  el('cuil-alerta').style.display='none';
+  tab(0);
+  recalc();
+}
+
+function calcProy(){
+  const remProy=parseFloat(el('rem-proy')?.value)||0;
+  const mesActual=parseInt(el('mes-proy')?.value)||4;
+  const mesesFalt=12-mesActual;
+  const elMF=el('meses-faltantes');
+  if(elMF)elMF.textContent=mesesFalt+' meses';
+
+  const res=el('proy-result');
+  if(!res)return;
+  if(remProy===0){res.innerHTML='<p style="font-size:12px;color:var(--ink-muted)">Ingresá la remuneración estimada para ver la proyección.</p>';return;}
+
+  // Proyección simple: ingresos futuros = rem × meses faltantes
+  const ingFuturos = remProy * mesesFalt;
+  const apFuturos  = ingFuturos * 0.17;
+
+  // GNI actual ya calculada
+  const rem=getTotalRem();
+  const ap=getAportes(rem);
+  const dp=getDedPers();
+  const gniProv=Math.max(rem-ap-dp.total,0);
+  const dg=getDedGen(gniProv);
+
+  // GNI proyectada anual = actual + futura
+  const remTotal  = rem + ingFuturos;
+  const apTotal   = ap  + apFuturos;
+  const totDedEst = dp.total + apTotal + dg.total;
+  const gniProy   = Math.max(remTotal - totDedEst, 0);
+  const {imp:impProy} = calcImpuesto(gniProy);
+  const retPrev   = getRetPrev();
+  const saldoProy = Math.max(impProy - retPrev, 0);
+  const aFavorProy= retPrev > impProy ? retPrev - impProy : 0;
+
+  const retMensualEstimada = mesesFalt > 0 ? Math.round(saldoProy / mesesFalt) : 0;
+
+  res.innerHTML=\`<div class="grid3" style="gap:10px;margin-bottom:.5rem">
+    <div class="kpi"><div class="kpi-label">GNI proyectada anual</div><div class="kpi-val" style="font-size:17px">\${fmt(gniProy)}</div></div>
+    <div class="kpi"><div class="kpi-label">Impuesto proyectado</div><div class="kpi-val" style="font-size:17px">\${fmt(impProy)}</div></div>
+    <div class="kpi"><div class="kpi-label">\${saldoProy>0?'Saldo estimado a pagar':'Saldo a favor estimado'}</div><div class="kpi-val \${saldoProy>0?'warn':'ok'}" style="font-size:17px">\${fmt(saldoProy||aFavorProy)}</div></div>
+  </div>
+  <div class="alerta \${saldoProy>0?'al-warn':'al-ok'}">
+    \${saldoProy>0
+      ? \`Si el sueldo se mantiene en \${fmt(remProy)}/mes, se estima un saldo a ingresar de \${fmt(saldoProy)} al cierre del año. Retención adicional recomendada por mes: \${fmt(retMensualEstimada)}.\`
+      : \`Con el sueldo proyectado, se estima saldo a favor de \${fmt(aFavorProy)} al cierre. El empleador deberá reintegrar la diferencia en el último recibo.\`}
+  </div>\`;
+}
+</script>
+</body>
+</html>
