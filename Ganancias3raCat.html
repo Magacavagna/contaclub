@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ganancias 3ª Categoría — Conta Kit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --burgundy: #7B2D3E;
+  --crimson:  #C0392B;
+  --cream:    #FDF6EC;
+  --gold:     #C9A84C;
+  --gold-lt:  #F4E4B0;
+  --dark:     #1A1A1A;
+  --gray:     #6B6B6B;
+  --gray-lt:  #F2F2F0;
+  --white:    #FFFFFF;
+  --green-ok: #2E7D32;
+  --amber:    #E65100;
+  --red-err:  #B71C1C;
+  --border:   #E0D5C5;
+  --shadow:   0 2px 16px rgba(0,0,0,.08);
+  --r:        6px;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--burgundy);
+  color: var(--white);
+  padding: 0;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,.3);
+}
+.header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px 10px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 36px; height: 36px; background: var(--gold);
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-weight: 900; font-size: 18px; color: var(--burgundy);
+}
+.brand-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+.brand-sub { font-size: 10px; opacity: .7; letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+.header-meta { text-align: right; font-size: 11px; opacity: .7; }
+.header-meta strong { display: block; font-size: 13px; opacity: 1; }
+
+/* TABS */
+.tabs {
+  display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+  border-top: 1px solid rgba(255,255,255,.15);
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; padding: 9px 18px; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,.65); cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; transition: all .2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.tab:hover { color: var(--white); background: rgba(255,255,255,.08); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); background: rgba(201,168,76,.1); }
+
+/* ── LAYOUT ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── PANEL ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── SECTION ── */
+.section-hdr {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--burgundy);
+  padding: 8px 14px; background: var(--gold-lt); border-left: 3px solid var(--gold);
+  margin: 28px 0 6px; border-radius: 0 var(--r) var(--r) 0;
+}
+
+/* ── TABLE ── */
+.calc-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--white); border-radius: var(--r);
+  overflow: hidden; box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.calc-table thead th {
+  background: var(--burgundy); color: var(--white);
+  padding: 10px 14px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px; text-align: left;
+}
+.calc-table thead th:not(:first-child) { text-align: right; }
+.calc-table tbody tr { border-bottom: 1px solid #F0EDE8; }
+.calc-table tbody tr:last-child { border-bottom: none; }
+.calc-table tbody tr:nth-child(even) td { background: #FAFAF8; }
+.calc-table tbody tr:hover td { background: #FDF6EC; }
+.calc-table td { padding: 8px 14px; vertical-align: middle; }
+.calc-table td:first-child { color: var(--gray); font-size: 13px; padding-left: 18px; }
+.calc-table td.indent { padding-left: 34px; }
+.calc-table td.indent2 { padding-left: 52px; }
+.calc-table td:not(:first-child) { text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+
+/* INPUT CELLS */
+input[type=number] {
+  width: 140px; text-align: right; padding: 5px 10px;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  color: #0000CC; background: #F0F4FF; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type=number]:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(123,45,62,.12); }
+
+/* FORMULA CELLS */
+.formula { color: var(--dark); font-weight: 500; }
+.formula-link { color: var(--green-ok); font-weight: 500; }
+.formula.total { font-weight: 700; }
+
+/* SUBTOTAL / TOTAL ROWS */
+tr.subtotal td { background: var(--gold-lt) !important; font-weight: 600; }
+tr.subtotal td:first-child { color: var(--dark); font-weight: 700; font-size: 12px; letter-spacing: .3px; }
+tr.total td { background: var(--burgundy) !important; color: var(--white) !important; font-weight: 700; }
+tr.total td:first-child { font-size: 13px; }
+tr.total input[type=number] { background: transparent; border-color: rgba(255,255,255,.3); color: var(--white); }
+
+/* ── RESULT BOX ── */
+.result-box {
+  border-radius: var(--r); padding: 20px 24px; margin: 20px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  box-shadow: var(--shadow);
+}
+.result-box.saldo-pagar { background: var(--crimson); color: var(--white); }
+.result-box.saldo-favor { background: var(--green-ok); color: var(--white); }
+.result-box.neutro { background: var(--gray); color: var(--white); }
+.result-label { font-size: 13px; font-weight: 600; letter-spacing: .5px; opacity: .9; }
+.result-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; }
+.result-icon { font-size: 36px; }
+
+/* ── SEMÁFORO ── */
+.semaforo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width:680px) { .semaforo-grid { grid-template-columns: 1fr; } }
+.sem-card {
+  background: var(--white); border-radius: var(--r); padding: 14px 16px;
+  border-left: 4px solid var(--gray); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.sem-card.ok { border-left-color: var(--green-ok); }
+.sem-card.warn { border-left-color: var(--gold); }
+.sem-card.error { border-left-color: var(--crimson); }
+.sem-label { font-size: 12px; font-weight: 600; color: var(--gray); }
+.sem-status { font-size: 13px; font-weight: 700; }
+.sem-card.ok .sem-status { color: var(--green-ok); }
+.sem-card.warn .sem-status { color: var(--amber); }
+.sem-card.error .sem-status { color: var(--crimson); }
+.sem-val { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--gray); }
+
+/* ── CONFIG GRID ── */
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media(max-width:680px) { .config-grid { grid-template-columns: 1fr; } }
+.config-card { background: var(--white); border-radius: var(--r); padding: 16px 18px; box-shadow: var(--shadow); }
+.config-card h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--burgundy); margin-bottom: 12px; }
+.config-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.config-field label { font-size: 11px; font-weight: 600; color: var(--gray); }
+.config-field input[type=text], .config-field input[type=number], .config-field select {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; color: var(--dark);
+  background: #FAFAFA; outline: none;
+}
+.config-field input[type=text]:focus, .config-field input[type=number]:focus,
+.config-field select:focus { border-color: var(--burgundy); background: var(--white); }
+.config-field .hint { font-size: 10px; color: var(--crimson); font-style: italic; }
+
+/* ── ANTICIPOS TABLE ── */
+.ant-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.ant-badge.pos { background: #FFEBEE; color: var(--crimson); }
+.ant-badge.neg { background: #E8F5E9; color: var(--green-ok); }
+.ant-badge.zero { background: var(--gray-lt); color: var(--gray); }
+
+/* ── NOTICE ── */
+.notice {
+  background: #FFF8E1; border: 1px solid #FFD54F; border-radius: var(--r);
+  padding: 12px 16px; font-size: 12px; color: #5D4037; margin: 16px 0; line-height: 1.6;
+}
+.notice strong { display: block; margin-bottom: 4px; color: var(--amber); }
+
+/* ── PRINT BTN ── */
+.toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.btn {
+  padding: 9px 20px; border-radius: 4px; border: none; cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
+  transition: all .15s; display: flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: var(--burgundy); color: var(--white); }
+.btn-primary:hover { background: #6B2535; }
+.btn-secondary { background: var(--white); color: var(--burgundy); border: 1.5px solid var(--burgundy); }
+.btn-secondary:hover { background: var(--cream); }
+.btn-gold { background: var(--gold); color: var(--dark); }
+.btn-gold:hover { background: #B8962A; }
+
+/* ── PERIOD GRID (anticipos) ── */
+.period-input { width: 100px !important; }
+
+/* ── ESCALA PROGRESIVA ── */
+.escala-table { width:100%; border-collapse:collapse; margin-bottom:16px; }
+.escala-table th { background:var(--burgundy); color:var(--white); padding:8px 14px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.8px; }
+.escala-table td { padding:8px 14px; font-family:'IBM Plex Mono',monospace; font-size:13px; border-bottom:1px solid #F0EDE8; }
+.escala-table tr:nth-child(even) td { background:#FAFAF8; }
+.escala-table .tramo-activo td { background:var(--gold-lt) !important; font-weight:700; }
+.escala-result { background:var(--white); border-radius:var(--r); padding:16px 20px; box-shadow:var(--shadow); margin-bottom:16px; }
+.escala-result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #F0EDE8; }
+.escala-result-row:last-child { border:none; }
+.escala-result-row .er-label { font-size:13px; color:var(--gray); }
+.escala-result-row .er-val { font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; color:var(--dark); }
+.escala-result-row.er-total .er-label { font-weight:700; color:var(--burgundy); font-size:14px; }
+.escala-result-row.er-total .er-val { font-size:18px; color:var(--burgundy); }
+.tramo-badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; font-family:'IBM Plex Mono',monospace; background:var(--gold-lt); color:var(--burgundy); }
+.tasa-efectiva { font-size:11px; color:var(--gray); font-style:italic; text-align:right; margin-top:4px; }
+
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  header .tabs, .toolbar, .notice { display: none !important; }
+
+  /* Solo imprimir DJ Resumen + Semáforo */
+  .panel { display: none !important; }
+  #panel-dj, #panel-semaforo { display: block !important; }
+
+  body { background: white; font-size: 12px; }
+  .container { padding: 0; max-width: 100%; }
+
+  /* Print header con logo */
+  .print-header {
+    display: flex !important;
+    align-items: center; justify-content: space-between;
+    padding: 12px 20px; background: #7B2D3E;
+    color: white; margin-bottom: 16px;
+  }
+  .print-header-brand { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; }
+  .print-header-sub { font-size: 10px; opacity: .75; }
+  .print-header-meta { text-align: right; font-size: 11px; }
+  .print-header-meta strong { font-size: 13px; display: block; }
+
+  #panel-dj { page-break-after: always; }
+  #panel-semaforo { page-break-before: always; }
+
+  .calc-table, .semaforo-grid { box-shadow: none; }
+  .result-box { border: 2px solid #7B2D3E; }
+
+  /* Pie de página */
+  #panel-semaforo::after {
+    content: "Conta Kit · @conta.club · @soymagacavagna · Material de referencia profesional. No reemplaza el criterio del contador matriculado.";
+    display: block; margin-top: 24px; font-size: 9px; color: #9E9E9E;
+    border-top: 1px solid #E0D5C5; padding-top: 8px; font-style: italic;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div>
+        <div class="brand-name">Conta Kit</div>
+        <div class="brand-sub">@conta.club · @soymagacavagna</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>Ganancias 3ª Categoría</strong>
+      Papel de trabajo completo · Ejercicio <span id="hdr-ejercicio">2024</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('config')">⚙️ Config</button>
+    <button class="tab" onclick="switchTab('resultado')">📊 Resultado Imp.</button>
+    <button class="tab" onclick="switchTab('ajinf')">🔄 Aj. Inflación</button>
+    <button class="tab" onclick="switchTab('quebranto')">📉 Quebranto</button>
+    <button class="tab" onclick="switchTab('escala')">📈 Escala Progresiva</button>
+    <button class="tab" onclick="switchTab('anticipos')">💰 Anticipos</button>
+    <button class="tab" onclick="switchTab('pagos')">🏦 Pagos a Cuenta</button>
+    <button class="tab" onclick="switchTab('dj')">🧾 DJ Resumen</button>
+    <button class="tab" onclick="switchTab('semaforo')">📋 Semáforo</button>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════════════════ CONFIG -->
+<div id="panel-config" class="panel active">
+  <div class="toolbar">
+    <button class="btn btn-gold" onclick="recalcAll()">🔁 Recalcular todo</button>
+    <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+  </div>
+
+  <div class="config-grid">
+    <div class="config-card">
+      <h4>Datos del Contribuyente</h4>
+      <div class="config-field">
+        <label>Razón Social / Apellido y Nombre</label>
+        <input type="text" id="cfg-razon" value="NOMBRE DEL CONTRIBUYENTE" oninput="recalcAll()">
+      </div>
+      <div class="config-field">
+        <label>CUIT</label>
+        <input type="text" id="cfg-cuit" value="30-00000000-0">
+      </div>
+      <div class="config-field">
+        <label>Tipo de Sujeto</label>
+        <select id="cfg-sujeto" onchange="recalcAll()">
+          <option value="srl">SRL / SA</option>
+          <option value="uni">Unipersonal (escala progresiva)</option>
+          <option value="fid">Fideicomiso no financiero</option>
+          <option value="sas">SAS / SA simplificada</option>
+        </select>
+      </div>
+      <div class="config-field">
+        <label>Ejercicio fiscal</label>
+        <input type="text" id="cfg-ejercicio" value="2024" oninput="recalcAll()">
+      </div>
+      <div class="config-field">
+        <label>Responsable de la liquidación</label>
+        <input type="text" id="cfg-contador" value="Contador Matriculado">
+      </div>
+    </div>
+
+    <div class="config-card">
+      <h4>Parámetros ARCA — Actualizar según RG vigente</h4>
+      <div class="config-field">
+        <label>Alícuota Ganancias sociedades</label>
+        <input type="number" id="cfg-alicuota" value="35" step="0.01" oninput="recalcAll()">
+        <span class="hint">% — estándar 35% (Art. 73 LIG)</span>
+      </div>
+      <div class="config-field">
+        <label>Índice IPC dic/dic (ajuste estático)</label>
+        <input type="number" id="cfg-idx-dic" value="1.1177" step="0.0001" oninput="recalcAll()">
+        <span class="hint">⚠️ Actualizar con RG ARCA vigente</span>
+      </div>
+      <div class="config-field">
+        <label>Índice IPC promedio/dic (ajuste dinámico)</label>
+        <input type="number" id="cfg-idx-prom" value="1.2138" step="0.0001" oninput="recalcAll()">
+        <span class="hint">⚠️ Actualizar con RG ARCA vigente</span>
+      </div>
+      <div class="config-field">
+        <label>% 1° anticipo</label>
+        <input type="number" id="cfg-ant1" value="25" step="0.01" oninput="recalcAll()">
+        <span class="hint">% — RG ARCA vigente</span>
+      </div>
+      <div class="config-field">
+        <label>% anticipos 2° a 10° (c/u)</label>
+        <input type="number" id="cfg-ant2" value="8.33" step="0.01" oninput="recalcAll()">
+        <span class="hint">% — RG ARCA vigente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>⚠️ Aviso importante</strong>
+    Este papel de trabajo es material de referencia profesional. No reemplaza el criterio del contador matriculado. 
+    Verificar valores ARCA vigentes (índices, alícuotas, vencimientos) antes de cada presentación. 
+    Conta Kit · @conta.club · @soymagacavagna
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ RESULTADO IMP. -->
+<div id="panel-resultado" class="panel">
+  <div class="section-hdr">A — Ingresos Gravados</div>
+  <table class="calc-table">
+    <thead><tr>
+      <th style="width:50%">Concepto</th>
+      <th>Importe Imp. ($)</th>
+      <th>Contable ($)</th>
+      <th>Diferencia ($)</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="indent">Ventas netas de bienes y servicios</td>
+        <td><input type="number" class="ing imp" id="ing1" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="ing cont" id="ing1c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="ing1d">-</td></tr>
+      <tr><td class="indent">Intereses activos gravados</td>
+        <td><input type="number" class="ing imp" id="ing2" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="ing cont" id="ing2c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="ing2d">-</td></tr>
+      <tr><td class="indent">Alquileres gravados</td>
+        <td><input type="number" class="ing imp" id="ing3" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="ing cont" id="ing3c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="ing3d">-</td></tr>
+      <tr><td class="indent">Diferencia de cambio activa (impositiva)</td>
+        <td><input type="number" class="ing imp" id="ing4" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="ing cont" id="ing4c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="ing4d">-</td></tr>
+      <tr><td class="indent">Recupero de gastos / otros ingresos gravados</td>
+        <td><input type="number" class="ing imp" id="ing5" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="ing cont" id="ing5c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="ing5d">-</td></tr>
+      <tr class="subtotal"><td>TOTAL INGRESOS GRAVADOS</td>
+        <td class="formula total" id="tot-ing-imp">-</td>
+        <td class="formula total" id="tot-ing-cont">-</td>
+        <td class="formula total" id="tot-ing-dif">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">B — Costo de Mercaderías Vendidas / Servicios</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:50%">Concepto</th><th>Imp. ($)</th><th>Cont. ($)</th><th>Dif. ($)</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Existencia inicial de bienes de cambio</td>
+        <td><input type="number" class="cos imp" id="cos1" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="cos cont" id="cos1c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="cos1d">-</td></tr>
+      <tr><td class="indent">+ Compras del período</td>
+        <td><input type="number" class="cos imp" id="cos2" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="cos cont" id="cos2c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="cos2d">-</td></tr>
+      <tr><td class="indent">- Existencia final de bienes de cambio</td>
+        <td><input type="number" class="cos imp" id="cos3" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="cos cont" id="cos3c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="cos3d">-</td></tr>
+      <tr><td class="indent">Mano de obra / costo de servicios</td>
+        <td><input type="number" class="cos imp" id="cos4" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="cos cont" id="cos4c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="cos4d">-</td></tr>
+      <tr><td class="indent">Ajuste impositivo de inventario</td>
+        <td><input type="number" class="cos imp" id="cos5" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="cos cont" id="cos5c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="cos5d">-</td></tr>
+      <tr class="subtotal"><td>TOTAL COSTOS</td>
+        <td class="formula total" id="tot-cos-imp">-</td>
+        <td class="formula total" id="tot-cos-cont">-</td>
+        <td class="formula total" id="tot-cos-dif">-</td></tr>
+    </tbody>
+  </table>
+
+  <table class="calc-table">
+    <tbody>
+      <tr class="total"><td style="color:#fff;font-weight:700">UTILIDAD BRUTA (A - B)</td>
+        <td class="formula" id="util-bruta-imp" style="color:#FFD700;font-weight:700">-</td>
+        <td class="formula" id="util-bruta-cont" style="color:#FFD700;font-weight:700">-</td>
+        <td class="formula" id="util-bruta-dif" style="color:#FFD700;font-weight:700">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">C — Gastos Deducibles (Art. 83 y sgtes. LIG)</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:50%">Concepto</th><th>Imp. ($)</th><th>Cont. ($)</th><th>Dif. ($)</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Sueldos y cargas sociales</td>
+        <td><input type="number" class="gas imp" id="gas1" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas1c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas1d">-</td></tr>
+      <tr><td class="indent">Honorarios directores/gerentes (límite 25% / 12.500 UVT)</td>
+        <td><input type="number" class="gas imp" id="gas2" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas2c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas2d">-</td></tr>
+      <tr><td class="indent">Alquileres pagados</td>
+        <td><input type="number" class="gas imp" id="gas3" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas3c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas3d">-</td></tr>
+      <tr><td class="indent">Publicidad, mantenimiento, seguros</td>
+        <td><input type="number" class="gas imp" id="gas4" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas4c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas4d">-</td></tr>
+      <tr><td class="indent">Impuestos y tasas deducibles (no Gcias.)</td>
+        <td><input type="number" class="gas imp" id="gas5" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas5c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas5d">-</td></tr>
+      <tr><td class="indent">Intereses pasivos (cap. exigua — RG 6.328)</td>
+        <td><input type="number" class="gas imp" id="gas6" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas6c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas6d">-</td></tr>
+      <tr><td class="indent">Diferencia de cambio pasiva (impositiva)</td>
+        <td><input type="number" class="gas imp" id="gas7" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas7c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas7d">-</td></tr>
+      <tr><td class="indent">Gastos NO deducibles — reversal (+)</td>
+        <td><input type="number" class="gas imp" id="gas8" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="gas cont" id="gas8c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="gas8d">-</td></tr>
+      <tr class="subtotal"><td>TOTAL GASTOS DEDUCIBLES</td>
+        <td class="formula total" id="tot-gas-imp">-</td>
+        <td class="formula total" id="tot-gas-cont">-</td>
+        <td class="formula total" id="tot-gas-dif">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">D — Amortizaciones Impositivas (Art. 88 LIG)</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:50%">Concepto</th><th>Imp. ($)</th><th>Cont. ($)</th><th>Dif. ($)</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Bienes muebles (vida útil impositiva)</td>
+        <td><input type="number" class="am imp" id="am1" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="am cont" id="am1c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="am1d">-</td></tr>
+      <tr><td class="indent">Inmuebles (2% anual — Art. 88 inc. f)</td>
+        <td><input type="number" class="am imp" id="am2" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="am cont" id="am2c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="am2d">-</td></tr>
+      <tr><td class="indent">Intangibles / gastos de organización</td>
+        <td><input type="number" class="am imp" id="am3" value="0" oninput="recalcAll()"></td>
+        <td><input type="number" class="am cont" id="am3c" value="0" oninput="recalcAll()"></td>
+        <td class="formula" id="am3d">-</td></tr>
+      <tr class="subtotal"><td>TOTAL AMORTIZACIONES</td>
+        <td class="formula total" id="tot-am-imp">-</td>
+        <td class="formula total" id="tot-am-cont">-</td>
+        <td class="formula total" id="tot-am-dif">-</td></tr>
+    </tbody>
+  </table>
+
+  <table class="calc-table">
+    <tbody>
+      <tr class="total"><td style="color:#fff">RESULTADO ANTES DE AJ. INFLACIÓN</td>
+        <td class="formula" id="res-preaj" style="color:#FFD700;font-weight:700">-</td>
+        <td colspan="2"></td></tr>
+      <tr class="subtotal"><td>+ Ajuste estático (ver hoja 🔄)</td>
+        <td class="formula formula-link" id="aj-est-ref">-</td><td colspan="2"></td></tr>
+      <tr class="subtotal"><td>+ Ajuste dinámico (ver hoja 🔄)</td>
+        <td class="formula formula-link" id="aj-din-ref">-</td><td colspan="2"></td></tr>
+      <tr class="total"><td style="color:#fff;font-size:14px;font-weight:800">RESULTADO IMPOSITIVO NETO</td>
+        <td class="formula" id="res-final" style="color:#FFD700;font-weight:800;font-size:15px">-</td>
+        <td colspan="2"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ AJ. INFLACIÓN -->
+<div id="panel-ajinf" class="panel">
+  <div class="notice">
+    <strong>📌 Art. 106 LIG</strong>
+    El ajuste por inflación aplica cuando la variación del IPC supera el 100% acumulado en los 3 ejercicios anteriores. 
+    Verificar aplicabilidad antes de computar. Índices: actualizar en ⚙️ Config.
+  </div>
+
+  <div class="section-hdr">Ajuste Estático — Activos y Pasivos al inicio</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:55%">Concepto</th><th>Importe ($)</th><th>Índice dic/dic</th><th>Ajuste ($)</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Activos generadores (inicio ejercicio)</td>
+        <td><input type="number" id="ajest-act1" value="0" oninput="recalcAll()"></td>
+        <td class="formula formula-link" id="ajest-idx-show">-</td>
+        <td class="formula" id="ajest-act1-r">-</td></tr>
+      <tr><td class="indent2">Bienes de cambio al inicio</td>
+        <td><input type="number" id="ajest-act2" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-act2-r">-</td></tr>
+      <tr><td class="indent2">Bienes de uso al inicio (VR impositivo)</td>
+        <td><input type="number" id="ajest-act3" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-act3-r">-</td></tr>
+      <tr><td class="indent2">Créditos y otros activos al inicio</td>
+        <td><input type="number" id="ajest-act4" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-act4-r">-</td></tr>
+      <tr><td class="indent">Pasivos al inicio (deudas)</td>
+        <td><input type="number" id="ajest-pas1" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-pas1-r">-</td></tr>
+      <tr><td class="indent2">Deudas comerciales al inicio</td>
+        <td><input type="number" id="ajest-pas2" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-pas2-r">-</td></tr>
+      <tr><td class="indent2">Deudas financieras al inicio</td>
+        <td><input type="number" id="ajest-pas3" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajest-pas3-r">-</td></tr>
+      <tr class="subtotal"><td>RESULTADO AJ. ESTÁTICO (Activos - Pasivos) × (idx−1)</td>
+        <td class="formula total" id="ajest-base">-</td>
+        <td>—</td>
+        <td class="formula total" id="ajest-total">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">Ajuste Dinámico — Variaciones del Ejercicio (ponderadas)</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:55%">Concepto</th><th>Importe pond. ($)</th><th>Índice prom/dic</th><th>Ajuste ($)</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Aumentos de activos (ponderados por tiempo)</td>
+        <td><input type="number" id="ajdin-a1" value="0" oninput="recalcAll()"></td>
+        <td class="formula formula-link" id="ajdin-idx-show">-</td>
+        <td class="formula" id="ajdin-a1r">-</td></tr>
+      <tr><td class="indent">Disminuciones de activos (ponderadas)</td>
+        <td><input type="number" id="ajdin-a2" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajdin-a2r">-</td></tr>
+      <tr><td class="indent">Aumentos de pasivos (ponderados)</td>
+        <td><input type="number" id="ajdin-p1" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajdin-p1r">-</td></tr>
+      <tr><td class="indent">Disminuciones de pasivos (ponderadas)</td>
+        <td><input type="number" id="ajdin-p2" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td class="formula" id="ajdin-p2r">-</td></tr>
+      <tr class="subtotal"><td>RESULTADO AJ. DINÁMICO (neto) × (idx−1)</td>
+        <td class="formula total" id="ajdin-base">-</td>
+        <td>—</td>
+        <td class="formula total" id="ajdin-total">-</td></tr>
+    </tbody>
+  </table>
+
+  <table class="calc-table">
+    <tbody>
+      <tr class="total"><td style="color:#fff;font-weight:800">AJUSTE POR INFLACIÓN TOTAL (traslada a Resultado Imp.)</td>
+        <td class="formula" id="ajinf-total" style="color:#FFD700;font-weight:800;font-size:15px">-</td>
+        <td colspan="2"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ QUEBRANTO -->
+<div id="panel-quebranto" class="panel">
+  <div class="notice">
+    <strong>📌 Art. 25 LIG — Quebrantos</strong>
+    Plazo máximo de traslado: 5 años. Los específicos (capital, minas, etc.) solo compensan ganancias de igual naturaleza. Quebrantos de fuente extranjera: solo con ganancias de fuente extranjera.
+  </div>
+  <div class="section-hdr">Saldo de Quebrantos por Período</div>
+  <table class="calc-table">
+    <thead><tr>
+      <th>Período</th><th>Quebranto orig. ($)</th><th>Índice actualiz.</th>
+      <th>Quebranto actual. ($)</th><th>Compensado ($)</th><th>Saldo dispon. ($)</th>
+    </tr></thead>
+    <tbody id="qb-body"></tbody>
+  </table>
+
+  <div class="section-hdr">Aplicación al Ejercicio Actual</div>
+  <table class="calc-table">
+    <tbody>
+      <tr><td style="width:55%">Resultado impositivo del ejercicio (antes de quebranto)</td>
+        <td class="formula formula-link" id="qb-res-actual">-</td></tr>
+      <tr><td class="indent">(-) Quebranto a compensar en este ejercicio</td>
+        <td><input type="number" id="qb-aplicar" value="0" oninput="recalcAll()"></td></tr>
+      <tr class="total"><td style="color:#fff;font-weight:700">RESULTADO POST-QUEBRANTO</td>
+        <td class="formula" id="qb-res-post" style="color:#FFD700;font-weight:700">-</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ ANTICIPOS -->
+<div id="panel-escala" class="panel">
+  <div class="notice" style="margin-bottom:20px">
+    <strong>📌 Solo aplica a Unipersonal / Personas Humanas (Art. 94 LIG)</strong>
+    Las SRL, SA, SAS y fideicomisos usan alícuota fija del 35% (Art. 73 LIG). Esta calculadora no aplica a esos sujetos.
+    Valores de escalones en pesos 2024 — actualizar con RG ARCA cada ejercicio.
+  </div>
+
+  <div class="section-hdr">Escala de Alícuotas — Art. 94 LIG</div>
+  <table class="escala-table" id="escala-tabla">
+    <thead><tr>
+      <th>Desde ($)</th><th>Hasta ($)</th><th>Fijo ($)</th><th>% Excedente</th><th>Tramo</th>
+    </tr></thead>
+    <tbody>
+      <tr data-desde="0"         data-hasta="1274076"   data-fijo="0"       data-pct="0.05"><td>$ 0</td><td>$ 1.274.076</td><td>—</td><td>5%</td><td>Tramo 1</td></tr>
+      <tr data-desde="1274076"   data-hasta="2548153"   data-fijo="63704"   data-pct="0.09"><td>$ 1.274.076</td><td>$ 2.548.153</td><td>$ 63.704</td><td>9%</td><td>Tramo 2</td></tr>
+      <tr data-desde="2548153"   data-hasta="3822229"   data-fijo="178161"  data-pct="0.12"><td>$ 2.548.153</td><td>$ 3.822.229</td><td>$ 178.161</td><td>12%</td><td>Tramo 3</td></tr>
+      <tr data-desde="3822229"   data-hasta="5096306"   data-fijo="330853"  data-pct="0.15"><td>$ 3.822.229</td><td>$ 5.096.306</td><td>$ 330.853</td><td>15%</td><td>Tramo 4</td></tr>
+      <tr data-desde="5096306"   data-hasta="6370382"   data-fijo="521928"  data-pct="0.19"><td>$ 5.096.306</td><td>$ 6.370.382</td><td>$ 521.928</td><td>19%</td><td>Tramo 5</td></tr>
+      <tr data-desde="6370382"   data-hasta="7644458"   data-fijo="764085"  data-pct="0.23"><td>$ 6.370.382</td><td>$ 7.644.458</td><td>$ 764.085</td><td>23%</td><td>Tramo 6</td></tr>
+      <tr data-desde="7644458"   data-hasta="8918534"   data-fijo="1057015" data-pct="0.27"><td>$ 7.644.458</td><td>$ 8.918.534</td><td>$ 1.057.015</td><td>27%</td><td>Tramo 7</td></tr>
+      <tr data-desde="8918534"   data-hasta="10192611"  data-fijo="1400835" data-pct="0.31"><td>$ 8.918.534</td><td>$ 10.192.611</td><td>$ 1.400.835</td><td>31%</td><td>Tramo 8</td></tr>
+      <tr data-desde="10192611"  data-hasta="999999999" data-fijo="1796059" data-pct="0.35"><td>$ 10.192.611</td><td>En adelante</td><td>$ 1.796.059</td><td>35%</td><td>Tramo 9 (máx)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">Calculadora — GNI sincronizada automáticamente</div>
+  <div class="escala-result">
+    <div class="escala-result-row" style="margin-bottom:12px;flex-direction:column;align-items:flex-start;gap:8px">
+      <label style="font-size:12px;font-weight:600;color:var(--gray)">Ganancia Neta Imponible ($) — tomada de Resultado Imp. − Quebranto</label>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div id="escala-gni-display"
+          style="min-width:240px;padding:10px 14px;border:2px solid var(--burgundy);border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--burgundy);background:#FDF6EC;font-weight:700">
+          $ 0
+        </div>
+        <span style="font-size:11px;color:var(--green-ok);font-weight:600;background:#E8F5E9;padding:4px 10px;border-radius:20px">
+          ✅ Sincronizado automáticamente
+        </span>
+        <button onclick="switchTab('resultado')" class="btn btn-secondary" style="font-size:11px;padding:5px 12px">
+          → Ver Resultado Imp.
+        </button>
+      </div>
+    </div>
+    <div class="escala-result-row">
+      <span class="er-label">Tramo aplicable</span>
+      <span class="tramo-badge" id="escala-tramo">—</span>
+    </div>
+    <div class="escala-result-row">
+      <span class="er-label">Importe fijo del tramo</span>
+      <span class="er-val" id="escala-fijo">—</span>
+    </div>
+    <div class="escala-result-row">
+      <span class="er-label">Excedente del tramo</span>
+      <span class="er-val" id="escala-exc">—</span>
+    </div>
+    <div class="escala-result-row">
+      <span class="er-label">Impuesto s/ excedente</span>
+      <span class="er-val" id="escala-imp-exc">—</span>
+    </div>
+    <div class="escala-result-row er-total" style="margin-top:8px;padding-top:12px;border-top:2px solid var(--burgundy)">
+      <span class="er-label">IMPUESTO DETERMINADO</span>
+      <span class="er-val" id="escala-total">—</span>
+    </div>
+    <div class="tasa-efectiva" id="escala-tasa-ef"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ ANTICIPOS -->
+<div id="panel-anticipos" class="panel">
+  <div class="section-hdr">Base de Cálculo</div>
+  <table class="calc-table">
+    <tbody>
+      <tr><td style="width:55%">Impuesto determinado del período</td>
+        <td class="formula formula-link" id="ant-imp-det">-</td></tr>
+      <tr><td>(-) Retenciones y percepciones del período</td>
+        <td class="formula formula-link" id="ant-ret">-</td></tr>
+      <tr class="subtotal"><td>BASE PARA ANTICIPOS</td>
+        <td class="formula total" id="ant-base">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">Calendario de Anticipos — Período siguiente</div>
+  <table class="calc-table">
+    <thead><tr>
+      <th>Cuota</th><th>Vencimiento</th><th>% Base</th>
+      <th>Importe ($)</th><th>Ingresado ($)</th><th>Diferencia</th>
+    </tr></thead>
+    <tbody id="ant-body"></tbody>
+    <tfoot>
+      <tr class="total">
+        <td colspan="3" style="color:#fff;font-weight:700">TOTAL ANTICIPOS</td>
+        <td class="formula" id="ant-tot-imp" style="color:#FFD700;font-weight:700">-</td>
+        <td class="formula" id="ant-tot-ing" style="color:#FFD700;font-weight:700">-</td>
+        <td class="formula" id="ant-tot-dif" style="color:#FFD700;font-weight:700">-</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGOS A CUENTA -->
+<div id="panel-pagos" class="panel">
+  <div class="section-hdr">A — Retenciones Sufridas</div>
+  <table class="calc-table">
+    <thead><tr><th style="width:50%">Concepto</th><th>Importe ($)</th><th>N° Comp.</th><th>RG</th></tr></thead>
+    <tbody>
+      <tr><td class="indent">Retención Ganancias — honorarios (RG 830)</td>
+        <td><input type="number" class="ret" id="ret1" value="0" oninput="recalcAll()"></td>
+        <td><input type="text" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px" placeholder="Nro."></td>
+        <td style="font-size:11px;color:var(--gray)">RG 830</td></tr>
+      <tr><td class="indent">Retención Ganancias — alquileres</td>
+        <td><input type="number" class="ret" id="ret2" value="0" oninput="recalcAll()"></td>
+        <td><input type="text" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px" placeholder="Nro."></td>
+        <td style="font-size:11px;color:var(--gray)">RG 2287</td></tr>
+      <tr><td class="indent">Retención IVA computada en Ganancias</td>
+        <td><input type="number" class="ret" id="ret3" value="0" oninput="recalcAll()"></td>
+        <td><input type="text" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px" placeholder="Nro."></td>
+        <td style="font-size:11px;color:var(--gray)">RG 2854</td></tr>
+      <tr><td class="indent">Otras retenciones de Ganancias</td>
+        <td><input type="number" class="ret" id="ret4" value="0" oninput="recalcAll()"></td>
+        <td>—</td><td>—</td></tr>
+      <tr class="subtotal"><td>SUBTOTAL RETENCIONES</td>
+        <td class="formula total" id="tot-ret">-</td><td colspan="2"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">B — Percepciones Sufridas</div>
+  <table class="calc-table">
+    <tbody>
+      <tr><td style="width:50%" class="indent">Percepción Ganancias importaciones (ARCA)</td>
+        <td><input type="number" class="per" id="per1" value="0" oninput="recalcAll()"></td></tr>
+      <tr><td class="indent">Otras percepciones de Ganancias</td>
+        <td><input type="number" class="per" id="per2" value="0" oninput="recalcAll()"></td></tr>
+      <tr class="subtotal"><td>SUBTOTAL PERCEPCIONES</td>
+        <td class="formula total" id="tot-per">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">C — Anticipos Ingresados en el Período</div>
+  <table class="calc-table">
+    <tbody id="ant-ing-body"></tbody>
+    <tfoot>
+      <tr class="subtotal"><td style="width:50%">SUBTOTAL ANTICIPOS INGRESADOS</td>
+        <td class="formula total" id="tot-ant-ing">-</td></tr>
+    </tfoot>
+  </table>
+
+  <table class="calc-table">
+    <tbody>
+      <tr class="total"><td style="color:#fff;font-weight:800;font-size:14px">TOTAL PAGOS A CUENTA</td>
+        <td class="formula" id="tot-pac" style="color:#FFD700;font-weight:800;font-size:15px">-</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ DJ RESUMEN -->
+<div id="panel-dj" class="panel">
+  <div class="section-hdr">Liquidación del Impuesto Determinado</div>
+  <table class="calc-table">
+    <tbody>
+      <tr><td style="width:60%">Resultado impositivo neto (G/P)</td>
+        <td class="formula formula-link" id="dj-res-neto">-</td></tr>
+      <tr><td class="indent">(-) Quebranto compensado</td>
+        <td class="formula formula-link" id="dj-qb-comp">-</td></tr>
+      <tr class="subtotal"><td>GANANCIA / QUEBRANTO NETO</td>
+        <td class="formula total" id="dj-gan-neto">-</td></tr>
+      <tr><td class="indent">Alícuota aplicable</td>
+        <td class="formula formula-link" id="dj-alicuota">-</td></tr>
+      <tr class="total"><td style="color:#fff;font-weight:800;font-size:14px" id="dj-imp-det-lbl">IMPUESTO DETERMINADO</td>
+        <td class="formula" id="dj-imp-det" style="color:#FFD700;font-weight:800;font-size:16px">-</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-hdr">Saldo a Pagar / A Favor</div>
+  <table class="calc-table">
+    <tbody>
+      <tr><td style="width:60%">Impuesto determinado</td>
+        <td class="formula formula-link" id="dj-imp-det2">-</td></tr>
+      <tr><td>(-) Pagos a cuenta (ret. + perc. + anticipos)</td>
+        <td class="formula formula-link" id="dj-pac">-</td></tr>
+      <tr class="total"><td style="color:#fff;font-weight:800;font-size:14px">SALDO A PAGAR (+) / A FAVOR (−)</td>
+        <td class="formula" id="dj-saldo" style="color:#FFD700;font-weight:800;font-size:16px">-</td></tr>
+    </tbody>
+  </table>
+
+  <div id="dj-result-box" class="result-box neutro" style="margin-top:20px">
+    <div>
+      <div class="result-label" id="dj-box-label">Calculando...</div>
+      <div class="result-value" id="dj-box-value">$0</div>
+    </div>
+    <div class="result-icon" id="dj-box-icon">⚪</div>
+  </div>
+
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button class="btn btn-gold" onclick="copiarResumen()" id="btn-copiar">
+      📋 Copiar resumen para ARCA
+    </button>
+    <span id="copy-feedback" style="font-size:12px;color:var(--green-ok);font-weight:600;opacity:0;transition:opacity .4s"></span>
+  </div>
+  <div style="font-size:11px;color:var(--gray);margin-top:6px;font-style:italic">
+    Copia en el portapapeles: razón social, CUIT, ejercicio, imp. determinado, pagos a cuenta y saldo — listo para volcar en el aplicativo ARCA.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════ SEMÁFORO -->
+<div id="panel-semaforo" class="panel">
+  <div class="section-hdr">Validador Automático — Controles Cruzados</div>
+  <div class="semaforo-grid" id="sem-grid"></div>
+  <div id="sem-diagnostico" class="result-box neutro" style="margin-top:20px">
+    <div>
+      <div class="result-label">DIAGNÓSTICO GENERAL</div>
+      <div class="result-value" id="sem-diag-text" style="font-size:16px">Calculando...</div>
+    </div>
+    <div class="result-icon" id="sem-diag-icon">⚪</div>
+  </div>
+  <div class="notice" style="margin-top:16px">
+    <strong>Conta Kit · @conta.club · @soymagacavagna</strong>
+    Este validador es un control de referencia profesional. No reemplaza la revisión del contador matriculado antes de la presentación ante ARCA.
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ── UTILS ──────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const n = id => { const el = $(id); if(!el) return 0; const v = el.tagName==='INPUT' ? parseFloat(el.value)||0 : 0; return v; };
+const pct = id => (parseFloat($(id)?.value)||0)/100;
+const fmt = v => {
+  if(v===0||v===null||v===undefined) return '—';
+  const abs = Math.abs(v);
+  const s = abs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return v<0 ? `($ ${s})` : `$ ${s}`;
+};
+const fmtPct = v => (v*100).toFixed(2)+'%';
+const set = (id, val) => { const el=$(id); if(el){ el.textContent = typeof val==='number' ? fmt(val) : val; } };
+const setClass = (el, cls) => { el.className = el.className.replace(/formula\b/,'').trim()+' formula '+cls; };
+
+// ── ANTICIPOS BODY (pagos a cuenta) ───────────────────────────────────
+function buildAntIngBody() {
+  const tbody = $('ant-ing-body'); if(!tbody) return;
+  if(tbody.dataset.built) return;
+  tbody.dataset.built = '1';
+  const cuotas = ['1°','2°','3°','4°','5°','6°','7°','8°','9°','10°'];
+  cuotas.forEach((c,i) => {
+    const tr = document.createElement('tr');
+    const bg = i%2===0 ? '#FAFAF8' : '#fff';
+    tr.style.background = bg;
+    tr.innerHTML = `<td style="width:50%;padding:8px 18px;color:var(--gray)">${c} anticipo ingresado</td>
+      <td style="text-align:right;padding:8px 14px"><input type="number" class="ant-ing" id="ant-ing-${i}" value="0" oninput="recalcAll()" style="width:140px;text-align:right;padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#0000CC;background:#F0F4FF"></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function buildAntBody() {
+  const tbody = $('ant-body'); if(!tbody) return;
+  tbody.innerHTML = '';
+  const cuotas = [
+    ['1°','Jun-2025'],['2°','Ago-2025'],['3°','Oct-2025'],['4°','Dic-2025'],
+    ['5°','Feb-2026'],['6°','Abr-2026'],['7°','Jun-2026'],['8°','Ago-2026'],
+    ['9°','Oct-2026'],['10°','Dic-2026']
+  ];
+  const ant1 = pct('cfg-ant1');
+  const ant2 = pct('cfg-ant2');
+  const base = getAntBase();
+  cuotas.forEach(([c,vto],i) => {
+    const pv = i===0 ? ant1 : ant2;
+    const imp = base * pv;
+    const ing = n(`ant-ing-${i}`);
+    const dif = imp - ing;
+    const badge = dif===0 ? `<span class="ant-badge zero">—</span>` :
+                  dif>0 ? `<span class="ant-badge pos">${fmt(dif)}</span>` :
+                          `<span class="ant-badge neg">${fmt(dif)}</span>`;
+    const bg = i%2===0 ? '#FAFAF8' : '#fff';
+    const tr = document.createElement('tr');
+    tr.style.background = bg;
+    tr.innerHTML = `
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:13px">${c}</td>
+      <td style="text-align:center;color:#0000CC;font-family:'IBM Plex Mono',monospace;font-size:13px">${vto}</td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px">${fmtPct(pv)}</td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px">${fmt(imp)}</td>
+      <td style="text-align:right;padding:4px 14px"><input type="number" class="ant-ing" id="ant-ing-${i}" value="${$('ant-ing-'+i)?.value||0}" oninput="recalcAll()" style="width:130px;text-align:right;padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#0000CC;background:#F0F4FF"></td>
+      <td style="text-align:right">${badge}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function buildQbBody() {
+  const tbody = $('qb-body'); if(!tbody) return;
+  if(tbody.dataset.built) return;
+  tbody.dataset.built = '1';
+  const periods = ['2019','2020','2021','2022','2023'];
+  periods.forEach((p,i) => {
+    const bg = i%2===0 ? '#FAFAF8' : '#fff';
+    const tr = document.createElement('tr');
+    tr.style.background = bg;
+    tr.innerHTML = `
+      <td style="text-align:center;font-weight:600;color:var(--burgundy)">${p}</td>
+      <td style="text-align:right;padding:4px 14px"><input type="number" class="qb-orig" id="qb-${i}" value="0" oninput="recalcAll()" style="width:140px;text-align:right;padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#0000CC;background:#F0F4FF"></td>
+      <td style="text-align:right;padding:4px 14px"><input type="number" class="qb-idx" id="qb-idx-${i}" value="1.0000" step="0.0001" oninput="recalcAll()" style="width:100px;text-align:right;padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#0000CC;background:#F0F4FF"></td>
+      <td class="formula" id="qb-act-${i}" style="text-align:right;font-family:'IBM Plex Mono',monospace">—</td>
+      <td style="text-align:right;padding:4px 14px"><input type="number" class="qb-comp" id="qb-comp-${i}" value="0" oninput="recalcAll()" style="width:130px;text-align:right;padding:5px 10px;border:1px solid var(--border);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#0000CC;background:#F0F4FF"></td>
+      <td class="formula" id="qb-saldo-${i}" style="text-align:right;font-family:'IBM Plex Mono',monospace">—</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── CORE CALCULATIONS ─────────────────────────────────────────────────
+function getIngTot() {
+  return [1,2,3,4,5].reduce((s,i)=>s+n('ing'+i),0);
+}
+function getCosTot() {
+  return n('cos1')+n('cos2')-n('cos3')+n('cos4')+n('cos5');
+}
+function getGasTot() { return [1,2,3,4,5,6,7,8].reduce((s,i)=>s+n('gas'+i),0); }
+function getAmTot()  { return [1,2,3].reduce((s,i)=>s+n('am'+i),0); }
+
+function getAjEstTotal() {
+  const act = n('ajest-act1')+n('ajest-act2')+n('ajest-act3')+n('ajest-act4');
+  const pas = n('ajest-pas1')+n('ajest-pas2')+n('ajest-pas3');
+  const base = act - pas;
+  const idx = parseFloat($('cfg-idx-dic')?.value)||1;
+  return { base, total: base*(idx-1) };
+}
+function getAjDinTotal() {
+  const net = (n('ajdin-a1')-n('ajdin-a2'))+(n('ajdin-p1')-n('ajdin-p2'));
+  const idx = parseFloat($('cfg-idx-prom')?.value)||1;
+  return { base: net, total: net*(idx-1) };
+}
+function getResImp() {
+  const ub = getIngTot() - getCosTot();
+  const gas = getGasTot();
+  const am = getAmTot();
+  const preaj = ub - gas - am;
+  const est = getAjEstTotal().total;
+  const din = getAjDinTotal().total;
+  return { preaj, est, din, final: preaj + est + din };
+}
+function getQbSaldo() {
+  let tot = 0;
+  for(let i=0;i<5;i++){
+    const orig = n('qb-'+i), idx = parseFloat($('qb-idx-'+i)?.value)||1;
+    const act = orig*idx;
+    const comp = n('qb-comp-'+i);
+    tot += Math.max(0, act-comp);
+  }
+  return tot;
+}
+
+const ESCALA = [
+  {desde:0,        hasta:1274076,   fijo:0,       pct:0.05, label:'Tramo 1 — 5%'},
+  {desde:1274076,  hasta:2548153,   fijo:63704,   pct:0.09, label:'Tramo 2 — 9%'},
+  {desde:2548153,  hasta:3822229,   fijo:178161,  pct:0.12, label:'Tramo 3 — 12%'},
+  {desde:3822229,  hasta:5096306,   fijo:330853,  pct:0.15, label:'Tramo 4 — 15%'},
+  {desde:5096306,  hasta:6370382,   fijo:521928,  pct:0.19, label:'Tramo 5 — 19%'},
+  {desde:6370382,  hasta:7644458,   fijo:764085,  pct:0.23, label:'Tramo 6 — 23%'},
+  {desde:7644458,  hasta:8918534,   fijo:1057015, pct:0.27, label:'Tramo 7 — 27%'},
+  {desde:8918534,  hasta:10192611,  fijo:1400835, pct:0.31, label:'Tramo 8 — 31%'},
+  {desde:10192611, hasta:Infinity,  fijo:1796059, pct:0.35, label:'Tramo 9 — 35% (max)'},
+];
+
+function calcEscalaFromGNI(gni) {
+  const tramo = ESCALA.find(t => gni <= t.hasta) || ESCALA[ESCALA.length-1];
+  const excedente = gni - tramo.desde;
+  const impExc = excedente * tramo.pct;
+  const total = tramo.fijo + impExc;
+  return { tramo, excedente, impExc, total };
+}
+
+function getImpDet() {
+  const res = getResImp().final;
+  const qb = n('qb-aplicar');
+  const gan = Math.max(0, res - qb);
+  const sujetoUni = $('cfg-sujeto')?.value === 'uni';
+  if(sujetoUni) {
+    return calcEscalaFromGNI(gan).total;
+  }
+  const alic = pct('cfg-alicuota');
+  return Math.max(0, gan * alic);
+}
+function getRetTot() { return [1,2,3,4].reduce((s,i)=>s+n('ret'+i),0); }
+function getPerTot() { return [1,2].reduce((s,i)=>s+n('per'+i),0); }
+function getAntIngTot() {
+  let t=0; for(let i=0;i<10;i++) t+=n('ant-ing-'+i); return t;
+}
+function getPacTot() { return getRetTot()+getPerTot()+getAntIngTot(); }
+function getAntBase() {
+  return Math.max(0, getImpDet() - getRetTot() - getPerTot());
+}
+
+// ── MAIN RECALC ───────────────────────────────────────────────────────
+function recalcAll() {
+  const ejercicio = $('cfg-ejercicio')?.value || '2024';
+  const hdrEl = $('hdr-ejercicio'); if(hdrEl) hdrEl.textContent = ejercicio;
+
+  // Result Imp.
+  const ingTot = getIngTot();
+  const ingContTot = [1,2,3,4,5].reduce((s,i)=>s+n('ing'+i+'c'),0);
+  [1,2,3,4,5].forEach(i=>set('ing'+i+'d', n('ing'+i)-n('ing'+i+'c')));
+  set('tot-ing-imp', ingTot); set('tot-ing-cont', ingContTot); set('tot-ing-dif', ingTot-ingContTot);
+
+  const cosTot = getCosTot();
+  const cosContTot = n('cos1c')+n('cos2c')-n('cos3c')+n('cos4c')+n('cos5c');
+  [1,2,3,4,5].forEach(i=>{
+    const sign = i===3?-1:1;
+    set('cos'+i+'d', n('cos'+i)*sign - n('cos'+i+'c')*sign);
+  });
+  set('tot-cos-imp', cosTot); set('tot-cos-cont', cosContTot); set('tot-cos-dif', cosTot-cosContTot);
+
+  const ub = ingTot - cosTot;
+  const ubCont = ingContTot - cosContTot;
+  set('util-bruta-imp', ub); set('util-bruta-cont', ubCont); set('util-bruta-dif', ub-ubCont);
+
+  const gasTot = getGasTot();
+  const gasContTot = [1,2,3,4,5,6,7,8].reduce((s,i)=>s+n('gas'+i+'c'),0);
+  [1,2,3,4,5,6,7,8].forEach(i=>set('gas'+i+'d', n('gas'+i)-n('gas'+i+'c')));
+  set('tot-gas-imp', gasTot); set('tot-gas-cont', gasContTot); set('tot-gas-dif', gasTot-gasContTot);
+
+  const amTot = getAmTot();
+  const amContTot = [1,2,3].reduce((s,i)=>s+n('am'+i+'c'),0);
+  [1,2,3].forEach(i=>set('am'+i+'d', n('am'+i)-n('am'+i+'c')));
+  set('tot-am-imp', amTot); set('tot-am-cont', amContTot); set('tot-am-dif', amTot-amContTot);
+
+  const { preaj, est, din, final: resImp } = getResImp();
+  set('res-preaj', preaj);
+  set('aj-est-ref', est);
+  set('aj-din-ref', din);
+  set('res-final', resImp);
+
+  // Aj. Inflación
+  const idxDic = parseFloat($('cfg-idx-dic')?.value)||1;
+  const idxProm = parseFloat($('cfg-idx-prom')?.value)||1;
+  set('ajest-idx-show', fmtPct(idxDic-1)+' sobre base');
+  set('ajdin-idx-show', fmtPct(idxProm-1)+' sobre base');
+
+  const activos = n('ajest-act1')+n('ajest-act2')+n('ajest-act3')+n('ajest-act4');
+  const pasivos = n('ajest-pas1')+n('ajest-pas2')+n('ajest-pas3');
+  [1,2,3,4].forEach(i=>set('ajest-act'+i+'-r', n('ajest-act'+i)*(idxDic-1)));
+  [1,2,3].forEach(i=>set('ajest-pas'+i+'-r', -n('ajest-pas'+i)*(idxDic-1)));
+  const baseEst = activos - pasivos;
+  set('ajest-base', baseEst);
+  set('ajest-total', est);
+
+  const netDin = (n('ajdin-a1')-n('ajdin-a2'))+(n('ajdin-p1')-n('ajdin-p2'));
+  set('ajdin-a1r', n('ajdin-a1')*(idxProm-1));
+  set('ajdin-a2r', -n('ajdin-a2')*(idxProm-1));
+  set('ajdin-p1r', n('ajdin-p1')*(idxProm-1));
+  set('ajdin-p2r', -n('ajdin-p2')*(idxProm-1));
+  set('ajdin-base', netDin);
+  set('ajdin-total', din);
+  set('ajinf-total', est+din);
+
+  // Quebranto
+  set('qb-res-actual', resImp);
+  let qbTotSaldo = 0;
+  for(let i=0;i<5;i++){
+    const orig = n('qb-'+i), idx = parseFloat($('qb-idx-'+i)?.value)||1;
+    const act = orig*idx;
+    const comp = n('qb-comp-'+i);
+    const saldo = Math.max(0, act-comp);
+    set('qb-act-'+i, act);
+    set('qb-saldo-'+i, saldo);
+    qbTotSaldo += saldo;
+  }
+  const resPostQb = resImp - n('qb-aplicar');
+  set('qb-res-post', resPostQb);
+
+  // Pagos a cuenta
+  const retTot = getRetTot();
+  const perTot = getPerTot();
+  const antIngTot = getAntIngTot();
+  const pacTot = getPacTot();
+  set('tot-ret', retTot);
+  set('tot-per', perTot);
+  set('tot-ant-ing', antIngTot);
+  set('tot-pac', pacTot);
+
+  // Anticipos
+  const impDet = getImpDet();
+  const antBase = getAntBase();
+  set('ant-imp-det', impDet);
+  set('ant-ret', retTot+perTot);
+  set('ant-base', antBase);
+  buildAntBody();
+
+  const ant1p = pct('cfg-ant1'), ant2p = pct('cfg-ant2');
+  let totAntImp=0, totAntIng=0, totAntDif=0;
+  for(let i=0;i<10;i++){
+    const pv = i===0?ant1p:ant2p;
+    const imp = antBase*pv;
+    const ing = n('ant-ing-'+i);
+    totAntImp += imp; totAntIng += ing; totAntDif += (imp-ing);
+  }
+  set('ant-tot-imp', totAntImp);
+  set('ant-tot-ing', totAntIng);
+  set('ant-tot-dif', totAntDif);
+
+  // DJ Resumen
+  const alic = pct('cfg-alicuota');
+  const ganNeto = Math.max(0, resImp - n('qb-aplicar'));
+  const impDetFinal = Math.max(0, ganNeto * alic);
+  const saldo = impDetFinal - pacTot;
+
+  set('dj-res-neto', resImp);
+  set('dj-qb-comp', n('qb-aplicar'));
+  set('dj-gan-neto', ganNeto);
+  set('dj-alicuota', fmtPct(alic));
+  set('dj-imp-det', impDetFinal);
+  set('dj-imp-det2', impDetFinal);
+  set('dj-pac', pacTot);
+  set('dj-saldo', saldo);
+
+  const box = $('dj-result-box');
+  const lbl2 = $('dj-box-label'), val2 = $('dj-box-value'), ico = $('dj-box-icon');
+  if(saldo>0){
+    box.className='result-box saldo-pagar';
+    lbl2.textContent='🔴  SALDO A PAGAR — ingresá el VEP antes del vencimiento';
+    val2.textContent=fmt(saldo); ico.textContent='💸';
+  } else if(saldo<0){
+    box.className='result-box saldo-favor';
+    lbl2.textContent='🟢  SALDO A FAVOR — podés solicitar acreditación o devolución';
+    val2.textContent=fmt(Math.abs(saldo)); ico.textContent='✅';
+  } else {
+    box.className='result-box neutro';
+    lbl2.textContent='⚪  RESULTADO NEUTRO'; val2.textContent='$ 0'; ico.textContent='⚖️';
+  }
+
+  // Semáforo
+  const sujetoUni = $('cfg-sujeto')?.value === 'uni';
+  const controles = [
+    {
+      label: 'Resultado impositivo',
+      val: fmt(resImp),
+      ok: resImp!==0,
+      warn: false,
+      msg: resImp!==0 ? '✅ Resultado cargado — podés seguir' : '⚠️ Resultado en cero — revisá los datos antes de avanzar',
+      panel: 'resultado'
+    },
+    {
+      label: 'Ajuste por inflación',
+      val: fmt(est+din),
+      ok: (est+din)!==0,
+      warn: (est+din)===0,
+      msg: (est+din)!==0 ? '✅ Ajuste cargado' : '🟡 En cero — ¿corresponde aplicarlo este ejercicio?',
+      panel: 'ajinf'
+    },
+    {
+      label: 'Quebranto vs. saldo disponible',
+      val: fmt(n('qb-aplicar')),
+      ok: n('qb-aplicar')<=qbTotSaldo,
+      warn: false,
+      msg: n('qb-aplicar')<=qbTotSaldo ? '✅ Dentro del saldo disponible' : '🔴 Inconsistencia: quebranto aplicado excede el saldo disponible',
+      panel: 'quebranto'
+    },
+    {
+      label: 'Impuesto determinado',
+      val: fmt(impDetFinal),
+      ok: impDetFinal>=0,
+      warn: false,
+      msg: impDetFinal>=0 ? '✅ OK' : '🔴 Inconsistencia detectada: impuesto negativo — revisá las fórmulas',
+      panel: 'dj'
+    },
+    {
+      label: 'Pagos a cuenta vs. imp. det.',
+      val: fmt(pacTot),
+      ok: pacTot<=impDetFinal,
+      warn: pacTot>impDetFinal,
+      msg: pacTot<=impDetFinal ? '✅ Pagos dentro del límite' : '🟡 Atención: los pagos superan el imp. det. → vas a tener saldo a favor',
+      panel: 'pagos'
+    },
+    {
+      label: 'Tipo de sujeto / Alícuota',
+      val: sujetoUni ? 'Escala progresiva' : fmtPct(alic),
+      ok: sujetoUni || Math.abs(alic-0.35)<0.001,
+      warn: !sujetoUni && Math.abs(alic-0.35)>=0.001,
+      msg: sujetoUni
+        ? '✅ Unipersonal — escala progresiva activa'
+        : (Math.abs(alic-0.35)<0.001 ? '✅ Sociedad — alícuota 35% OK' : '🟡 Revisá: alícuota distinta del 35% estándar para sociedades'),
+      panel: sujetoUni ? 'escala' : 'config'
+    },
+    {
+      label: 'Índice inflación dic/dic',
+      val: ($('cfg-idx-dic')?.value||'0'),
+      ok: idxDic>1,
+      warn: false,
+      msg: idxDic>1 ? '✅ Índice cargado' : '🔴 Revisá antes de ARCA: índice ≤ 1 — actualizalo en Config',
+      panel: 'config'
+    },
+    {
+      label: 'Suma de cuotas de anticipos',
+      val: fmtPct(ant1p + 9*ant2p),
+      ok: Math.abs(ant1p + 9*ant2p - 1) < 0.01,
+      warn: false,
+      msg: Math.abs(ant1p + 9*ant2p - 1) < 0.01 ? '✅ Cuotas suman 100%' : '🔴 Inconsistencia: suma de cuotas ≠ 100%',
+      panel: 'anticipos'
+    },
+  ];
+
+  const grid = $('sem-grid');
+  if(grid){
+    grid.innerHTML='';
+    let errCount=0, warnCount=0;
+    controles.forEach(ctrl=>{
+      const div=document.createElement('div');
+      const cls = !ctrl.ok && !ctrl.warn ? 'error' : ctrl.warn ? 'warn' : 'ok';
+      if(cls==='error') errCount++;
+      if(cls==='warn') warnCount++;
+      div.className='sem-card '+cls;
+      div.style.cursor = 'pointer';
+      div.title = 'Ir a ' + ctrl.panel;
+      div.innerHTML=`<div class="sem-label">${ctrl.label}</div>
+        <div class="sem-status">${ctrl.msg}</div>
+        <div class="sem-val" style="display:flex;justify-content:space-between;align-items:center">
+          <span>Valor: ${ctrl.val}</span>
+          <span style="font-size:10px;color:var(--burgundy);font-weight:600;letter-spacing:.5px">→ ir</span>
+        </div>`;
+      div.onclick = () => {
+        const targetTab = document.querySelector(`.tab[onclick*="'${ctrl.panel}'"]`);
+        if(targetTab){ targetTab.click(); window.scrollTo({top:0,behavior:'smooth'}); }
+      };
+      grid.appendChild(div);
+    });
+    const diagBox=$('sem-diagnostico'), diagTxt=$('sem-diag-text'), diagIco=$('sem-diag-icon');
+    if(errCount>0){
+      diagBox.className='result-box saldo-pagar';
+      diagTxt.textContent=`🔴 Hay ${errCount} inconsistencia${errCount>1?'s':''} — revisá antes de presentar en ARCA`;
+      diagIco.textContent='❌';
+    } else if(warnCount>0){
+      diagBox.className='result-box';
+      diagBox.style.background='#E65100'; diagBox.style.color='#fff';
+      diagTxt.textContent=`🟡 Hay ${warnCount} cosa${warnCount>1?'s':''} para revisar — chequeá las alertas antes de cerrar`;
+      diagIco.textContent='⚠️';
+    } else {
+      diagBox.className='result-box saldo-favor';
+      diagTxt.textContent='✅ Todo en orden — podés avanzar con la presentación';
+      diagIco.textContent='🎯';
+    }
+  }
+  // ── SYNC ESCALA PROGRESIVA ─────────────────────────────────────────
+  // Siempre actualizar la escala con la GNI actual (res - quebranto)
+  calcEscala();
+}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  $('panel-'+id)?.classList.add('active');
+  if(id==='anticipos'||id==='pagos') buildAntBody();
+  if(id==='escala') calcEscala();
+}
+
+// ── ESCALA PROGRESIVA ─────────────────────────────────────────────────
+function calcEscala(gniOverride) {
+  // GNI viene automáticamente del resultado impositivo neto - quebranto
+  const res = getResImp().final;
+  const qb = n('qb-aplicar');
+  const gni = gniOverride !== undefined ? gniOverride : Math.max(0, res - qb);
+
+  // Actualizar display de GNI
+  const display = $('escala-gni-display');
+  if(display) display.textContent = fmt(gni);
+
+  const { tramo, excedente, impExc, total } = calcEscalaFromGNI(gni);
+
+  // Resaltar tramo activo en la tabla
+  document.querySelectorAll('#escala-tabla tbody tr').forEach((tr, i) => {
+    const activo = ESCALA[i] === tramo;
+    tr.classList.toggle('tramo-activo', activo);
+    // Suavizar las no-activas
+    tr.style.opacity = (gni > 0 && !activo) ? '0.55' : '1';
+  });
+
+  if($('escala-tramo')) $('escala-tramo').textContent = tramo.label;
+  if($('escala-fijo'))  $('escala-fijo').textContent  = fmt(tramo.fijo);
+  if($('escala-exc'))   $('escala-exc').textContent   = fmt(excedente);
+  if($('escala-imp-exc')) $('escala-imp-exc').textContent = fmt(impExc);
+  if($('escala-total')) $('escala-total').textContent = fmt(total);
+
+  const tasaEf = gni > 0 ? (total/gni*100).toFixed(2) : '0.00';
+  if($('escala-tasa-ef')) $('escala-tasa-ef').textContent = gni > 0 ? `Tasa efectiva: ${tasaEf}%` : '';
+
+  return total;
+}
+
+// ── COPIAR RESUMEN PARA ARCA ───────────────────────────────────────────
+function copiarResumen() {
+  const razon    = $('cfg-razon')?.value || '—';
+  const cuit     = $('cfg-cuit')?.value  || '—';
+  const ejerc    = $('cfg-ejercicio')?.value || '—';
+  const sujeto   = $('cfg-sujeto')?.options[$('cfg-sujeto')?.selectedIndex]?.text || '—';
+  const impDet   = $('dj-imp-det')?.textContent  || '—';
+  const pac      = $('dj-pac')?.textContent       || '—';
+  const saldo    = $('dj-saldo')?.textContent     || '—';
+  const ajuste   = $('ajinf-total')?.textContent  || '—';
+  const resImpEl = $('res-final')?.textContent    || '—';
+
+  const linea = '─'.repeat(48);
+  const texto = [
+    '📋 RESUMEN GANANCIAS 3ª CATEGORÍA — CONTA KIT',
+    linea,
+    `Contribuyente : ${razon}`,
+    `CUIT          : ${cuit}`,
+    `Tipo de Sujeto: ${sujeto}`,
+    `Ejercicio     : ${ejerc}`,
+    linea,
+    `Resultado Imp.: ${resImpEl}`,
+    `Ajuste AxI    : ${ajuste}`,
+    linea,
+    `Imp. Det.     : ${impDet}`,
+    `Pagos a Cuenta: ${pac}`,
+    `SALDO         : ${saldo}`,
+    linea,
+    `Generado con Conta Kit · @conta.club · @soymagacavagna`,
+  ].join('\n');
+
+  navigator.clipboard.writeText(texto).then(() => {
+    const fb = $('copy-feedback');
+    if(fb){
+      fb.textContent = '✅ Copiado al portapapeles';
+      fb.style.opacity = '1';
+      setTimeout(() => { fb.style.opacity = '0'; }, 2500);
+    }
+  }).catch(() => {
+    // fallback para contextos sin clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const fb = $('copy-feedback');
+    if(fb){ fb.textContent = '✅ Copiado'; fb.style.opacity = '1'; setTimeout(()=>{ fb.style.opacity='0'; }, 2500); }
+  });
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildQbBody();
+  buildAntIngBody();
+  recalcAll();
+});
+</script>
+<footer style="
+  background: var(--dark);
+  color: rgba(255,255,255,.75);
+  padding: 20px 24px;
+  margin-top: 48px;
+  font-size: 12px;
+  line-height: 1.7;
+">
+  <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--white);font-weight:700;margin-bottom:4px">
+        Conta Kit · @conta.club
+      </div>
+      <div style="color:var(--gold);font-size:11px;letter-spacing:.5px">
+        @soymagacavagna · Magalí Cavagna
+      </div>
+      <div style="margin-top:6px;color:rgba(255,255,255,.5);font-size:10px;font-style:italic">
+        Material de referencia profesional. No reemplaza el criterio del contador matriculado.
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="
+        background: var(--burgundy);
+        border-radius: 8px;
+        padding: 14px 20px;
+        border-left: 3px solid var(--gold);
+        max-width: 320px;
+      ">
+        <div style="color:var(--gold);font-weight:700;font-size:12px;margin-bottom:6px">
+          💬 ¿Dudas con este papel?
+        </div>
+        <div style="color:var(--white);font-size:12px;line-height:1.6">
+          Consultalo en la comunidad de Conta Kit.<br>
+          Contadores que liquidan con vos, todos los días.
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="https://www.instagram.com/conta.club" target="_blank" style="
+            display:inline-block;padding:6px 14px;background:var(--gold);color:var(--dark);
+            border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;
+          ">→ @conta.club</a>
+          <a href="https://www.instagram.com/soymagacavagna" target="_blank" style="
+            display:inline-block;padding:6px 14px;background:transparent;color:var(--gold);
+            border:1px solid var(--gold);border-radius:4px;font-size:11px;font-weight:700;text-decoration:none;
+          ">→ @soymagacavagna</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
