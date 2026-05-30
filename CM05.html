@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Papel de trabajo — Convenio Multilateral · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#8B0000;--crimson-ultra:#F5E0E0;
+  --burgundy:#2D0A0A;--hueso:#F5ECD7;--arena:#C8B89A;--cream:#FAF5EE;
+  --ink:#1A0A0A;--ink-mid:#4A2A2A;--ink-muted:#8A6A6A;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--cream)}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cream);min-height:100vh;padding:1.5rem}
+.sys{max-width:900px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--burgundy);border-radius:12px;margin-bottom:1.5rem}
+.logo-cc{font-family:var(--serif);font-size:20px;color:var(--hueso)}
+.logo-sub{font-size:10px;color:var(--arena);letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-top:3px}
+.periodo-top{font-size:12px;color:var(--arena);text-align:right}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cream);border:1px solid var(--arena);border-radius:10px;padding:4px;overflow-x:auto}
+.nav-btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 13px;border:none;background:none;cursor:pointer;color:var(--ink-muted);border-radius:7px;white-space:nowrap;transition:all .15s}
+.nav-btn.on{background:var(--crimson);color:var(--hueso)}
+.nav-btn:hover:not(.on){background:var(--hueso);color:var(--ink)}
+.panel{display:none}.panel.on{display:block}
+.sec-title{font-size:10px;font-weight:500;color:var(--ink-muted);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--arena);padding-bottom:6px}
+.sec-title:first-child{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cream);border:1px solid var(--arena);border-radius:10px;padding:12px 16px}
+.kpi-label{font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kpi-val{font-family:var(--serif);font-size:22px;color:var(--burgundy)}
+.kpi-val.warn{color:var(--crimson)}.kpi-val.ok{color:#3B5A1A}
+.kpi-sub{font-size:11px;color:var(--ink-muted);margin-top:3px}
+.card{background:var(--cream);border:1px solid var(--arena);border-radius:12px;padding:1.25rem}
+.alerta{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:10px;border-left:3px solid}
+.al-ok{background:#EFF5E8;color:#2A4A0A;border-left-color:#639922}
+.al-warn{background:#FDF3E0;color:#5A3800;border-left-color:#BA7517}
+.al-err{background:var(--crimson-ultra);color:var(--burgundy);border-left-color:var(--crimson)}
+.al-info{background:var(--hueso);color:var(--burgundy);border-left-color:var(--arena)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--ink-muted)}
+.field input,.field select{font-size:13px;background:var(--hueso);border:1px solid var(--arena);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--crimson)}
+.inp{background:var(--hueso)!important;border:1px solid var(--arena)!important;color:var(--ink)!important;font-family:var(--sans)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.tbl th{background:var(--burgundy);color:var(--hueso);font-size:10px;font-weight:500;padding:7px 8px;border:1px solid var(--burgundy);text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.tbl th.tl{text-align:left}
+.tbl td{padding:5px 8px;border:1px solid var(--arena);vertical-align:middle;text-align:right;color:var(--ink)}
+.tbl td.tl{text-align:left}.tbl td.tc{text-align:center}
+.tbl td input{width:100%;font-size:11px;text-align:right;padding:2px 6px;height:26px;background:var(--hueso);border:1px solid var(--arena);border-radius:4px;color:var(--ink);font-family:var(--sans)}
+.tbl tr:nth-child(even){background:#FDF8F0}
+.tbl tr.act-row{background:#FFF5F5}
+.tbl tr.tot-row td{font-weight:500;background:var(--hueso);color:var(--burgundy)}
+.semaforo{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.s-ok{background:#639922}.s-warn{background:#BA7517}.s-err{background:var(--crimson)}
+.decision-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--arena)}
+.decision-item:last-child{border-bottom:none}
+.di-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--hueso);border:1px solid var(--arena)}
+.di-body{flex:1}
+.di-title{font-size:13px;font-weight:500;margin-bottom:3px;color:var(--burgundy)}
+.di-sub{font-size:12px;color:var(--ink-muted)}
+.di-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;margin-top:5px;display:inline-block}
+.nav-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--arena)}
+.btn-p{background:var(--crimson);color:var(--hueso);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.btn-p:hover{background:var(--burgundy)}
+.btn-s{background:transparent;color:var(--ink-muted);border:1px solid var(--arena);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.btn-s:hover{background:var(--hueso)}
+.step-hint{font-size:12px;color:var(--ink-muted)}
+.onboarding{text-align:center;padding:3rem 1rem}
+.onboarding h2{font-family:var(--serif);font-size:28px;color:var(--burgundy);margin-bottom:.5rem}
+.tagline{font-size:13px;color:var(--ink-muted);max-width:420px;margin:0 auto 2rem;line-height:1.6}
+.checklist{text-align:left;max-width:400px;margin:0 auto 2rem;background:var(--cream);border:1px solid var(--arena);border-radius:12px;padding:1rem}
+.checklist-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--arena);font-size:13px;color:var(--ink)}
+.checklist-item:last-child{border-bottom:none}
+.ci-num{width:22px;height:22px;border-radius:50%;background:var(--crimson);color:var(--hueso);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.start-btn{background:var(--crimson);color:var(--hueso);border:none;padding:12px 36px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.start-btn:hover{background:var(--burgundy)}
+@media print{
+  .nav,.nav-bar{display:none!important}
+  .panel{display:block!important}
+  body{padding:.5rem}
+  .topbar{border-radius:0}
+}
+@media(max-width:600px){
+  .grid2{grid-template-columns:1fr}
+  .grid4{grid-template-columns:1fr 1fr}
+  .nav-btn{font-size:11px;padding:6px 10px}
+}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo-cc">Papel de trabajo — Convenio Multilateral</div>
+    <div class="logo-sub">Conta Club</div>
+  </div>
+  <div id="periodo-top" class="periodo-top"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn on" onclick="tab(0)">Inicio</button>
+  <button class="nav-btn" onclick="tab(1)">Datos</button>
+  <button class="nav-btn" onclick="tab(2)">Coeficientes</button>
+  <button class="nav-btn" onclick="tab(3)">Ingresos</button>
+  <button class="nav-btn" onclick="tab(4)">Liquidación</button>
+  <button class="nav-btn" onclick="tab(5)">Resultados</button>
+  <button class="nav-btn" onclick="tab(6)">Dashboard</button>
+</div>
+
+<!-- INICIO -->
+<div class="panel on" id="t0">
+  <div class="onboarding">
+    <h2>Papel de trabajo<br>Convenio Multilateral</h2>
+    <p class="tagline">Régimen General · Art. 2°. Completá los pasos en orden, cada pantalla te guía.</p>
+    <div class="alerta al-warn" style="max-width:480px;margin:0 auto 1.5rem;text-align:left">Solo Régimen General. Los regímenes especiales (Art. 6° a 13°: construcción, seguros, transporte, profesiones liberales, etc.) reparten por porcentajes fijos sin coeficiente y no se liquidan con esta planilla.</div>
+    <div class="checklist">
+      <div class="checklist-item"><div class="ci-num">1</div>Datos del contribuyente y actividades</div>
+      <div class="checklist-item"><div class="ci-num">2</div>Coeficiente unificado (Art. 5° — base balance año anterior)</div>
+      <div class="checklist-item"><div class="ci-num">3</div>Ingresos actuales, mes anterior e interanual</div>
+      <div class="checklist-item"><div class="ci-num">4</div>Alícuotas, retenciones y percepciones</div>
+      <div class="checklist-item"><div class="ci-num">5</div>Lectura de resultados y alertas</div>
+      <div class="checklist-item"><div class="ci-num">6</div>Dashboard visual para el legajo</div>
+    </div>
+    <p style="font-size:11px;color:var(--ink-muted);margin-bottom:1.5rem">Los campos con fondo crema son para completar. El resto se calcula solo.</p>
+    <div class="alerta al-info" style="max-width:480px;margin:0 auto 1.5rem;text-align:left;font-size:11px">Esta planilla es un papel de trabajo de apoyo. No constituye asesoramiento ni reemplaza el criterio profesional del contador. Los resultados deben verificarse contra la normativa vigente de la Comisión Arbitral y de cada jurisdicción antes de presentar la declaración jurada.</div>
+    <button class="start-btn" onclick="tab(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="panel" id="t1">
+  <p class="sec-title">Identificación del contribuyente</p>
+  <div class="grid2" style="gap:10px;margin-bottom:12px">
+    <div class="field" style="grid-column:span 2"><label>Razón social o apellido y nombre</label><input class="inp" type="text" id="razon" placeholder="Ej: García Servicios SA" oninput="updateTop()"></div>
+    <div class="field"><label>CUIT</label><input class="inp" type="text" id="cuit" placeholder="20-12345678-9"></div>
+    <div class="field"><label>Número de inscripción CM01</label><input class="inp" type="text" id="cm01" placeholder="CM-123456"></div>
+    <div class="field"><label>Período actual (MM/AAAA)</label><input class="inp" type="text" id="per" placeholder="04/2025" oninput="updateTop()"></div>
+    <div class="field"><label>Período anterior</label><input class="inp" type="text" id="per_ant" placeholder="03/2025"></div>
+    <div class="field"><label>Mismo mes año pasado</label><input class="inp" type="text" id="per_ap" placeholder="04/2024"></div>
+    <div class="field"><label>Responsable del archivo</label><input class="inp" type="text" id="resp" placeholder="Nombre del contador"></div>
+  </div>
+  <p class="sec-title">Actividades (hasta 4)</p>
+  <table class="tbl">
+    <thead><tr>
+      <th class="tl" style="width:16%">Código CUACM</th>
+      <th class="tl" style="width:38%">Descripción</th>
+      <th class="tl" style="width:24%">Tipo</th>
+      <th class="tl" style="width:22%">Origen del dato</th>
+    </tr></thead>
+    <tbody id="act-body"></tbody>
+  </table>
+  <div class="nav-bar">
+    <span class="step-hint">Paso 1 de 6</span>
+    <button class="btn-p" onclick="tab(2)">Continuar</button>
+  </div>
+</div>
+
+<!-- COEFICIENTES -->
+<div class="panel" id="t2">
+  <div id="coef-alerta" class="alerta al-info">Coeficiente unificado del Régimen General, calculado sobre el último balance cerrado en el año calendario anterior (Art. 5° CM). Se aplica desde el 4° anticipo (abril); en enero-marzo se arrastra el coeficiente del período anterior. La suma debe dar exactamente 1,0000.</div>
+  <div class="grid2" style="margin-bottom:1rem">
+    <div class="kpi"><div class="kpi-label">Suma coeficientes unificados</div><div class="kpi-val" id="suma-coef">0,0000</div></div>
+    <div class="kpi"><div class="kpi-label">Estado</div><div class="kpi-val" id="coef-estado" style="font-size:14px;font-family:var(--sans)">Sin datos</div></div>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr>
+        <th class="tc" style="width:5%">#</th>
+        <th class="tl" style="width:25%">Jurisdicción</th>
+        <th style="width:14%">Coef. ingresos</th>
+        <th style="width:14%">Coef. gastos</th>
+        <th style="width:14%">Unificado</th>
+        <th style="width:14%">Var. vs ant.</th>
+        <th style="width:14%">Estado</th>
+        <th style="width:14%">Coef. CM05 ant.</th>
+        <th style="width:11%">Variación</th>
+        <th style="width:18%">Alerta variación</th>
+      </tr></thead>
+      <tbody id="coef-body"></tbody>
+    </table>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" onclick="tab(1)">Volver</button>
+    <button class="btn-p" onclick="tab(3)">Continuar</button>
+  </div>
+</div>
+
+<!-- INGRESOS -->
+<div class="panel" id="t3">
+  <div id="ing-alerta" class="alerta al-info">Ingresá los ingresos del período actual y de referencia para el análisis comparativo.</div>
+  <table class="tbl">
+    <thead><tr>
+      <th class="tc" style="width:5%">#</th>
+      <th class="tl" style="width:27%">Actividad</th>
+      <th style="width:17%">Actual ($)</th>
+      <th style="width:17%">Mes anterior ($)</th>
+      <th style="width:18%">Mismo mes año ant. ($)</th>
+      <th style="width:16%">Var. interanual</th>
+    </tr></thead>
+    <tbody id="ing-body"></tbody>
+    <tfoot><tr class="tot-row">
+      <td colspan="2" class="tl">Total</td>
+      <td id="ing-tot">0</td><td id="ing-tot-ant">0</td><td id="ing-tot-ap">0</td>
+      <td id="ing-tot-var" class="tc">Sin datos</td>
+    </tr></tfoot>
+  </table>
+  <div class="nav-bar">
+    <button class="btn-s" onclick="tab(2)">Volver</button>
+    <button class="btn-p" onclick="tab(4)">Continuar</button>
+  </div>
+</div>
+
+<!-- LIQUIDACIÓN -->
+<div class="panel" id="t4">
+  <div id="liq-alerta" class="alerta al-info">Solo se muestran las jurisdicciones activas. Cargá alícuotas, retenciones, percepciones, saldo a favor del período anterior y otros créditos/débitos propios de cada jurisdicción.</div>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr>
+        <th class="tl" style="width:14%">Jurisdicción</th>
+        <th style="width:10%">Base ($)</th>
+        <th style="width:7%">Alíc. 1 %</th>
+        <th style="width:7%">Alíc. 2 %</th>
+        <th style="width:9%">Imp. det. ($)</th>
+        <th style="width:9%">Sdo. fav. ant. ($)</th>
+        <th style="width:8%">Ret. ($)</th>
+        <th style="width:8%">Perc. ($)</th>
+        <th style="width:8%">SIRCREB ($)</th>
+        <th style="width:8%">Otros créd. ($)</th>
+        <th style="width:8%">Otros déb. ($)</th>
+        <th style="width:12%">Resultado ($)</th>
+      </tr></thead>
+      <tbody id="liq-body"></tbody>
+      <tfoot id="liq-foot"></tfoot>
+    </table>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" onclick="tab(3)">Volver</button>
+    <button class="btn-p" onclick="tab(5)">Ver resultados</button>
+  </div>
+</div>
+
+<!-- RESULTADOS -->
+<div class="panel" id="t5">
+  <div id="dec-content"></div>
+  <p class="sec-title" style="margin-top:1.5rem">Referencia — Tipos de gasto según Art. 3° CM</p>
+  <div class="card" style="font-size:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div style="font-weight:500;color:var(--verde-t,#2A4A0A);margin-bottom:8px">✅ Gastos computables</div>
+        <ul style="padding-left:1.2rem;line-height:2;color:var(--ink-mid)">
+          <li>Sueldos y cargas sociales</li>
+          <li>Alquileres de inmuebles</li>
+          <li>Servicios públicos (luz, gas, agua)</li>
+          <li>Publicidad y propaganda</li>
+          <li>Reparaciones y mantenimiento</li>
+          <li>Gastos generales de administración</li>
+          <li>Amortizaciones de bienes de uso</li>
+          <li>Honorarios profesionales vinculados</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:500;color:var(--crimson);margin-bottom:8px">⛔ Gastos NO computables</div>
+        <ul style="padding-left:1.2rem;line-height:2;color:var(--ink-mid)">
+          <li>Intereses y gastos financieros</li>
+          <li>Gastos extraordinarios o eventuales</li>
+          <li>Regalías abonadas al exterior</li>
+          <li>Impuestos sobre el capital</li>
+          <li>Dividendos y utilidades distribuidas</li>
+          <li>Gastos no vinculados a la actividad</li>
+          <li>Quebrantos extraordinarios</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alerta al-info" style="margin-top:1rem;margin-bottom:0">
+      Fuente: Art. 3° Convenio Multilateral. Los gastos computables deben ser efectivamente soportados en cada jurisdicción y vinculados directamente a la actividad gravada. En caso de duda, consultar la resolución de la Comisión Arbitral aplicable a la actividad.
+    </div>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-s" onclick="tab(4)">Volver</button>
+    <button class="btn-p" onclick="tab(6)">Ver dashboard</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="panel" id="t6">
+  <div id="dash-kpis" class="grid4" style="margin-bottom:1.5rem"></div>
+  <div class="grid2" style="margin-bottom:1.5rem">
+    <div>
+      <p class="sec-title">Base imponible por jurisdicción</p>
+      <div style="position:relative;width:100%;height:220px"><canvas id="chartBase" role="img" aria-label="Base imponible por jurisdicción"></canvas></div>
+    </div>
+    <div>
+      <p class="sec-title">Saldo a ingresar por jurisdicción</p>
+      <div style="position:relative;width:100%;height:220px"><canvas id="chartCarga" role="img" aria-label="Saldo a ingresar por jurisdicción"></canvas></div>
+    </div>
+  </div>
+  <p class="sec-title">Comparativo de ingresos por actividad</p>
+  <div style="position:relative;width:100%;height:180px;margin-bottom:1.5rem"><canvas id="chartComp" role="img" aria-label="Comparativo de ingresos por actividad"></canvas></div>
+  <p class="sec-title">Ranking de carga fiscal por jurisdicción</p>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl" id="ranking-tbl">
+      <thead><tr>
+        <th style="width:6%">Pos.</th>
+        <th class="tl" style="width:30%">Jurisdicción</th>
+        <th style="width:17%">Base imp. ($)</th>
+        <th style="width:15%">Imp. det. ($)</th>
+        <th style="width:15%">Saldo ($)</th>
+        <th style="width:17%">Carga efectiva %</th>
+      </tr></thead>
+      <tbody id="ranking-body"></tbody>
+    </table>
+  </div>
+  <div id="alerta-saldo-favor" style="margin-top:.5rem"></div>
+  <div class="nav-bar">
+    <button class="btn-s" onclick="tab(5)">Volver</button>
+    <button class="btn-p" onclick="window.print()">Imprimir / Exportar PDF</button>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const JUR=[["01","CABA"],["02","Buenos Aires"],["03","Catamarca"],["04","Córdoba"],
+  ["05","Corrientes"],["06","Chaco"],["07","Chubut"],["08","Entre Ríos"],
+  ["09","Formosa"],["10","Jujuy"],["11","La Pampa"],["12","La Rioja"],
+  ["13","Mendoza"],["14","Misiones"],["15","Neuquén"],["16","Río Negro"],
+  ["17","Salta"],["18","San Juan"],["19","San Luis"],["20","Santa Cruz"],
+  ["21","Santa Fe"],["22","Santiago del Estero"],["23","Tierra del Fuego"],["24","Tucumán"]];
+const NJ=JUR.length;
+let cI=new Array(NJ).fill(0),cG=new Array(NJ).fill(0);
+let coefAnt=new Array(NJ).fill(0);
+let ingA=new Array(4).fill(0),ingAnt=new Array(4).fill(0),ingAP=new Array(4).fill(0);
+let al1=new Array(NJ).fill(0),al2=new Array(NJ).fill(0);
+let ret=new Array(NJ).fill(0),per=new Array(NJ).fill(0),sir=new Array(NJ).fill(0);
+let sfavAnt=new Array(NJ).fill(0),otrosCred=new Array(NJ).fill(0),otrosDeb=new Array(NJ).fill(0);
+let tipoGasto=new Array(NJ).fill('Computable');
+let charts={};
+
+function fmt(v){if(!v||v===0)return'0';return'$ '+Math.round(v).toLocaleString('es-AR')}
+function fmtPct(v){return(v*100).toFixed(2)+'%'}
+function coefU(i){return(cI[i]+cG[i])/2}
+function totalIng(){return ingA.reduce((a,b)=>a+b,0)}
+function totalIngAP(){return ingAP.reduce((a,b)=>a+b,0)}
+function totalIngAnt(){return ingAnt.reduce((a,b)=>a+b,0)}
+
+function tab(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.nav-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
+  if(i===2)renderCoef();if(i===3)renderIng();
+  if(i===4)renderLiq();if(i===5)renderDecision();if(i===6)renderDash();
+}
+
+function updateTop(){
+  const r=document.getElementById('razon').value.trim();
+  const p=document.getElementById('per').value.trim();
+  document.getElementById('periodo-top').textContent=[r,p].filter(Boolean).join(' · ');
+}
+
+function getActNom(i){
+  const rows=document.querySelectorAll('#act-body tr');
+  if(!rows[i])return'Actividad '+(i+1);
+  const inp=rows[i].querySelectorAll('input');
+  return(inp[1]&&inp[1].value.trim())||(inp[0]&&inp[0].value.trim())||'Actividad '+(i+1);
+}
+
+(function(){
+  const tb=document.getElementById('act-body');
+  for(let i=0;i<4;i++){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="tl"><input type="text" class="inp" placeholder="Ej: 519000" style="width:100%"></td>
+      <td class="tl"><input type="text" class="inp" placeholder="${i===0?'Ej: Venta al por mayor':'Opcional'}" style="width:100%"></td>
+      <td class="tl"><select class="inp" style="width:100%;height:28px;border-radius:4px;font-size:12px;color:var(--ink)"><option>Venta</option><option>Servicio</option><option>Industria / fabricación</option><option>Construcción</option><option>Transporte</option></select></td>
+      <td class="tl"><input type="text" class="inp" placeholder="Sistema / estimado" style="width:100%"></td>`;
+    tb.appendChild(tr);
+  }
+})();
+
+function renderCoef(){
+  const tb=document.getElementById('coef-body');tb.innerHTML='';
+  JUR.forEach(([cod,nom],i)=>{
+    const cu=coefU(i),activa=cu>0;
+    const cuAnt=coefAnt[i]||0;
+    const vari=cuAnt>0?(cu-cuAnt)/cuAnt:null;
+    const variStr=vari===null?'—':(vari>=0?'+':'')+(vari*100).toFixed(1)+'%';
+    const alerta=vari!==null&&Math.abs(vari)>0.20;
+    const variCol=alerta?'var(--crimson)':vari!==null&&vari!==0?'var(--ink-mid)':'var(--ink-muted)';
+    const alertaTxt=alerta
+      ?`<span style="background:#FDF3E0;color:#5A3800;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500">⚠️ Variación >${(Math.abs(vari)*100).toFixed(0)}% — revisar</span>`
+      :(vari!==null?`<span style="background:#EFF5E8;color:#2A4A0A;padding:2px 7px;border-radius:20px;font-size:10px">✅ Normal</span>`:'<span style="color:var(--ink-muted);font-size:11px">Sin datos ant.</span>');
+    const tr=document.createElement('tr');
+    tr.className=activa?'act-row':'';
+    tr.innerHTML=`<td class="tc" style="color:var(--ink-muted);font-size:11px">${cod}</td>
+      <td class="tl">${nom}</td>
+      <td><input type="number" min="0" max="1" step="0.0001" value="${cI[i]||''}" placeholder="0,0000" class="inp" onchange="cI[${i}]=parseFloat(this.value)||0;renderCoef()"></td>
+      <td><input type="number" min="0" max="1" step="0.0001" value="${cG[i]||''}" placeholder="0,0000" class="inp" onchange="cG[${i}]=parseFloat(this.value)||0;renderCoef()"></td>
+      <td style="font-weight:500;text-align:center;color:var(--burgundy)">${cu>0?cu.toFixed(4):'Sin dato'}</td>
+      <td style="text-align:center;color:var(--ink-muted);font-size:11px">${activa?'<span style="background:var(--crimson-ultra);color:var(--burgundy);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500">Activa</span>':'<span style="color:var(--ink-muted);font-size:11px">Inactiva</span>'}</td>
+      <td style="text-align:center"><input type="number" min="0" max="1" step="0.0001" value="${coefAnt[i]||''}" placeholder="0,0000" class="inp" style="width:72px;font-size:11px" onchange="coefAnt[${i}]=parseFloat(this.value)||0;renderCoef()"></td>
+      <td style="text-align:center;font-weight:500;color:${variCol}">${variStr}</td>
+      <td style="text-align:left;padding:4px 6px">${alertaTxt}</td>`;
+    tb.appendChild(tr);
+  });
+  const suma=JUR.reduce((_,__,i)=>_+coefU(i),0);
+  document.getElementById('suma-coef').textContent=suma.toFixed(4).replace('.',',');
+  const ok=Math.abs(suma-1)<0.00005;
+  const al=document.getElementById('coef-alerta'),est=document.getElementById('coef-estado');
+  if(ok){al.className='alerta al-ok';al.textContent='Coeficientes correctos, suman 1,0000.';est.textContent='Correcto';est.style.color='#3B5A1A';}
+  else if(suma>0){al.className='alerta al-warn';al.textContent='Diferencia de '+(suma-1).toFixed(4).replace('.',',')+'. Ajustá hasta llegar a 1,0000.';est.textContent='Revisar';est.style.color='var(--crimson)';}
+  else{al.className='alerta al-info';al.textContent='Cargá el coeficiente unificado (Art. 5° CM, base balance año anterior). La suma debe dar 1,0000.';est.textContent='Sin datos';est.style.color='var(--ink-muted)';}
+}
+
+function renderIng(){
+  const tb=document.getElementById('ing-body');tb.innerHTML='';
+  let tA=0,tAnt=0,tAP=0;
+  for(let i=0;i<4;i++){
+    const nom=getActNom(i),va=ingA[i],vant=ingAnt[i],vap=ingAP[i];
+    tA+=va;tAnt+=vant;tAP+=vap;
+    const vari=vap>0?(va-vap)/vap:null;
+    const variStr=vari===null?'Sin datos':(vari>=0?'+':'')+(vari*100).toFixed(1)+'%';
+    const variCol=vari===null?'var(--ink-muted)':vari>=0?'#3B6D11':'var(--crimson)';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="tc" style="color:var(--ink-muted)">${i+1}</td>
+      <td class="tl">${nom}</td>
+      <td><input type="number" min="0" step="1" value="${va||''}" placeholder="0" class="inp" onchange="ingA[${i}]=parseFloat(this.value)||0;renderIng()"></td>
+      <td><input type="number" min="0" step="1" value="${vant||''}" placeholder="0" class="inp" onchange="ingAnt[${i}]=parseFloat(this.value)||0;renderIng()"></td>
+      <td><input type="number" min="0" step="1" value="${vap||''}" placeholder="0" class="inp" onchange="ingAP[${i}]=parseFloat(this.value)||0;renderIng()"></td>
+      <td class="tc" style="font-weight:500;color:${variCol}">${variStr}</td>`;
+    tb.appendChild(tr);
+  }
+  const tv=tAP>0?(tA-tAP)/tAP:null;
+  document.getElementById('ing-tot').textContent=fmt(tA);
+  document.getElementById('ing-tot-ant').textContent=fmt(tAnt);
+  document.getElementById('ing-tot-ap').textContent=fmt(tAP);
+  const elv=document.getElementById('ing-tot-var');
+  elv.textContent=tv===null?'Sin datos':(tv>=0?'+':'')+(tv*100).toFixed(1)+'%';
+  elv.style.color=tv===null?'var(--ink-muted)':tv>=0?'#3B6D11':'var(--crimson)';
+  const al=document.getElementById('ing-alerta');
+  if(tA===0){al.className='alerta al-warn';al.textContent='No hay ingresos cargados para el período actual.';}
+  else{al.className='alerta al-ok';al.textContent='Ingresos cargados. El comparativo está disponible.';}
+}
+
+function renderLiq(){
+  const tb=document.getElementById('liq-body'),ft=document.getElementById('liq-foot');
+  tb.innerHTML='';const tot=totalIng();
+  let tBase=0,tImp=0,tRet=0,tPer=0,tSir=0,tSfa=0,tOC=0,tOD=0,tSal=0,tSfav=0,sinAlic=[];
+  JUR.forEach(([cod,nom],i)=>{
+    const cu=coefU(i);if(cu<=0)return;
+    const base=Math.round(tot*cu),imp=Math.round(base*(al1[i]+al2[i]));
+    const neto=imp+otrosDeb[i]-ret[i]-per[i]-sir[i]-otrosCred[i]-sfavAnt[i];
+    const sal=neto>0?Math.round(neto):0, sfav=neto<0?Math.round(-neto):0;
+    tBase+=base;tImp+=imp;tRet+=ret[i];tPer+=per[i];tSir+=sir[i];
+    tSfa+=sfavAnt[i];tOC+=otrosCred[i];tOD+=otrosDeb[i];tSal+=sal;tSfav+=sfav;
+    if(al1[i]+al2[i]===0)sinAlic.push(nom);
+    const resCell=sal>0
+      ?`<span style="color:var(--crimson);font-weight:500">${fmt(sal)}</span><div style="font-size:9px;color:var(--ink-muted)">a ingresar</div>`
+      :sfav>0
+        ?`<span style="color:#2A4A0A;font-weight:500">${fmt(sfav)}</span><div style="font-size:9px;color:var(--ink-muted)">saldo a favor</div>`
+        :`<span style="color:var(--ink-muted)">Sin saldo</span>`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="tl">${nom}</td>
+      <td style="font-weight:500;color:var(--burgundy)">${fmt(base)}</td>
+      <td><input type="number" min="0" step="0.01" value="${(al1[i]*100)||''}" placeholder="0,00" class="inp" onchange="al1[${i}]=parseFloat(this.value)/100||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="0.01" value="${(al2[i]*100)||''}" placeholder="0,00" class="inp" onchange="al2[${i}]=parseFloat(this.value)/100||0;renderLiq()"></td>
+      <td style="font-weight:500">${fmt(imp)}</td>
+      <td><input type="number" min="0" step="1" value="${sfavAnt[i]||''}" placeholder="0" class="inp" onchange="sfavAnt[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="1" value="${ret[i]||''}" placeholder="0" class="inp" onchange="ret[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="1" value="${per[i]||''}" placeholder="0" class="inp" onchange="per[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="1" value="${sir[i]||''}" placeholder="0" class="inp" onchange="sir[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="1" value="${otrosCred[i]||''}" placeholder="0" class="inp" onchange="otrosCred[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td><input type="number" min="0" step="1" value="${otrosDeb[i]||''}" placeholder="0" class="inp" onchange="otrosDeb[${i}]=parseFloat(this.value)||0;renderLiq()"></td>
+      <td>${resCell}</td>`;
+    tb.appendChild(tr);
+  });
+  const totRes=tSal>0?`<span style="color:var(--crimson)">${fmt(tSal)}</span>${tSfav>0?`<div style="font-size:9px;color:#2A4A0A">+ ${fmt(tSfav)} a favor</div>`:''}`:(tSfav>0?`<span style="color:#2A4A0A">${fmt(tSfav)} a favor</span>`:'<span style="color:var(--ink-muted)">Sin saldo</span>');
+  ft.innerHTML=`<tr class="tot-row"><td class="tl">Total</td><td>${fmt(tBase)}</td><td colspan="2" style="text-align:center;font-size:11px;color:var(--ink-muted)">ver columnas</td><td>${fmt(tImp)}</td><td>${fmt(tSfa)}</td><td>${fmt(tRet)}</td><td>${fmt(tPer)}</td><td>${fmt(tSir)}</td><td>${fmt(tOC)}</td><td>${fmt(tOD)}</td><td>${totRes}</td></tr>`;
+  const al=document.getElementById('liq-alerta');
+  if(sinAlic.length>0){al.className='alerta al-err';al.textContent='Falta alícuota en: '+sinAlic.slice(0,3).join(', ')+(sinAlic.length>3?' y otras':'')+'.';}
+  else if(JUR.filter((_,i)=>coefU(i)>0).length>0){al.className='alerta al-ok';al.textContent='Alícuotas cargadas en todas las jurisdicciones activas. El saldo a favor del período se arrastra al mes siguiente, por jurisdicción.';}
+}
+
+function calcData(){
+  const tot=totalIng();
+  return JUR.map(([cod,nom],i)=>{
+    const cu=coefU(i),base=Math.round(tot*cu),imp=Math.round(base*(al1[i]+al2[i]));
+    const neto=imp+otrosDeb[i]-ret[i]-per[i]-sir[i]-otrosCred[i]-sfavAnt[i];
+    const sal=neto>0?Math.round(neto):0, sfav=neto<0?Math.round(-neto):0;
+    return{cod,nom,cu,base,imp,sal,sfav,carga:base>0?imp/base:0,activa:cu>0};
+  }).filter(d=>d.activa);
+}
+
+function renderDecision(){
+  const tot=totalIng(),data=calcData();
+  const tSal=data.reduce((a,b)=>a+b.sal,0),tImp=data.reduce((a,b)=>a+b.imp,0),tSfav=data.reduce((a,b)=>a+b.sfav,0);
+  const cargaEfec=tot>0?tSal/tot:0;
+  const coefSuma=JUR.reduce((_,__,i)=>_+coefU(i),0);
+  const coefOk=Math.abs(coefSuma-1)<0.00005;
+  const mayor=[...data].sort((a,b)=>b.imp-a.imp)[0];
+  const varIng=totalIngAP()>0?(tot-totalIngAP())/totalIngAP():null;
+  let alertas='';
+  if(!coefOk)alertas+=`<div class="alerta al-err">Los coeficientes no suman 1,0000. La liquidación puede ser incorrecta.</div>`;
+  if(cargaEfec>0.06)alertas+=`<div class="alerta al-warn">Carga fiscal efectiva alta (${fmtPct(cargaEfec)}). Revisá alícuotas por jurisdicción.</div>`;
+  if(varIng!==null&&varIng<-0.1)alertas+=`<div class="alerta al-warn">Los ingresos cayeron ${fmtPct(Math.abs(varIng))} respecto al mismo mes del año anterior.</div>`;
+  if(tSfav>0)alertas+=`<div class="alerta al-info">Hay saldo a favor del período por ${fmt(tSfav)} en una o más jurisdicciones. Se arrastra al mes siguiente; no se compensa contra otras jurisdicciones.</div>`;
+  if(alertas===''&&tot>0)alertas+=`<div class="alerta al-ok">Liquidación completa sin alertas.</div>`;
+  if(tot===0)alertas+=`<div class="alerta al-info">Cargá los ingresos para ver los resultados.</div>`;
+  let items='';
+  if(mayor){
+    const semC=mayor.carga>0.06?'s-err':mayor.carga>0.03?'s-warn':'s-ok';
+    items+=`<div class="decision-item"><div class="di-icon">📍</div><div class="di-body"><div class="di-title">Jurisdicción con mayor impuesto: ${mayor.nom}</div><div class="di-sub">Impuesto determinado ${fmt(mayor.imp)}. Carga sobre base ${fmtPct(mayor.carga)}.</div><span class="di-badge" style="background:var(--crimson-ultra);color:var(--burgundy)"><span class="semaforo ${semC}"></span>Revisá las alícuotas vigentes en ${mayor.nom}</span></div></div>`;
+  }
+  items+=`<div class="decision-item"><div class="di-icon">📊</div><div class="di-body"><div class="di-title">Carga fiscal efectiva del período</div><div class="di-sub">Total a ingresar ${fmt(tSal)} sobre ingresos totales ${fmt(tot)}.</div><span class="di-badge" style="background:${cargaEfec>0.05?'var(--crimson-ultra)':'#EFF5E8'};color:${cargaEfec>0.05?'var(--burgundy)':'#2A4A0A'}"><span class="semaforo ${cargaEfec>0.05?'s-err':cargaEfec>0.03?'s-warn':'s-ok'}"></span>${fmtPct(cargaEfec)} de carga efectiva</span></div></div>`;
+  if(varIng!==null){items+=`<div class="decision-item"><div class="di-icon">${varIng>=0?'📈':'📉'}</div><div class="di-body"><div class="di-title">Variación interanual de ingresos</div><div class="di-sub">${fmt(tot)} en el período actual contra ${fmt(totalIngAP())} en el mismo mes del año anterior.</div><span class="di-badge" style="background:${varIng>=0?'#EFF5E8':'var(--hueso)'};color:${varIng>=0?'#2A4A0A':'var(--burgundy)'}">${varIng>=0?'+':''}${fmtPct(varIng)} interanual</span></div></div>`;}
+  const conc=data.filter(d=>d.cu>0.15);
+  if(conc.length>0)items+=`<div class="decision-item"><div class="di-icon">⚠️</div><div class="di-body"><div class="di-title">Alta concentración en: ${conc.map(d=>d.nom).join(', ')}</div><div class="di-sub">Verificá los coeficientes para el próximo período.</div><span class="di-badge" style="background:var(--hueso);color:var(--burgundy)">Revisión al cierre del período</span></div></div>`;
+  items+=`<div class="decision-item"><div class="di-icon">✅</div><div class="di-body"><div class="di-title">${data.length} jurisdicciones activas. Impuesto determinado total: ${fmt(tImp)}.</div><div class="di-sub">Computado a cuenta y otros conceptos (ret., perc., SIRCREB, saldo a favor anterior, otros créd./déb.): ${fmt(tImp-tSal+tSfav)}.</div><span class="di-badge" style="background:#EFF5E8;color:#2A4A0A">Neto a ingresar: ${fmt(tSal)}${tSfav>0?' · Saldo a favor: '+fmt(tSfav):''}</span></div></div>`;
+  document.getElementById('dec-content').innerHTML=alertas+`<p class="sec-title" style="margin-top:1rem">Lectura de resultados</p><div class="card">${items}</div>`;
+}
+
+function renderDash(){
+  const tot=totalIng(),data=calcData();
+  const tSal=data.reduce((a,b)=>a+b.sal,0),tImp=data.reduce((a,b)=>a+b.imp,0);
+  const carga=tot>0?tSal/tot:0;
+  document.getElementById('dash-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Ingresos del período</div><div class="kpi-val">${fmt(tot)}</div></div>
+    <div class="kpi"><div class="kpi-label">Impuesto determinado</div><div class="kpi-val">${fmt(tImp)}</div></div>
+    <div class="kpi"><div class="kpi-label">Total a ingresar</div><div class="kpi-val ${tSal>0?'warn':''}">${fmt(tSal)}</div><div class="kpi-sub">CM03</div></div>
+    <div class="kpi"><div class="kpi-label">Carga fiscal efectiva</div><div class="kpi-val ${carga>0.05?'warn':'ok'}">${fmtPct(carga)}</div><div class="kpi-sub">${data.length} jurisdicciones</div></div>`;
+  const labels=data.map(d=>d.nom.length>9?d.nom.substring(0,9)+'...':d.nom);
+  if(charts.base)charts.base.destroy();
+  if(charts.carga)charts.carga.destroy();
+  if(charts.comp)charts.comp.destroy();
+  charts.base=new Chart(document.getElementById('chartBase'),{
+    type:'bar',data:{labels,datasets:[{label:'Base imponible',data:data.map(d=>d.base),backgroundColor:'#C8B89A',borderColor:'#8B0000',borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9},maxRotation:45,color:'#4A2A2A'}},y:{ticks:{callback:v=>'$ '+Math.round(v/1000)+'k',font:{size:9},color:'#4A2A2A'}}}}
+  });
+  charts.carga=new Chart(document.getElementById('chartCarga'),{
+    type:'bar',data:{labels,datasets:[{label:'A ingresar',data:data.map(d=>d.sal),backgroundColor:data.map(d=>d.sal>0?'#8B0000':'#C8B89A'),borderColor:'#2D0A0A',borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9},maxRotation:45,color:'#4A2A2A'}},y:{ticks:{callback:v=>'$ '+Math.round(v/1000)+'k',font:{size:9},color:'#4A2A2A'}}}}
+  });
+  charts.comp=new Chart(document.getElementById('chartComp'),{
+    type:'bar',data:{labels:['Actividad 1','Actividad 2','Actividad 3','Actividad 4'],datasets:[
+      {label:'Período actual',data:ingA,backgroundColor:'#8B0000',borderWidth:0},
+      {label:'Mes anterior',data:ingAnt,backgroundColor:'#C8B89A',borderWidth:0},
+      {label:'Mismo mes año ant.',data:ingAP,backgroundColor:'#F5ECD7',borderColor:'#C8B89A',borderWidth:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:11},boxWidth:10,color:'#2D0A0A'}}},scales:{x:{ticks:{font:{size:11},color:'#4A2A2A'}},y:{ticks:{callback:v=>'$ '+Math.round(v/1000)+'k',font:{size:9},color:'#4A2A2A'}}}}
+  });
+  renderRanking();
+}
+renderCoef();renderIng();
+
+function renderRanking(){
+  const data=calcData();
+  const tot=totalIng();
+  // Ordenar por saldo de mayor a menor
+  const sorted=[...data].sort((a,b)=>b.sal-a.sal);
+  const tb=document.getElementById('ranking-body');
+  if(!tb)return;
+  tb.innerHTML='';
+  sorted.forEach((d,i)=>{
+    const cargaEf=d.base>0?d.sal/d.base:0;
+    const pos=i+1;
+    const esTop3=pos<=3;
+    const tr=document.createElement('tr');
+    tr.style.background=esTop3?'#FFF5F5':'';
+    tr.innerHTML=`<td style="text-align:center;font-weight:${esTop3?'500':'400'};color:${esTop3?'var(--crimson)':'var(--ink-muted)'}">${pos}</td>
+      <td style="text-align:left;font-weight:${esTop3?'500':'400'};padding-left:8px">${d.nom}</td>
+      <td style="text-align:right">${fmt(d.base)}</td>
+      <td style="text-align:right">${fmt(d.imp)}</td>
+      <td style="text-align:right;font-weight:${esTop3?'500':'400'};color:${d.sal>0?'var(--crimson)':'var(--ink-muted)'}">${d.sal>0?fmt(d.sal):'Sin saldo'}</td>
+      <td style="text-align:center;font-size:11px;color:${cargaEf>0.05?'var(--crimson)':'var(--ink-mid)'}">${d.base>0?(cargaEf*100).toFixed(2)+'%':'—'}</td>`;
+    tb.appendChild(tr);
+  });
+  // Alerta saldo a favor acumulado
+  const totalSfav=data.reduce((a,b)=>a+(b.sfav||0),0);
+  const totalImp=data.reduce((a,b)=>a+b.imp,0);
+  const alEl=document.getElementById('alerta-saldo-favor');
+  if(alEl&&totalSfav>0&&totalImp>0&&totalSfav>totalImp*0.5){
+    alEl.innerHTML=`<div class="alerta al-warn">⚠️ El saldo a favor acumulado supera el 50% del impuesto determinado. Verificar si hay retenciones duplicadas o coeficientes incorrectos.</div>`;
+  } else if(alEl){
+    alEl.innerHTML='';
+  }
+}
+</script>
+</body>
+</html>
