@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquidación de Sueldos + Aguinaldo · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#8B0000;--bu:#2D0A0A;--hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;--ink:#1A0A0A;--ink-s:#8A6A6A;--vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;--ab:#FDF3E0;--at:#5A3800;--rb:#FCEBEB;--rt:#791F1F;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:980px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.5rem}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.top-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.per-tag{font-size:12px;color:var(--ar)}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:4px;overflow-x:auto}
+.nb{font-size:12px;font-weight:500;padding:7px 12px;border:none;background:none;cursor:pointer;color:var(--ink-s);border-radius:7px;white-space:nowrap;font-family:var(--sans)}
+.nb.on{background:var(--cr);color:var(--hu)}.nb:hover:not(.on){background:var(--hu)}
+.panel{display:none}.panel.on{display:block}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--ar);padding-bottom:6px}.st:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.kv{font-family:var(--serif);font-size:18px;color:var(--bu)}.kv.w{color:var(--cr)}.kv.ok{color:var(--vt)}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}.warn{background:var(--ab);color:var(--at);border-left-color:#BA7517}.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}
+.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.field input.calc{background:transparent;border:none;color:var(--bu);font-weight:600;padding-left:0}
+.sumrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--ar);font-size:13px}
+.sumrow:last-child{border-bottom:none}.sumrow .lbl{color:var(--ink-s)}.sumrow .val{font-weight:500;color:var(--bu);min-width:120px;text-align:right}
+.sumrow.tot{border-top:2px solid var(--bu);margin-top:6px;padding-top:12px;font-size:15px}.sumrow.tot .lbl{color:var(--bu);font-weight:600}
+.sumrow input{width:130px;background:#FFF8EE;border:1.5px solid var(--ar);border-radius:5px;padding:4px 8px;font-size:12px;text-align:right;font-family:var(--sans);height:30px}
+.pct{width:64px!important}
+.nb-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--ar)}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.hint{font-size:12px;color:var(--ink-s)}
+.onb{text-align:center;padding:2.5rem 1rem}.onb h2{font-family:var(--serif);font-size:24px;color:var(--bu);margin-bottom:.5rem}.onb p{font-size:13px;color:var(--ink-s);max-width:520px;margin:0 auto 1.5rem;line-height:1.6}
+.chk{text-align:left;max-width:470px;margin:0 auto 1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1rem}.chi{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--ar);font-size:13px;line-height:1.4}.chi:last-child{border-bottom:none}.chn{width:22px;height:22px;border-radius:50%;background:var(--cr);color:var(--hu);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin:.75rem auto 1.25rem;max-width:520px;line-height:1.5}
+.sbtn{background:var(--cr);color:var(--hu);border:none;padding:11px 32px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.big{font-family:var(--serif);font-size:30px;color:var(--cr)}
+@media print{.nav,.nb-bar,.btn-cl{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+@media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+<div class="topbar">
+  <div><div class="logo">Liquidación de Sueldos + Aguinaldo<br>Neto, aportes, SAC y costo laboral</div><div class="logo-sub">Conta Club</div></div>
+  <div class="top-r"><div class="per-tag" id="per-tag">—</div><button class="btn-cl" onclick="limpiar()">Limpiar datos</button></div>
+</div>
+<div class="nav">
+  <button class="nb on" onclick="irA(0)">Inicio</button>
+  <button class="nb" onclick="irA(1)">Datos</button>
+  <button class="nb" onclick="irA(2)">Remuneración y neto</button>
+  <button class="nb" onclick="irA(3)">🎁 Aguinaldo (SAC)</button>
+  <button class="nb" onclick="irA(4)">Costo laboral</button>
+</div>
+
+<!-- 0 -->
+<div class="panel on" id="panel-0">
+  <div class="onb">
+    <h2>Liquidación de Sueldos<br>+ Aguinaldo (SAC)</h2>
+    <p>Calculá el neto del mes, los aportes del empleado, el aguinaldo (medio SAC) y el costo laboral total para el empleador. Las alícuotas vienen cargadas por defecto y las podés editar según la normativa vigente.</p>
+    <div class="chk">
+      <div class="chi"><div class="chn">1</div><span>Datos del empleado y del período</span></div>
+      <div class="chi"><div class="chn">2</div><span>Conceptos remunerativos y no remunerativos → aportes y neto del mes</span></div>
+      <div class="chi"><div class="chn">3</div><span>Aguinaldo: 50% de la mejor remuneración del semestre (completo o proporcional)</span></div>
+      <div class="chi"><div class="chn">4</div><span>Contribuciones patronales, ART y provisiones → costo laboral total</span></div>
+    </div>
+    <div class="disc">El medio aguinaldo se paga sobre el 50% de la mayor remuneración mensual devengada en el semestre (Art. 121 LCT, ley 27.073). 1ª cuota: 30 de junio · 2ª cuota: 18 de diciembre. Las alícuotas de aportes/contribuciones y los topes de base imponible cambian: verificá los vigentes. Papel de trabajo de apoyo; no reemplaza el criterio profesional.</div>
+    <button class="sbtn" onclick="irA(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- 1 -->
+<div class="panel" id="panel-1">
+  <p class="st">Empleado y período</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field" style="grid-column:span 2"><label>Apellido y nombre</label><input type="text" id="emp" placeholder="Empleado" oninput="updateTag()"></div>
+    <div class="field"><label>CUIL</label><input type="text" id="cuil" placeholder="20-12345678-9"></div>
+    <div class="field"><label>Categoría / convenio</label><input type="text" id="cat" placeholder="Ej: Empleado de comercio - Cat. A"></div>
+    <div class="field"><label>Fecha de ingreso</label><input type="text" id="ingreso" placeholder="dd/mm/aaaa"></div>
+    <div class="field"><label>Período liquidado</label><input type="text" id="periodo" placeholder="Ej: Mayo 2026" oninput="updateTag()"></div>
+  </div>
+  <p class="st">Alícuotas de aportes del empleado (editables)</p>
+  <div class="g4" style="gap:10px">
+    <div class="field"><label>Jubilación (SIPA) %</label><input type="number" id="a-jub" value="11" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Ley 19.032 (PAMI) %</label><input type="number" id="a-pami" value="3" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Obra social %</label><input type="number" id="a-os" value="3" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Cuota sindical %</label><input type="number" id="a-sind" value="0" step="0.01" oninput="recalc()"></div>
+  </div>
+  <div class="al info" style="margin-top:.75rem">Aporte estándar del empleado: 11% + 3% + 3% = 17%. La cuota sindical depende del convenio. Si la remuneración supera el tope de base imponible, cargalo en la pestaña Remuneración.</div>
+  <div class="nb-bar"><span class="hint">Paso 1 de 4</span><button class="bp" onclick="irA(2)">Continuar</button></div>
+</div>
+
+<!-- 2 -->
+<div class="panel" id="panel-2">
+  <p class="st">Conceptos del recibo</p>
+  <div class="card" style="max-width:620px">
+    <div class="sumrow"><span class="lbl">Sueldo básico</span><input type="number" id="r-basico" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow"><span class="lbl">Antigüedad</span><input type="number" id="r-antig" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow"><span class="lbl">Presentismo</span><input type="number" id="r-pres" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow"><span class="lbl">Horas extra / otros remunerativos</span><input type="number" id="r-otros" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow tot"><span class="lbl">Total remunerativo</span><span class="val" id="s-rem">$ 0</span></div>
+    <div class="sumrow" style="margin-top:8px"><span class="lbl">Conceptos NO remunerativos</span><input type="number" id="r-norem" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow"><span class="lbl"><label style="cursor:pointer"><input type="checkbox" id="nr-aporta" onchange="recalc()" style="width:auto;height:auto;margin-right:6px;vertical-align:middle">Los no remunerativos aportan a O. Social / sindical (según paritaria)</label></span><span class="val"></span></div>
+    <div class="sumrow"><span class="lbl">Tope de base imponible para aportes (0 = sin tope)</span><input type="number" id="r-tope" step="any" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="al info" style="max-width:620px">Por defecto los no remunerativos se toman como "puros" (suman al neto sin aportes). Tildá la casilla si la paritaria los hace aportar a O. Social / sindical (ej. Comercio, UOM). El tope máximo de base imponible aplica a los aportes del trabajador (PAMI/OS); las contribuciones patronales no tienen tope (Dto. 814/01). Tope vigente (devengado mayo 2026, Res. ANSES 110/2026): mínimo $132.420,94 · máximo $4.303.619,01 (se actualiza mensualmente).</div>
+  <p class="st">Descuentos y neto</p>
+  <div class="card" style="max-width:620px">
+    <div class="sumrow"><span class="lbl">Base de aportes</span><span class="val" id="s-base">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="l-jub">(−) Jubilación</span><span class="val" id="s-jub">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="l-pami">(−) Ley 19.032</span><span class="val" id="s-pami">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="l-os">(−) Obra social</span><span class="val" id="s-os">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="l-sind">(−) Cuota sindical</span><span class="val" id="s-sind">$ 0</span></div>
+    <div class="sumrow"><span class="lbl">(−) Retención Ganancias (4ª cat.)</span><input type="number" id="r-gan" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow"><span class="lbl">(−) Otros descuentos</span><input type="number" id="r-desc" step="any" placeholder="0" oninput="recalc()"></div>
+    <div class="sumrow tot"><span class="lbl">Neto a cobrar</span><span class="val" id="s-neto" style="font-family:var(--serif);font-size:20px;color:var(--cr)">$ 0</span></div>
+  </div>
+  <div class="nb-bar"><button class="bs" onclick="irA(1)">Volver</button><button class="bp" onclick="irA(3)">Aguinaldo →</button></div>
+</div>
+
+<!-- 3 -->
+<div class="panel" id="panel-3">
+  <div class="al info">El medio aguinaldo = 50% de la <strong>mayor remuneración mensual devengada por todo concepto</strong> dentro del semestre (Art. 121 LCT). Si no trabajó el semestre completo, se calcula en proporción a los días trabajados.</div>
+  <p class="st">Datos del aguinaldo</p>
+  <div class="g3" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Mejor remuneración mensual del semestre ($)</label><input type="number" id="sac-mejor" step="any" placeholder="0" oninput="recalcSAC()"></div>
+    <div class="field"><label>Semestre</label>
+      <select id="sac-sem" onchange="onSem()">
+        <option value="1">1° semestre (ene–jun) · cobra 30/06</option>
+        <option value="2">2° semestre (jul–dic) · cobra 18/12</option>
+      </select></div>
+    <div class="field"><label>¿Trabajó el semestre completo?</label>
+      <select id="sac-comp" onchange="recalcSAC()"><option value="1">Sí, completo</option><option value="0">No, proporcional</option></select></div>
+    <div class="field"><label>Período desde (opcional)</label><input type="date" id="sac-desde" oninput="calcDias()"></div>
+    <div class="field"><label>Período hasta (opcional)</label><input type="date" id="sac-hasta" oninput="calcDias()"></div>
+    <div class="field"><label>Días trabajados en el semestre</label><input type="number" id="sac-dias" placeholder="0" oninput="recalcSAC()" disabled></div>
+  </div>
+  <div class="card" style="max-width:560px">
+    <div class="sumrow"><span class="lbl">SAC bruto (50% de la mejor remuneración)</span><span class="val" id="sac-bruto">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="lsac-dias" style="display:none">Proporción días trabajados</span><span class="val" id="sac-prop" style="display:none">—</span></div>
+    <div class="sumrow"><span class="lbl">(−) Aportes sobre el SAC</span><span class="val" id="sac-aportes">$ 0</span></div>
+    <div class="sumrow tot"><span class="lbl">Aguinaldo neto a cobrar</span><span class="val big" id="sac-neto" style="font-size:24px">$ 0</span></div>
+  </div>
+  <div id="sac-kpis"></div>
+  <div class="nb-bar"><button class="bs" onclick="irA(2)">Volver</button><button class="bp" onclick="irA(4)">Costo laboral →</button></div>
+</div>
+
+<!-- 4 -->
+<div class="panel" id="panel-4">
+  <div class="al info">Cuánto le cuesta al empleador. Contribuciones unificadas: <strong>18%</strong> (régimen general / PyME) o <strong>20,40%</strong> (empresas grandes de comercio y servicios), siempre + 6% de obra social. La base de la ART incluye los conceptos no remunerativos. Editá según el cliente.</div>
+  <p class="st">Alícuotas patronales (editables)</p>
+  <div class="g4" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Contribuciones unificadas %</label><input type="number" id="c-uni" value="18" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Obra social patronal %</label><input type="number" id="c-os" value="6" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>ART alícuota %</label><input type="number" id="c-art" value="3" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>ART suma fija ($/trabajador)</label><input type="number" id="c-artfijo" step="any" value="0" oninput="recalc()"></div>
+    <div class="field"><label>Otros (seguro vida, etc.) %</label><input type="number" id="c-otros" value="0.5" step="0.01" oninput="recalc()"></div>
+  </div>
+  <div class="card" style="max-width:600px">
+    <div class="sumrow"><span class="lbl">Total remunerativo (base)</span><span class="val" id="cl-base">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="cll-uni">(+) Contribuciones unificadas</span><span class="val" id="cl-uni">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="cll-os">(+) Obra social patronal</span><span class="val" id="cl-os">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="cll-art">(+) ART (s/ rem. + no rem.)</span><span class="val" id="cl-art">$ 0</span></div>
+    <div class="sumrow"><span class="lbl">(+) ART suma fija</span><span class="val" id="cl-artfijo">$ 0</span></div>
+    <div class="sumrow"><span class="lbl" id="cll-otros">(+) Otros</span><span class="val" id="cl-otros">$ 0</span></div>
+    <div class="sumrow"><span class="lbl">(+) Provisión SAC (1/12 del bruto)</span><span class="val" id="cl-sac">$ 0</span></div>
+    <div class="sumrow tot"><span class="lbl">Costo laboral total del mes</span><span class="val" id="cl-total" style="font-family:var(--serif);font-size:20px;color:var(--bu)">$ 0</span></div>
+  </div>
+  <div id="cl-kpis"></div>
+  <div class="nb-bar"><button class="bs" onclick="irA(3)">Volver</button><button class="bp" onclick="window.print()">Imprimir / PDF</button></div>
+</div>
+
+</div>
+<script>
+function el(id){return document.getElementById(id);}
+function g(id){return parseFloat(el(id)&&el(id).value)||0;}
+function fmt(v){ if(!v||Math.round(v)===0) return "$ 0"; return "$ "+Math.round(v).toLocaleString("es-AR"); }
+function set(id,v){ var e=el(id); if(e) e.textContent=fmt(v); }
+function pct(id){ return g(id)/100; }
+
+function irA(i){
+  document.querySelectorAll(".panel").forEach(function(p,j){ p.classList.toggle("on",j===i); });
+  document.querySelectorAll(".nb").forEach(function(b,j){ b.classList.toggle("on",j===i); });
+  recalc(); recalcSAC();
+}
+function updateTag(){ var e=el("per-tag"); if(e) e.textContent=(el("emp").value||"—")+(el("periodo").value?(" · "+el("periodo").value):""); }
+
+function remunerativo(){ return g("r-basico")+g("r-antig")+g("r-pres")+g("r-otros"); }
+function baseAportes(){ var rem=remunerativo(), tope=g("r-tope"); return (tope>0&&rem>tope)?tope:rem; }
+
+function recalc(){
+  var rem=remunerativo(); set("s-rem",rem);
+  var base=baseAportes(); set("s-base",base);
+  var norem=g("r-norem");
+  var nrAp=el("nr-aporta")&&el("nr-aporta").checked;
+  var jub=base*pct("a-jub"), pami=base*pct("a-pami"), os=base*pct("a-os"), sind=base*pct("a-sind");
+  var osNr=nrAp?norem*pct("a-os"):0, sindNr=nrAp?norem*pct("a-sind"):0;
+  el("l-jub").textContent="(−) Jubilación "+g("a-jub")+"%"; set("s-jub",jub);
+  el("l-pami").textContent="(−) Ley 19.032 "+g("a-pami")+"%"; set("s-pami",pami);
+  el("l-os").textContent="(−) Obra social "+g("a-os")+"%"+(nrAp?" (incl. no rem.)":""); set("s-os",os+osNr);
+  el("l-sind").textContent="(−) Cuota sindical "+g("a-sind")+"%"+(nrAp?" (incl. no rem.)":""); set("s-sind",sind+sindNr);
+  var aportes=jub+pami+os+sind+osNr+sindNr;
+  var neto=rem+norem-aportes-g("r-gan")-g("r-desc");
+  set("s-neto",neto);
+  // costo laboral — contribuciones unificadas sobre remuneración real (sin tope, Dto. 814/01)
+  var uni=rem*pct("c-uni"), osp=rem*pct("c-os"), art=(rem+norem)*pct("c-art"), otr=rem*pct("c-otros"), artFijo=g("c-artfijo");
+  var ospNr=nrAp?norem*pct("c-os"):0;
+  var baseSac=nrAp?rem+norem:rem, provSac=baseSac/12;
+  set("cl-base",rem);
+  el("cll-uni").textContent="(+) Contribuciones unificadas "+g("c-uni")+"%"; set("cl-uni",uni);
+  el("cll-os").textContent="(+) Obra social patronal "+g("c-os")+"%"+(nrAp?" (incl. no rem.)":""); set("cl-os",osp+ospNr);
+  el("cll-art").textContent="(+) ART "+g("c-art")+"% (s/ rem.+no rem.)"; set("cl-art",art); set("cl-artfijo",artFijo);
+  el("cll-otros").textContent="(+) Otros "+g("c-otros")+"%"; set("cl-otros",otr);
+  set("cl-sac",provSac);
+  var total=rem+norem+uni+osp+ospNr+art+artFijo+otr+provSac;
+  set("cl-total",total);
+  var inc=rem>0?(total-rem-norem)/rem:0;
+  el("cl-kpis").innerHTML="<div class='g3' style='margin-top:1rem'>"
+    +"<div class='kpi'><div class='kl'>Neto al empleado</div><div class='kv ok'>"+fmt(neto)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Costo laboral total</div><div class='kv'>"+fmt(total)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Cargas s/ remunerativo</div><div class='kv'>"+(rem>0?(inc*100).toFixed(1)+"%":"—")+"</div></div></div>";
+}
+
+function onSem(){ recalcSAC(); }
+function calcDias(){
+  var d1=el("sac-desde").value, d2=el("sac-hasta").value;
+  if(d1&&d2){ var dias=Math.round((new Date(d2)-new Date(d1))/86400000)+1; if(dias>0){ el("sac-comp").value="0"; el("sac-dias").value=dias; } }
+  recalcSAC();
+}
+function recalcSAC(){
+  var completo=el("sac-comp").value==="1";
+  el("sac-dias").disabled=completo;
+  el("lsac-dias").style.display=completo?"none":"flex";
+  el("sac-prop").style.display=completo?"none":"block";
+  var mejor=g("sac-mejor"); var medio=mejor/2;
+  var sem=el("sac-sem").value;
+  var diasSem=(sem==="1")?181:184; // 2026: ene-jun=181, jul-dic=184
+  var sac=medio;
+  if(!completo){ var d=g("sac-dias"); var prop=diasSem>0?Math.min(d/diasSem,1):0; sac=medio*prop;
+    el("sac-prop").textContent=(prop*100).toFixed(1)+"% ("+d+"/"+diasSem+" días)"; }
+  set("sac-bruto",sac);
+  var aportes=sac*(pct("a-jub")+pct("a-pami")+pct("a-os")+pct("a-sind"));
+  set("sac-aportes",aportes);
+  var neto=sac-aportes; set("sac-neto",neto);
+  var contrib=sac*(pct("c-uni")+pct("c-os")+pct("c-art")+pct("c-otros"));
+  el("sac-kpis").innerHTML="<div class='g3' style='margin-top:1rem'>"
+    +"<div class='kpi'><div class='kl'>SAC bruto</div><div class='kv'>"+fmt(sac)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Aguinaldo neto</div><div class='kv ok'>"+fmt(neto)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Costo SAC para el empleador</div><div class='kv'>"+fmt(sac+contrib)+"</div></div></div>";
+}
+
+function limpiar(){ if(!confirm("¿Limpiar todos los datos?")) return;
+  ["emp","cuil","cat","ingreso","periodo","r-basico","r-antig","r-pres","r-otros","r-norem","r-tope","r-gan","r-desc","sac-mejor","sac-dias","sac-desde","sac-hasta","c-artfijo"].forEach(function(id){var e=el(id);if(e)e.value="";});
+  el("sac-comp").value="1"; el("sac-sem").value="1"; if(el("nr-aporta"))el("nr-aporta").checked=false;
+  recalc(); recalcSAC(); updateTag(); irA(0);
+}
+recalc(); recalcSAC(); updateTag();
+</script>
+</body>
+</html>
