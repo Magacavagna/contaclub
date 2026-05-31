@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recategorización Monotributo · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#8B0000;--cr-u:#F5E0E0;--bu:#2D0A0A;
+  --hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;
+  --ink:#1A0A0A;--ink-m:#4A2A2A;--ink-s:#8A6A6A;
+  --vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;
+  --ab:#FDF3E0;--at:#5A3800;--ac:#BA7517;
+  --rb:#FCEBEB;--rt:#791F1F;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--cm)}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:960px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.5rem}
+.logo{font-family:var(--serif);font-size:18px;color:var(--hu);line-height:1.3}
+.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.top-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.top-tag{font-size:12px;color:var(--ar)}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:4px;overflow-x:auto}
+.nb{font-size:12px;font-weight:500;padding:7px 12px;border:none;background:none;cursor:pointer;color:var(--ink-s);border-radius:7px;white-space:nowrap;font-family:var(--sans)}
+.nb.on{background:var(--cr);color:var(--hu)}
+.nb:hover:not(.on){background:var(--hu);color:var(--ink)}
+.panel{display:none}.panel.on{display:block}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--ar);padding-bottom:6px}
+.st:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}
+.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kv{font-family:var(--serif);font-size:20px;color:var(--bu)}
+.kv.w{color:var(--cr)}.kv.ok{color:var(--vt)}.kv.neu{color:var(--at)}
+.ks{font-size:11px;color:var(--ink-s);margin-top:3px}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}
+.warn{background:var(--ab);color:var(--at);border-left-color:var(--ac)}
+.err{background:var(--rb);color:var(--rt);border-left-color:var(--cr)}
+.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cr)}
+.cc{font-size:13px;background:var(--cm);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--bu);height:34px;font-weight:500;display:flex;align-items:center}
+.nb-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--ar)}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.bs:hover{background:var(--hu)}
+.hint{font-size:12px;color:var(--ink-s)}
+.cat-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.cat-tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:500;padding:6px 8px;border:1px solid var(--bu);text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.cat-tbl th.tl{text-align:left}
+.cat-tbl td{padding:6px 8px;border:1px solid var(--ar);text-align:right;vertical-align:middle}
+.cat-tbl td.cn{text-align:center;font-weight:600}
+.cat-tbl td.tl{text-align:left}
+.cat-tbl tr.actual{background:#FFF5F5;outline:2px solid var(--cr)}
+.cat-tbl tr.sugerida{background:var(--vb);outline:2px solid var(--vc)}
+.cat-tbl tr:nth-child(even):not(.actual):not(.sugerida){background:#FDF8F0}
+.resultado-card{border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:2px solid}
+.res-ok{background:var(--vb);border-color:var(--vc)}
+.res-warn{background:var(--ab);border-color:var(--ac)}
+.res-err{background:var(--cr-u);border-color:var(--cr)}
+.res-neu{background:var(--hu);border-color:var(--ar)}
+.res-titulo{font-family:var(--serif);font-size:22px;margin-bottom:6px}
+.res-sub{font-size:13px;line-height:1.6}
+.onb{text-align:center;padding:3rem 1rem}
+.onb h2{font-family:var(--serif);font-size:26px;color:var(--bu);margin-bottom:.5rem}
+.onb p{font-size:13px;color:var(--ink-s);max-width:480px;margin:0 auto 2rem;line-height:1.6}
+.chk{text-align:left;max-width:480px;margin:0 auto 1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1rem}
+.chi{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--ar);font-size:13px;line-height:1.4}
+.chi:last-child{border-bottom:none}
+.chn{width:22px;height:22px;border-radius:50%;background:var(--cr);color:var(--hu);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin:1rem auto 1.5rem;max-width:480px;line-height:1.5}
+.sbtn{background:var(--cr);color:var(--hu);border:none;padding:12px 36px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.sbtn:hover{background:var(--bu)}
+.progreso-wrap{height:10px;background:var(--ar);border-radius:5px;overflow:hidden;margin-top:6px}
+.progreso-fill{height:100%;border-radius:5px;transition:width .4s}
+.progreso-ok{background:var(--vc)}
+.progreso-warn{background:var(--ac)}
+.progreso-err{background:var(--cr)}
+.cuota-diff{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;background:var(--hu);border:1px solid var(--ar);margin-top:.5rem}
+.cuota-diff .arrow{font-size:18px;color:var(--ink-s)}
+
+/* ── TABLA MENSUAL ── */
+.mes-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem}
+.mes-tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:600;padding:7px 10px;text-align:center;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--bu)}
+.mes-tbl th.tl{text-align:left}
+.mes-tbl td{padding:5px 8px;border:1px solid var(--ar);vertical-align:middle}
+.mes-tbl td.mes-nombre{font-weight:600;font-size:12px;color:var(--ink-m);background:#FAF5EE}
+.mes-tbl td input{width:100%;border:none;background:transparent;font-size:12px;font-family:var(--sans);color:var(--ink);text-align:right;padding:2px 4px;outline:none}
+.mes-tbl td input:focus{background:var(--hu);border-radius:3px}
+.mes-tbl td.mes-calc{text-align:right;font-size:12px;color:var(--bu);font-weight:500}
+.mes-tbl tr.mes-total td{background:var(--bu);color:var(--hu);font-weight:700;font-size:12px;text-align:right}
+.mes-tbl tr.mes-total td.tl{text-align:left}
+.mes-tbl tr.mes-acum-warn td{background:#FFF5CC}
+.mes-tbl tr.mes-acum-err td{background:#FFEBEB}
+.mes-tbl tr.mes-highlight td{background:var(--vb)}
+/* Semáforo de fila */
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.dot-ok{background:var(--vc)}.dot-warn{background:var(--ac)}.dot-err{background:var(--cr)}
+/* Resumen mensual KPIs */
+.mes-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+@media(max-width:700px){.mes-kpis{grid-template-columns:1fr 1fr}}
+.mes-kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:10px 14px;text-align:center}
+.mes-kpi .mk-label{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.mes-kpi .mk-val{font-family:var(--serif);font-size:17px;color:var(--bu)}
+.mes-kpi .mk-sub{font-size:10px;color:var(--ink-s);margin-top:2px}
+/* Toggle período */
+.periodo-toggle{display:flex;gap:6px;margin-bottom:1rem}
+.pt-btn{font-size:12px;padding:6px 14px;border:1px solid var(--ar);border-radius:6px;background:var(--cm);color:var(--ink-s);cursor:pointer;font-family:var(--sans)}
+.pt-btn.on{background:var(--cr);color:var(--hu);border-color:var(--cr)}
+
+@media print{.nav,.nb-bar,.periodo-toggle{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo">Recategorización Monotributo</div>
+    <div class="logo-sub">Conta Club · Julio/Agosto 2026</div>
+  </div>
+  <div class="top-r">
+    <div class="top-tag" id="top-tag"></div>
+    <button class="btn-cl" onclick="limpiar()">Limpiar datos</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="tab(0)">Inicio</button>
+  <button class="nb" onclick="tab(1)">Datos</button>
+  <button class="nb" onclick="tab(2)">📊 Facturación mensual</button>
+  <button class="nb" onclick="tab(3)">Parámetros</button>
+  <button class="nb" onclick="tab(4)">Resultado</button>
+  <button class="nb" onclick="tab(5)">Tabla completa</button>
+  <button class="nb" onclick="tab(6)">Excluido del régimen</button>
+</div>
+
+<!-- INICIO -->
+<div class="panel on" id="t0">
+  <div class="onb">
+    <h2>Simulador de recategorización<br>Monotributo 2026</h2>
+    <p>Evaluá si correspondía recategorizarse en la primera vuelta (enero/febrero) y preparate para la segunda (julio/agosto 2026). Ingresá los parámetros del contribuyente y el sistema determina la categoría correcta.</p>
+    <div class="chk">
+      <div class="chi"><div class="chn">1</div><span>Datos del contribuyente y categoría actual</span></div>
+      <div class="chi"><div class="chn">2</div><span><strong>Nuevo:</strong> Cargá la facturación mes a mes — el acumulado se calcula solo</span></div>
+      <div class="chi"><div class="chn">3</div><span>Ingresos brutos, superficie, energía y alquileres del período</span></div>
+      <div class="chi"><div class="chn">4</div><span>Resultado: categoría que corresponde, cuota nueva y diferencia con la actual</span></div>
+      <div class="chi"><div class="chn">5</div><span>Tabla completa de 11 categorías con cuotas de servicios y bienes</span></div>
+      <div class="chi"><div class="chn">6</div><span>Verificador de exclusión del régimen (si supera categoría K)</span></div>
+    </div>
+    <div class="disc">Segunda recategorización 2026: evalúa ingresos enero-junio 2026. Vence el 5 de agosto de 2026. Esta herramienta no reemplaza el criterio profesional.</div>
+    <button class="sbtn" onclick="tab(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="panel" id="t1">
+  <p class="st">Datos del contribuyente</p>
+  <div class="g2" style="gap:10px;margin-bottom:12px">
+    <div class="field" style="grid-column:span 2"><label>Apellido y nombre</label>
+      <input type="text" id="nombre" placeholder="Ej: García, Juan Carlos" oninput="updateTop()"></div>
+    <div class="field"><label>CUIT</label>
+      <input type="text" id="cuit" placeholder="20-12345678-9"></div>
+    <div class="field"><label>Tipo de actividad</label>
+      <select id="tipo-act" onchange="recalc()">
+        <option value="serv">Servicios / Profesiones</option>
+        <option value="bienes">Venta de cosas muebles (bienes)</option>
+        <option value="mixta">Actividad mixta (aplica servicios)</option>
+      </select></div>
+  </div>
+  <p class="st">Situación actual</p>
+  <div class="g2" style="gap:10px;margin-bottom:12px">
+    <div class="field"><label>Categoría actual</label>
+      <select id="cat-actual" onchange="recalc()">
+        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+        <option value="D">D</option><option value="E">E</option><option value="F">F</option>
+        <option value="G">G</option><option value="H">H</option><option value="I">I</option>
+        <option value="J">J</option><option value="K">K</option>
+      </select></div>
+    <div class="field"><label>Período evaluado</label>
+      <select id="periodo" onchange="onPeriodoChange()">
+        <option value="ene-jun-26">Enero–Junio 2026 (2da recategorización)</option>
+        <option value="jul-dic-25">Julio–Diciembre 2025 (1ra recategorización)</option>
+      </select></div>
+  </div>
+  <div class="nb-bar">
+    <span class="hint">Paso 1 de 6</span>
+    <button class="bp" onclick="tab(2)">Continuar →</button>
+  </div>
+</div>
+
+<!-- FACTURACIÓN MENSUAL -->
+<div class="panel" id="t2">
+  <div class="al info">
+    Cargá la facturación de cada mes. El sistema calcula el <strong>acumulado de los 12 meses</strong> necesario para la recategorización y lo vuelca automáticamente en Parámetros.
+  </div>
+
+  <div class="mes-kpis" id="mes-kpis">
+    <div class="mes-kpi"><div class="mk-label">Período evaluado</div><div class="mk-val" id="mk-periodo">—</div></div>
+    <div class="mes-kpi"><div class="mk-label">Acumulado 12 meses</div><div class="mk-val" id="mk-acum">$ 0</div><div class="mk-sub" id="mk-acum-sub"></div></div>
+    <div class="mes-kpi"><div class="mk-label">Promedio mensual</div><div class="mk-val" id="mk-prom">$ 0</div></div>
+    <div class="mes-kpi"><div class="mk-label">Categoría estimada</div><div class="mk-val" id="mk-cat" style="color:var(--cr)">—</div></div>
+  </div>
+
+  <div id="mes-progreso-wrap" style="margin-bottom:1rem;display:none">
+    <div style="font-size:11px;color:var(--ink-s);margin-bottom:4px" id="mes-prog-label"></div>
+    <div class="progreso-wrap"><div class="progreso-fill" id="mes-prog-fill" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--ink-s);margin-top:4px" id="mes-prog-text"></div>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="mes-tbl" id="mes-tabla">
+      <thead>
+        <tr>
+          <th class="tl" style="width:14%">Mes</th>
+          <th style="width:20%">Facturado ($)</th>
+          <th style="width:18%">Acumulado 12m ($)</th>
+          <th style="width:10%">% Tope cat.</th>
+          <th style="width:38%">Observación</th>
+        </tr>
+      </thead>
+      <tbody id="mes-tbody"></tbody>
+      <tfoot>
+        <tr class="mes-total">
+          <td class="tl">TOTAL PERÍODO</td>
+          <td id="mes-tot-fact" style="text-align:right">$ 0</td>
+          <td id="mes-tot-acum" style="text-align:right">—</td>
+          <td>—</td>
+          <td style="text-align:left;font-size:11px" id="mes-tot-obs"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="al info" style="font-size:11px;margin-top:.5rem">
+    💡 El <strong>acumulado de 12 meses</strong> se traslada automáticamente al campo "Ingresos brutos" en Parámetros. Si ya tenés el total calculado, podés ingresarlo directamente allá.
+  </div>
+
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(1)">← Volver</button>
+    <button class="bp" onclick="volcarYContinuar()">Usar este acumulado → Parámetros</button>
+  </div>
+</div>
+
+<!-- PARÁMETROS -->
+<div class="panel" id="t3">
+  <div class="al info">Ingresá los valores <strong>acumulados en los últimos 12 meses</strong> del período evaluado. La categoría corresponde al parámetro más alto, no solo a los ingresos.</div>
+  <p class="st">Parámetros del período</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field">
+      <label>Ingresos brutos acumulados últimos 12 meses ($)</label>
+      <input type="number" id="ing-brutos" placeholder="0" oninput="recalc()">
+      <span style="font-size:10px;color:var(--vc);margin-top:2px" id="ing-link-hint"></span>
+    </div>
+    <div class="field"><label>Superficie afectada a la actividad (m²)</label>
+      <input type="number" id="superficie" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Energía eléctrica consumida (kWh anuales)</label>
+      <input type="number" id="energia" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Alquileres devengados anuales ($)</label>
+      <input type="number" id="alquileres" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Precio unitario máximo de venta ($) — solo bienes</label>
+      <input type="number" id="precio-unit" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Compras + gastos inherentes a la actividad — últimos 12 meses ($)</label>
+      <input type="number" id="gastos" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="card">
+    <div class="g3" style="gap:10px">
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Ingresos acumulados</div><div id="ing-calc" class="cc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Parámetro determinante</div><div id="param-det" class="cc">—</div></div>
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Categoría que corresponde</div><div id="cat-det" class="cc" style="font-weight:600;color:var(--cr)">—</div></div>
+    </div>
+  </div>
+  <p class="st">Análisis de gastos</p>
+  <div class="card">
+    <div class="g3" style="gap:10px">
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Gastos / ventas del período</div><div id="g-ratio" class="cc">—</div></div>
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px" id="g-umbral-lbl">Umbral de exclusión (cat. K)</div><div id="g-umbral" class="cc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Uso del umbral</div><div id="g-uso" class="cc" style="font-weight:600">—</div></div>
+    </div>
+    <div id="g-analisis" style="margin-top:10px"></div>
+  </div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(2)">← Volver</button>
+    <button class="bp" onclick="tab(4)">Ver resultado →</button>
+  </div>
+</div>
+
+<!-- RESULTADO -->
+<div class="panel" id="t4">
+  <div id="resultado-panel"></div>
+  <div id="progreso-panel" style="margin-bottom:1rem"></div>
+  <div id="cuota-panel"></div>
+  <div id="alertas-panel"></div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(3)">← Volver</button>
+    <button class="bp" onclick="tab(5)">Ver tabla completa →</button>
+  </div>
+</div>
+
+<!-- TABLA COMPLETA -->
+<div class="panel" id="t5">
+  <div class="al info" style="margin-bottom:1rem">Valores vigentes desde febrero 2026 — Fuente: ARCA. La fila verde es la categoría sugerida según tus parámetros. La fila roja es tu categoría actual.</div>
+  <div style="overflow-x:auto">
+    <table class="cat-tbl" id="tabla-cats">
+      <thead>
+        <tr>
+          <th class="cn" style="width:5%">Cat.</th>
+          <th class="tl" style="width:18%">Ing. brutos anuales</th>
+          <th style="width:10%">Superficie (m²)</th>
+          <th style="width:10%">Energía (kWh)</th>
+          <th style="width:12%">Alquileres ($)</th>
+          <th style="width:12%">Cuota Serv. ($)</th>
+          <th style="width:12%">Cuota Bienes ($)</th>
+          <th style="width:10%">OS ($)</th>
+          <th style="width:11%">SIPA ($)</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body"></tbody>
+    </table>
+  </div>
+  <p style="font-size:11px;color:var(--ink-s);margin-top:.5rem">Precio unitario máximo de venta: $613.492 para todas las categorías (solo bienes). Actualizaciones semestrales en enero y julio.</p>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(4)">← Volver</button>
+    <button class="bp" onclick="tab(6)">Verificar exclusión →</button>
+  </div>
+</div>
+
+<!-- EXCLUSIÓN DEL RÉGIMEN -->
+<div class="panel" id="t6">
+  <p class="st">Verificador de exclusión del régimen</p>
+  <div class="al info">Un contribuyente queda excluido del monotributo cuando supera el tope de la categoría K ($108.357.084 anuales) o cualquiera de las causales del Art. 20 de la Ley 26.565.</div>
+  <div id="exclusion-panel"></div>
+  <p class="st" style="margin-top:1rem">Causales de exclusión (Art. 20 Ley 26.565)</p>
+  <div class="card">
+    <table class="cat-tbl">
+      <thead><tr><th class="tl">Causal</th><th style="width:20%">¿Aplica?</th></tr></thead>
+      <tbody>
+        <tr><td class="tl">Superar el tope de ingresos de la categoría K ($108.357.084)</td>
+          <td id="exc-ing" style="text-align:center;font-weight:500">—</td></tr>
+        <tr><td class="tl">Precio unitario de venta supera $613.492 (solo bienes)</td>
+          <td id="exc-precio" style="text-align:center;font-weight:500">—</td></tr>
+        <tr><td class="tl">Compras + gastos (12 meses) ≥ 80% (bienes) / 40% (servicios) del tope de la categoría K</td>
+          <td id="exc-gastos" style="text-align:center;font-weight:500">—</td></tr>
+        <tr><td class="tl">Adquisición de bienes suntuarios o gastos incompatibles con los ingresos declarados</td>
+          <td style="text-align:center;color:var(--ink-s)">Verificación manual</td></tr>
+        <tr><td class="tl">Acreditaciones bancarias superan los límites de la categoría en más del 10%</td>
+          <td style="text-align:center;color:var(--ink-s)">Verificación manual</td></tr>
+        <tr><td class="tl">Más de 3 empleados en relación de dependencia</td>
+          <td style="text-align:center;color:var(--ink-s)">Verificación manual</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(5)">← Volver</button>
+    <button class="bp" onclick="window.print()">🖨 Imprimir / Exportar PDF</button>
+  </div>
+</div>
+
+</div><!-- /sys -->
+
+<script>
+// ── Categorías feb 2026 (ARCA oficial) ─────────────────────────
+const CATS=[
+  {cat:'A',ing:10277988,sup:30,kwh:3330,alq:2390230,cuota_s:42387,cuota_b:42387,os:21990,sipa:15616},
+  {cat:'B',ing:15058448,sup:45,kwh:5000,alq:2390230,cuota_s:48251,cuota_b:48251,os:21990,sipa:17178},
+  {cat:'C',ing:21113697,sup:60,kwh:6700,alq:3266647,cuota_s:56502,cuota_b:55227,os:21990,sipa:18896},
+  {cat:'D',ing:26212853,sup:85,kwh:10000,alq:3266647,cuota_s:72414,cuota_b:70661,os:26133,sipa:20785},
+  {cat:'E',ing:30833964,sup:110,kwh:13000,alq:4143065,cuota_s:102538,cuota_b:92658,os:31870,sipa:22864},
+  {cat:'F',ing:38642048,sup:150,kwh:16500,alq:4143065,cuota_s:129045,cuota_b:111198,os:36650,sipa:25150},
+  {cat:'G',ing:46211109,sup:200,kwh:20000,alq:4939808,cuota_s:197108,cuota_b:135918,os:39518,sipa:35210},
+  {cat:'H',ing:70113407,sup:200,kwh:20000,alq:7170689,cuota_s:447347,cuota_b:272063,os:47486,sipa:49294},
+  {cat:'I',ing:78479212,sup:200,kwh:20000,alq:7170689,cuota_s:824802,cuota_b:406512,os:58640,sipa:69012},
+  {cat:'J',ing:89872640,sup:200,kwh:20000,alq:7170689,cuota_s:999008,cuota_b:497059,os:65811,sipa:96616},
+  {cat:'K',ing:108357084,sup:200,kwh:20000,alq:7170689,cuota_s:1381688,cuota_b:600880,os:75213,sipa:135263},
+];
+const PRECIO_MAX=613492;
+const TOPE_K=108357084;
+
+// ── Config de períodos (meses a mostrar) ────────────────────────
+// Para la recategorización se evalúan los 12 meses previos al período.
+// Ene-Jun 2026 → evalúa jul-25 a jun-26
+// Jul-Dic 2025 → evalúa ene-25 a dic-25
+const PERIODOS={
+  'ene-jun-26':{
+    label:'Enero–Junio 2026 (2da recategorización)',
+    // 12 meses: jul-25 a jun-26
+    meses:[
+      {id:'m1',nombre:'Jul 2025',año:2025},
+      {id:'m2',nombre:'Ago 2025',año:2025},
+      {id:'m3',nombre:'Sep 2025',año:2025},
+      {id:'m4',nombre:'Oct 2025',año:2025},
+      {id:'m5',nombre:'Nov 2025',año:2025},
+      {id:'m6',nombre:'Dic 2025',año:2025},
+      {id:'m7',nombre:'Ene 2026',año:2026},
+      {id:'m8',nombre:'Feb 2026',año:2026},
+      {id:'m9',nombre:'Mar 2026',año:2026},
+      {id:'m10',nombre:'Abr 2026',año:2026},
+      {id:'m11',nombre:'May 2026',año:2026},
+      {id:'m12',nombre:'Jun 2026',año:2026},
+    ]
+  },
+  'jul-dic-25':{
+    label:'Julio–Diciembre 2025 (1ra recategorización)',
+    // 12 meses: ene-25 a dic-25
+    meses:[
+      {id:'m1',nombre:'Ene 2025',año:2025},
+      {id:'m2',nombre:'Feb 2025',año:2025},
+      {id:'m3',nombre:'Mar 2025',año:2025},
+      {id:'m4',nombre:'Abr 2025',año:2025},
+      {id:'m5',nombre:'May 2025',año:2025},
+      {id:'m6',nombre:'Jun 2025',año:2025},
+      {id:'m7',nombre:'Jul 2025',año:2025},
+      {id:'m8',nombre:'Ago 2025',año:2025},
+      {id:'m9',nombre:'Sep 2025',año:2025},
+      {id:'m10',nombre:'Oct 2025',año:2025},
+      {id:'m11',nombre:'Nov 2025',año:2025},
+      {id:'m12',nombre:'Dic 2025',año:2025},
+    ]
+  }
+};
+
+// ── Helpers ─────────────────────────────────────────────────────
+function fmt(v){if(!v||v===0)return'$ 0';return'$ '+Math.round(v).toLocaleString('es-AR')}
+function fmtN(v){return v.toLocaleString('es-AR')}
+function g(id){return parseFloat(document.getElementById(id)?.value)||0}
+function el(id){return document.getElementById(id)}
+function getMeses(){return PERIODOS[el('periodo')?.value||'ene-jun-26'].meses}
+function getMesVal(id){return parseFloat(el('inp-'+id)?.value)||0}
+function getCatPorIng(ing){
+  if(ing>TOPE_K)return null;
+  return CATS.find(c=>ing<=c.ing)||CATS[CATS.length-1];
+}
+
+// ── Tab switching ───────────────────────────────────────────────
+function tab(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.nb').forEach((b,j)=>b.classList.toggle('on',j===i));
+  if(i===2)renderMesTabla();
+  if(i===4)renderResultado();
+  if(i===5)renderTabla();
+  if(i===6)renderExclusion();
+}
+
+function updateTop(){
+  const n=el('nombre')?.value.trim()||'';
+  el('top-tag').textContent=n;
+}
+
+function onPeriodoChange(){
+  recalc();
+  renderMesTabla();
+}
+
+// ── TABLA MENSUAL ───────────────────────────────────────────────
+function renderMesTabla(){
+  const periodo=el('periodo')?.value||'ene-jun-26';
+  const cfg=PERIODOS[periodo];
+  const meses=cfg.meses;
+
+  // KPI período
+  el('mk-periodo').textContent=cfg.label.split('(')[0].trim();
+
+  const tbody=el('mes-tbody');
+  tbody.innerHTML='';
+
+  // Obtener cat actual para el tope de referencia
+  const catActual=getCatActual();
+  const topeRef=catActual.ing;
+
+  let totalFacturado=0;
+  let acumFinal=0;
+
+  meses.forEach((m,idx)=>{
+    const val=getMesVal(m.id);
+    totalFacturado+=val;
+
+    // Acumulado = suma de todos los meses hasta el mes idx incluido
+    const acum=meses.slice(0,idx+1).reduce((s,mm)=>s+getMesVal(mm.id),0);
+    if(idx===meses.length-1)acumFinal=acum;
+
+    const catAcum=getCatPorIng(acum);
+    const pct=topeRef>0?Math.min((acum/topeRef)*100,999):0;
+
+    let obs='', dotCls='dot-ok', rowCls='';
+    if(acum>TOPE_K){
+      obs='⛔ Supera tope categoría K — riesgo exclusión'; dotCls='dot-err'; rowCls='mes-acum-err';
+    } else if(catAcum && CATS.indexOf(catAcum)>CATS.indexOf(catActual)){
+      obs=`↑ Encuadra en cat. ${catAcum.cat} (sube)`; dotCls='dot-warn'; rowCls='mes-acum-warn';
+    } else if(catAcum && CATS.indexOf(catAcum)<CATS.indexOf(catActual)){
+      obs=`↓ Encuadra en cat. ${catAcum.cat} (puede bajar)`; dotCls='dot-ok'; rowCls='mes-highlight';
+    } else if(catAcum){
+      obs=`✓ Sigue en cat. ${catAcum.cat}`; dotCls='dot-ok';
+    }
+
+    const tr=document.createElement('tr');
+    if(rowCls)tr.className=rowCls;
+    tr.innerHTML=`
+      <td class="mes-nombre">${m.nombre}</td>
+      <td style="padding:3px 6px"><input type="number" id="inp-${m.id}" value="${getMesValStored(m.id)}" placeholder="0" oninput="onMesInput()" style="width:100%;border:none;background:transparent;font-size:12px;font-family:var(--sans);color:var(--ink);text-align:right;padding:2px 4px;outline:none" onfocus="this.style.background='var(--hu)'" onblur="this.style.background='transparent'"></td>
+      <td class="mes-calc" id="acum-${m.id}">${fmt(acum)}</td>
+      <td class="mes-calc" style="color:${pct>90?'var(--cr)':pct>75?'var(--ac)':'var(--vt)'}">${pct.toFixed(1)}%</td>
+      <td style="font-size:11px;color:var(--ink-s)"><span class="dot ${dotCls}"></span>${obs}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Totales
+  el('mes-tot-fact').textContent=fmt(totalFacturado);
+  el('mes-tot-acum').textContent=fmt(acumFinal);
+
+  // KPIs
+  const promedio=meses.length>0?totalFacturado/meses.length:0;
+  el('mk-acum').textContent=fmt(acumFinal);
+  el('mk-prom').textContent=fmt(promedio);
+
+  const catEst=getCatPorIng(acumFinal);
+  el('mk-cat').textContent=acumFinal>TOPE_K?'Excluido':catEst?`Cat. ${catEst.cat}`:'—';
+  const pctFinal=topeRef>0?(acumFinal/topeRef*100):0;
+  el('mk-acum-sub').textContent=pctFinal>0?`${pctFinal.toFixed(1)}% del tope cat. ${catActual.cat}`:'';
+
+  // Barra de progreso global
+  const pgWrap=el('mes-progreso-wrap');
+  pgWrap.style.display=acumFinal>0?'block':'none';
+  const catFinal=getCatPorIng(acumFinal);
+  const topeFinal=catFinal?catFinal.ing:TOPE_K;
+  const pctBar=Math.min((acumFinal/topeFinal)*100,100);
+  const colorBar=acumFinal>TOPE_K?'progreso-err':pctBar>90?'progreso-err':pctBar>75?'progreso-warn':'progreso-ok';
+  el('mes-prog-label').textContent=`Uso del tope de ingresos — Categoría ${catFinal?catFinal.cat:'K'}: ${fmt(topeFinal)} anuales`;
+  el('mes-prog-fill').className='progreso-fill '+colorBar;
+  el('mes-prog-fill').style.width=pctBar+'%';
+  el('mes-prog-text').textContent=`${fmt(acumFinal)} de ${fmt(topeFinal)} (${pctBar.toFixed(1)}%) — Margen: ${fmt(Math.max(0,topeFinal-acumFinal))}`;
+
+  // Obs total
+  el('mes-tot-obs').textContent=catEst?`Categoría estimada por ingresos: ${catEst.cat}`:'Supera tope categoría K';
+}
+
+// Guardar valores de inputs (en memoria durante sesión)
+const mesStore={};
+function getMesValStored(id){return mesStore[id]||'';}
+
+function onMesInput(){
+  // Guardar en store y recalcular
+  const meses=getMeses();
+  meses.forEach(m=>{
+    const inp=el('inp-'+m.id);
+    if(inp)mesStore[m.id]=inp.value;
+  });
+  renderMesTabla();
+}
+
+function volcarYContinuar(){
+  // Calcular acumulado final y volcarlo en ing-brutos
+  const meses=getMeses();
+  const acum=meses.reduce((s,m)=>s+getMesVal(m.id),0);
+  const ingInput=el('ing-brutos');
+  if(ingInput){
+    ingInput.value=acum>0?Math.round(acum):'';
+    recalc();
+    el('ing-link-hint').textContent=acum>0?`✓ Volcado desde tabla mensual: ${fmt(acum)}`:'';
+  }
+  tab(3);
+}
+
+// ── Lógica de categorías ────────────────────────────────────────
+function getCatActual(){return CATS.find(c=>c.cat===el('cat-actual')?.value)||CATS[0];}
+function getTipoAct(){return el('tipo-act')?.value||'serv';}
+
+function getCatCorrecta(){
+  const ing=g('ing-brutos');
+  const sup=g('superficie');
+  const kwh=g('energia');
+  const alq=g('alquileres');
+  const esServ=getTipoAct()==='serv'||getTipoAct()==='mixta';
+  if(ing>TOPE_K)return{cat:null,excluido:true,param:'ingresos'};
+  const catIng=CATS.find(c=>ing<=c.ing)||CATS[CATS.length-1];
+  const catSup=sup>0?CATS.find(c=>sup<=c.sup)||CATS[CATS.length-1]:CATS[0];
+  const catKwh=kwh>0?CATS.find(c=>kwh<=c.kwh)||CATS[CATS.length-1]:CATS[0];
+  const catAlq=alq>0?CATS.find(c=>alq<=c.alq)||CATS[CATS.length-1]:CATS[0];
+  const idx=Math.max(CATS.indexOf(catIng),CATS.indexOf(catSup),CATS.indexOf(catKwh),CATS.indexOf(catAlq));
+  let param='ingresos';
+  const idxMax=Math.max(CATS.indexOf(catIng),CATS.indexOf(catSup),CATS.indexOf(catKwh),CATS.indexOf(catAlq));
+  if(CATS.indexOf(catAlq)===idxMax&&alq>0)param='alquileres';
+  else if(CATS.indexOf(catKwh)===idxMax&&kwh>0)param='energía eléctrica';
+  else if(CATS.indexOf(catSup)===idxMax&&sup>0)param='superficie';
+  return{cat:CATS[idx],excluido:false,param};
+}
+
+function recalc(){
+  const ing=g('ing-brutos');
+  el('ing-calc').textContent=fmt(ing);
+  const {cat,excluido,param}=getCatCorrecta();
+  el('param-det').textContent=param;
+  el('cat-det').textContent=excluido?'Excluido del régimen':cat?`Categoría ${cat.cat}`:'—';
+  renderGastos();
+}
+
+function gastosFactor(){ return el('tipo-act') && el('tipo-act').value==='bienes' ? 0.80 : 0.40; }
+
+function renderGastos(){
+  const gastos=g('gastos'), ing=g('ing-brutos');
+  const factor=gastosFactor();
+  const umbral=TOPE_K*factor;
+  const ratio=ing>0?gastos/ing:0;
+  const uso=umbral>0?gastos/umbral:0;
+  const rEl=el('g-ratio'); if(rEl){ rEl.textContent=ing>0?(ratio*100).toFixed(1)+'%':'—'; rEl.style.color=ratio>1?'var(--rt)':'var(--bu)'; }
+  const lEl=el('g-umbral-lbl'); if(lEl) lEl.textContent=`Umbral de exclusión (${(factor*100)}% tope cat. K)`;
+  const uEl=el('g-umbral'); if(uEl) uEl.textContent=fmt(umbral);
+  const usoEl=el('g-uso'); if(usoEl){ usoEl.textContent=gastos>0?(uso*100).toFixed(1)+'%':'—'; usoEl.style.color=uso>=1?'var(--rt)':uso>0.8?'var(--at)':'var(--vt)'; }
+  const aEl=el('g-analisis'); if(!aEl) return;
+  let html='';
+  if(gastos<=0){ aEl.innerHTML=''; return; }
+  if(uso>=1) html+=`<div class="al err">⛔ Causal de exclusión: compras + gastos (${fmt(gastos)}) alcanzan o superan el ${(factor*100)}% del tope de la categoría K (${fmt(umbral)}). Exclusión de pleno derecho (Art. 20).</div>`;
+  else if(uso>0.8) html+=`<div class="al warn">⚠️ Compras + gastos en ${(uso*100).toFixed(1)}% del umbral de exclusión (${fmt(umbral)}). Margen acotado: seguir de cerca.</div>`;
+  if(ing>0 && ratio>1) html+=`<div class="al warn">⚠️ Los gastos (${fmt(gastos)}) superan las ventas declaradas (${fmt(ing)}). Inconsistencia que ARCA puede observar como gastos incompatibles con los ingresos.</div>`;
+  aEl.innerHTML=html;
+}
+
+function renderResultado(){
+  recalc();
+  const {cat,excluido,param}=getCatCorrecta();
+  const actual=getCatActual();
+  const tipo=getTipoAct();
+  const esServ=tipo==='serv'||tipo==='mixta';
+  const ing=g('ing-brutos');
+  let resultHTML='';
+  if(excluido){
+    resultHTML=`<div class="resultado-card res-err">
+      <div class="res-titulo" style="color:var(--rt)">⛔ Excluido del régimen</div>
+      <div class="res-sub">Los ingresos brutos (${fmt(ing)}) superan el tope de la categoría K (${fmt(TOPE_K)}). Corresponde pasar a Responsable Inscripto. Conviene hacerlo voluntariamente para acceder al beneficio de buen cumplidor.</div>
+    </div>`;
+    el('resultado-panel').innerHTML=resultHTML;
+    el('progreso-panel').innerHTML='';el('cuota-panel').innerHTML='';el('alertas-panel').innerHTML='';
+    return;
+  }
+  const idxActual=CATS.indexOf(actual);
+  const idxCorrec=CATS.indexOf(cat);
+  const sube=idxCorrec>idxActual;
+  const baja=idxCorrec<idxActual;
+  const igual=idxCorrec===idxActual;
+  const cuotaActual=esServ?actual.cuota_s:actual.cuota_b;
+  const cuotaCorrec=esServ?cat.cuota_s:cat.cuota_b;
+  const diffCuota=cuotaCorrec-cuotaActual;
+  if(igual){
+    resultHTML=`<div class="resultado-card res-ok">
+      <div class="res-titulo" style="color:var(--vt)">✅ No corresponde recategorizarse</div>
+      <div class="res-sub">Los parámetros del período encuadran en la categoría <strong>${cat.cat}</strong>, que es la misma en la que está actualmente inscripto. No es necesario realizar el trámite de recategorización para este período.</div>
+    </div>`;
+  } else if(sube){
+    resultHTML=`<div class="resultado-card res-warn">
+      <div class="res-titulo" style="color:var(--at)">⬆️ Corresponde subir de categoría</div>
+      <div class="res-sub">Los parámetros del período (determinante: <strong>${param}</strong>) encuadran en la categoría <strong>${cat.cat}</strong>. Está actualmente en categoría <strong>${actual.cat}</strong>. Hay que recategorizarse antes del <strong>5 de agosto de 2026</strong> o ARCA puede recategorizarlo de oficio.</div>
+    </div>`;
+  } else {
+    resultHTML=`<div class="resultado-card res-neu">
+      <div class="res-titulo" style="color:var(--bu)">⬇️ Puede bajar de categoría</div>
+      <div class="res-sub">Los parámetros del período encuadran en la categoría <strong>${cat.cat}</strong>. Está actualmente en categoría <strong>${actual.cat}</strong>. Puede recategorizarse para pagar una cuota menor a partir de agosto 2026.</div>
+    </div>`;
+  }
+  el('resultado-panel').innerHTML=resultHTML;
+  const pct=Math.min((ing/cat.ing)*100,100);
+  const color=pct>90?'progreso-err':pct>75?'progreso-warn':'progreso-ok';
+  el('progreso-panel').innerHTML=`
+    <div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Uso del tope de ingresos — Categoría ${cat.cat}: ${fmt(cat.ing)} anuales</div>
+    <div class="progreso-wrap"><div class="progreso-fill ${color}" style="width:${pct}%"></div></div>
+    <div style="font-size:11px;color:var(--ink-s);margin-top:4px">${fmt(ing)} de ${fmt(cat.ing)} (${pct.toFixed(1)}%) — Margen disponible: ${fmt(cat.ing-ing)}</div>`;
+  el('cuota-panel').innerHTML=`
+    <div class="cuota-diff">
+      <div><div class="kl">Cuota actual (Cat. ${actual.cat})</div><div style="font-family:var(--serif);font-size:17px;color:var(--bu)">${fmt(cuotaActual)}/mes</div></div>
+      <div class="arrow">${sube?'→':'←'}</div>
+      <div><div class="kl">Cuota nueva (Cat. ${cat.cat})</div><div style="font-family:var(--serif);font-size:17px;color:${sube?'var(--cr)':'var(--vt)'}">${fmt(cuotaCorrec)}/mes</div></div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="kl">Diferencia mensual</div>
+        <div style="font-family:var(--serif);font-size:17px;color:${diffCuota>0?'var(--cr)':'var(--vt)'}">
+          ${diffCuota>0?'+':''}${fmt(Math.abs(diffCuota))}
+        </div>
+        <div class="ks">${diffCuota>0?`+${fmt(Math.abs(diffCuota*12))}/año`:`Ahorro: ${fmt(Math.abs(diffCuota*12))}/año`}</div>
+      </div>
+    </div>`;
+  let als='';
+  if(pct>90&&!igual)als+=`<div class="al warn">⚠️ Usó el ${pct.toFixed(1)}% del tope de ingresos de la categoría ${cat.cat}. Si continúa a este ritmo, puede superar el límite antes de la próxima recategorización.</div>`;
+  if(sube)als+=`<div class="al warn">⚠️ La recategorización de oficio de ARCA surte efecto retroactivo y puede incluir intereses. Conviene recategorizarse voluntariamente antes del 5/08/2026.</div>`;
+  if(g('precio-unit')>0&&g('precio-unit')>PRECIO_MAX)als+=`<div class="al err">⛔ El precio unitario de venta (${fmt(g('precio-unit'))}) supera el máximo permitido (${fmt(PRECIO_MAX)}). Esto es causal de exclusión del régimen.</div>`;
+  el('alertas-panel').innerHTML=als;
+}
+
+function renderTabla(){
+  const {cat}=getCatCorrecta();
+  const actual=getCatActual();
+  const tb=el('tabla-body');
+  tb.innerHTML=CATS.map(c=>{
+    const esActual=c.cat===actual.cat;
+    const esSug=cat&&c.cat===cat.cat&&!esActual;
+    let cls=esActual?'actual':esSug?'sugerida':'';
+    return`<tr class="${cls}">
+      <td class="cn">${c.cat}${esActual?' ◀':esSug?' ✓':''}</td>
+      <td class="tl">${fmt(c.ing)}</td>
+      <td>${fmtN(c.sup)} m²</td>
+      <td>${fmtN(c.kwh)} kWh</td>
+      <td>${fmt(c.alq)}</td>
+      <td>${fmt(c.cuota_s)}</td>
+      <td>${fmt(c.cuota_b)}</td>
+      <td>${fmt(c.os)}</td>
+      <td>${fmt(c.sipa)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderExclusion(){
+  const ing=g('ing-brutos');
+  const pu=g('precio-unit');
+  const gastos=g('gastos');
+  const factor=gastosFactor();
+  const umbral=TOPE_K*factor;
+  const excIng=ing>TOPE_K;
+  const excPu=pu>0&&pu>PRECIO_MAX;
+  const excGastos=gastos>0&&gastos>=umbral;
+  const excluido=excIng||excPu||excGastos;
+  el('exc-ing').textContent=excIng?'⛔ Sí':'✅ No';
+  el('exc-ing').style.color=excIng?'var(--rt)':'var(--vt)';
+  el('exc-precio').textContent=excPu?'⛔ Sí':'✅ No';
+  el('exc-precio').style.color=excPu?'var(--rt)':'var(--vt)';
+  const eg=el('exc-gastos');
+  if(eg){ eg.textContent=excGastos?'⛔ Sí':'✅ No'; eg.style.color=excGastos?'var(--rt)':'var(--vt)'; }
+  el('exclusion-panel').innerHTML=excluido
+    ?`<div class="resultado-card res-err">
+        <div class="res-titulo" style="color:var(--rt)">⛔ Excluido del régimen simplificado</div>
+        <div class="res-sub">Corresponde pasar a Responsable Inscripto. Si lo hace voluntariamente antes del 5 de agosto, puede acceder al beneficio de buen cumplidor (escala reducida en Ganancias y reducción en Bienes Personales). La exclusión tiene efectos desde el primer día del mes siguiente.</div>
+      </div>`
+    :`<div class="resultado-card res-ok">
+        <div class="res-titulo" style="color:var(--vt)">✅ Sin causales automáticas de exclusión</div>
+        <div class="res-sub">Los parámetros informados no generan exclusión automática del régimen. Verificar manualmente: adquisición de bienes incompatibles, acreditaciones bancarias y cantidad de empleados.</div>
+      </div>`;
+}
+
+function limpiar(){
+  if(!confirm('¿Limpiar todos los datos?'))return;
+  ['nombre','cuit','ing-brutos','superficie','energia','alquileres','precio-unit','gastos']
+    .forEach(id=>{const e=el(id);if(e)e.value='';});
+  // Limpiar store mensual
+  Object.keys(mesStore).forEach(k=>delete mesStore[k]);
+  el('top-tag').textContent='';
+  el('ing-calc').textContent='$ 0';
+  el('param-det').textContent='—';
+  el('cat-det').textContent='—';
+  el('ing-link-hint').textContent='';
+  tab(0);
+}
+
+// ── Init ────────────────────────────────────────────────────────
+renderTabla();
+recalc();
+renderMesTabla();
+</script>
+</body>
+</html>
