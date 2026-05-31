@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajuste 4° anticipo CM · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#8B0000;--bu:#2D0A0A;--hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;--ink:#1A0A0A;--ink-s:#8A6A6A;--vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;--ab:#FDF3E0;--at:#5A3800;--rb:#FCEBEB;--rt:#791F1F;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:1040px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.5rem}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.top-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.per-tag{font-size:12px;color:var(--ar)}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:4px;overflow-x:auto}
+.nb{font-size:12px;font-weight:500;padding:7px 12px;border:none;background:none;cursor:pointer;color:var(--ink-s);border-radius:7px;white-space:nowrap;font-family:var(--sans)}
+.nb.on{background:var(--cr);color:var(--hu)}.nb:hover:not(.on){background:var(--hu)}
+.panel{display:none}.panel.on{display:block}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--ar);padding-bottom:6px}.st:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.kv{font-family:var(--serif);font-size:18px;color:var(--bu)}.kv.w{color:var(--cr)}.kv.ok{color:var(--vt)}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}.warn{background:var(--ab);color:var(--at);border-left-color:#BA7517}.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}.err{background:var(--rb);color:var(--rt);border-left-color:var(--cr)}
+.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:500;padding:5px 6px;border:1px solid var(--bu);text-align:center;letter-spacing:.03em;text-transform:uppercase}.tbl th.tl{text-align:left}
+.tbl td{padding:4px 6px;border:1px solid var(--ar);vertical-align:middle}.tbl td.tr{text-align:right;font-weight:500;color:var(--bu)}.tbl td.tc{text-align:center}.tbl td.tl{text-align:left}
+.tbl tr:nth-child(even){background:#FDF8F0}.tbl tr.totf td{font-weight:600;background:var(--bu);color:var(--hu)}
+.tbl input{width:100%;background:#FFF8EE;border:1.5px solid var(--ar);border-radius:3px;padding:2px 5px;font-size:11px;text-align:right;font-family:var(--sans);height:24px}
+.nb-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--ar)}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.hint{font-size:12px;color:var(--ink-s)}
+.onb{text-align:center;padding:2.5rem 1rem}.onb h2{font-family:var(--serif);font-size:24px;color:var(--bu);margin-bottom:.5rem}.onb p{font-size:13px;color:var(--ink-s);max-width:540px;margin:0 auto 1.5rem;line-height:1.6}
+.chk{text-align:left;max-width:480px;margin:0 auto 1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1rem}.chi{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--ar);font-size:13px;line-height:1.4}.chi:last-child{border-bottom:none}.chn{width:22px;height:22px;border-radius:50%;background:var(--cr);color:var(--hu);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin:.75rem auto 1.25rem;max-width:540px;line-height:1.5}
+.sbtn{background:var(--cr);color:var(--hu);border:none;padding:11px 32px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+@media print{.nav,.nb-bar,.btn-cl{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+@media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+<div class="topbar">
+  <div><div class="logo">Ajuste del 4° anticipo — Convenio Multilateral<br>Recálculo enero · febrero · marzo</div><div class="logo-sub">Conta Club</div></div>
+  <div class="top-r"><div class="per-tag" id="per-tag">—</div><button class="btn-cl" onclick="limpiar()">Limpiar datos</button></div>
+</div>
+<div class="nav">
+  <button class="nb on" onclick="irA(0)">Inicio</button>
+  <button class="nb" onclick="irA(1)">Datos</button>
+  <button class="nb" onclick="irA(2)">Coeficientes y trimestre</button>
+  <button class="nb" onclick="irA(3)">Ajuste</button>
+</div>
+
+<!-- 0 -->
+<div class="panel on" id="panel-0">
+  <div class="onb">
+    <h2>Ajuste del 4° anticipo<br>Convenio Multilateral</h2>
+    <p>Cuando el contribuyente liquidó enero, febrero y marzo con el coeficiente anterior y recién aplica el nuevo coeficiente (del CM05) desde el 4° anticipo, hay que <strong>recalcular el primer trimestre</strong> y ajustar la diferencia por jurisdicción en el anticipo de abril.</p>
+    <div class="chk">
+      <div class="chi"><div class="chn">1</div><span>Datos del contribuyente y año</span></div>
+      <div class="chi"><div class="chn">2</div><span>Ingresos totales de enero, febrero y marzo, y por jurisdicción el coeficiente viejo y el nuevo</span></div>
+      <div class="chi"><div class="chn">3</div><span>Ajuste de base y de impuesto por jurisdicción, listo para sumar al 4° anticipo</span></div>
+    </div>
+    <div class="disc">Solo corresponde si NO se aplicó el nuevo coeficiente desde enero. La base de cada jurisdicción del 4° anticipo se ajusta por la diferencia: ingresos del trimestre × (coef. nuevo − coef. viejo). Papel de trabajo de apoyo; no reemplaza el criterio profesional del contador.</div>
+    <button class="sbtn" onclick="irA(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- 1 -->
+<div class="panel" id="panel-1">
+  <p class="st">Identificación</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field" style="grid-column:span 2"><label>Razón social / Apellido y nombre</label><input type="text" id="razon" placeholder="Contribuyente" oninput="updateTag()"></div>
+    <div class="field"><label>CUIT</label><input type="text" id="cuit" placeholder="30-12345678-9"></div>
+    <div class="field"><label>N° de inscripción CM</label><input type="text" id="insc" placeholder="Ej: 901-123456-7"></div>
+    <div class="field"><label>Año del ajuste</label><input type="text" id="anio" placeholder="Ej: 2026" oninput="updateTag()"></div>
+  </div>
+  <div class="al info">El coeficiente nuevo sale del CM05 (Asistente CM05). El coeficiente viejo es el que se aplicó en enero-marzo. Ambos deben sumar 1,0000 entre todas las jurisdicciones.</div>
+  <div class="nb-bar"><span class="hint">Paso 1 de 3</span><button class="bp" onclick="irA(2)">Continuar</button></div>
+</div>
+
+<!-- 2 -->
+<div class="panel" id="panel-2">
+  <p class="st">Ingresos totales del primer trimestre</p>
+  <div class="g3" style="gap:10px;margin-bottom:12px">
+    <div class="field"><label>Ingresos enero ($)</label><input type="number" id="ene" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Ingresos febrero ($)</label><input type="number" id="feb" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Ingresos marzo ($)</label><input type="number" id="mar" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="card"><div class="g2" style="gap:10px">
+    <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Total ingresos 1er trimestre</div><div id="tot-trim" class="kv">$ 0</div></div>
+    <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Control coeficientes (viejo / nuevo)</div><div id="ctrl-coef" style="font-size:13px;font-weight:600">—</div></div>
+  </div></div>
+  <p class="st">Coeficientes y alícuota por jurisdicción</p>
+  <div class="al info">Cargá el coeficiente <strong>viejo</strong> (el que usaste ene-mar) y el <strong>nuevo</strong> (del CM05). La alícuota es opcional: si la cargás, calcula también el ajuste de impuesto.</div>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th class="tl" style="width:30%">Jurisdicción</th><th style="width:23%">Coef. viejo</th><th style="width:23%">Coef. nuevo</th><th style="width:24%">Alícuota %</th></tr></thead>
+      <tbody id="coef-body"></tbody>
+      <tfoot><tr class="totf"><td class="tl">TOTAL</td><td id="sv" style="text-align:center">—</td><td id="sn" style="text-align:center">—</td><td></td></tr></tfoot>
+    </table>
+  </div>
+  <div class="nb-bar"><button class="bs" onclick="irA(1)">Volver</button><button class="bp" onclick="irA(3)">Ver ajuste</button></div>
+</div>
+
+<!-- 3 -->
+<div class="panel" id="panel-3">
+  <div id="aj-alertas"></div>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th class="tl">Jurisdicción</th><th>Coef. viejo</th><th>Coef. nuevo</th><th>Δ coef.</th><th>Ajuste de base ($)</th><th>Ajuste de impuesto ($)</th></tr></thead>
+      <tbody id="aj-body"></tbody>
+      <tfoot><tr class="totf"><td class="tl">TOTAL</td><td></td><td></td><td></td><td id="aj-tb" style="text-align:right">$ 0</td><td id="aj-ti" style="text-align:right">$ 0</td></tr></tfoot>
+    </table>
+  </div>
+  <div id="aj-kpis" style="margin-top:1rem"></div>
+  <div class="nb-bar"><button class="bs" onclick="irA(2)">Volver</button><button class="bp" onclick="window.print()">Imprimir / PDF (legajo)</button></div>
+</div>
+
+</div>
+<script>
+var JUR=[["CM","CABA"],["BA","Buenos Aires"],["CA","Catamarca"],["CB","Córdoba"],["CR","Corrientes"],["CH","Chaco"],["CU","Chubut"],["ER","Entre Ríos"],["FO","Formosa"],["JU","Jujuy"],["LP","La Pampa"],["LR","La Rioja"],["MZ","Mendoza"],["MI","Misiones"],["NE","Neuquén"],["RN","Río Negro"],["SA","Salta"],["SJ","San Juan"],["SL","San Luis"],["SC","Santa Cruz"],["SF","Santa Fe"],["SE","Santiago del Estero"],["TF","Tierra del Fuego"],["TU","Tucumán"]];
+var d={}; JUR.forEach(function(j){ d[j[0]]={cv:0,cn:0,al:0}; });
+function fmt(v){ var s=Math.abs(Math.round(v)).toLocaleString("es-AR"); return (v<0?"-$ ":"$ ")+s; }
+function c4(v){ return v.toLocaleString("es-AR",{minimumFractionDigits:4,maximumFractionDigits:4}); }
+function el(id){ return document.getElementById(id); }
+function g(id){ return parseFloat(el(id)&&el(id).value)||0; }
+function trim(){ return g("ene")+g("feb")+g("mar"); }
+function sumCV(){ return JUR.reduce(function(a,j){return a+(d[j[0]].cv||0);},0); }
+function sumCN(){ return JUR.reduce(function(a,j){return a+(d[j[0]].cn||0);},0); }
+
+function irA(i){
+  document.querySelectorAll(".panel").forEach(function(p,j){ p.classList.toggle("on",j===i); });
+  document.querySelectorAll(".nb").forEach(function(b,j){ b.classList.toggle("on",j===i); });
+  if(i===2) renderCoef();
+  if(i===3) renderAjuste();
+}
+function updateTag(){ var e=el("per-tag"); if(e) e.textContent=(el("razon").value||"—")+(el("anio").value?(" · "+el("anio").value):""); }
+
+function renderCoef(){
+  var b=el("coef-body"); if(!b) return;
+  b.innerHTML=JUR.map(function(j){
+    var x=d[j[0]];
+    return "<tr><td class='tl'>"+j[1]+"</td>"
+      +"<td><input type='number' step='0.0001' value='"+(x.cv||"")+"' placeholder='0,0000' oninput=\"d['"+j[0]+"'].cv=parseFloat(this.value)||0;recalc()\"></td>"
+      +"<td><input type='number' step='0.0001' value='"+(x.cn||"")+"' placeholder='0,0000' oninput=\"d['"+j[0]+"'].cn=parseFloat(this.value)||0;recalc()\"></td>"
+      +"<td><input type='number' step='0.01' value='"+(x.al||"")+"' placeholder='0,00' oninput=\"d['"+j[0]+"'].al=parseFloat(this.value)||0;recalc()\"></td></tr>";
+  }).join("");
+  recalc();
+}
+function recalc(){
+  el("tot-trim").textContent=fmt(trim());
+  var sv=sumCV(), sn=sumCN();
+  if(el("sv")) el("sv").textContent=c4(sv);
+  if(el("sn")) el("sn").textContent=c4(sn);
+  var c=el("ctrl-coef");
+  if(c){
+    var okv=Math.abs(sv-1)<0.0001||sv===0, okn=Math.abs(sn-1)<0.0001||sn===0;
+    c.innerHTML="viejo "+c4(sv)+" "+(okv?"✅":"⚠️")+" · nuevo "+c4(sn)+" "+(okn?"✅":"⚠️");
+    c.style.color=(okv&&okn)?"var(--vt)":"var(--at)";
+  }
+}
+function renderAjuste(){
+  var t=trim(), b=el("aj-body"); if(!b) return;
+  var tb=0, ti=0;
+  var rows=JUR.filter(function(j){return d[j[0]].cv>0||d[j[0]].cn>0;});
+  b.innerHTML=rows.map(function(j){
+    var x=d[j[0]]; var dc=x.cn-x.cv; var ab=t*dc; var ai=ab*(x.al||0)/100;
+    tb+=ab; ti+=ai;
+    var col=ab>0?"var(--cr)":ab<0?"var(--vt)":"var(--ink-s)";
+    return "<tr><td class='tl'>"+j[1]+"</td><td class='tc'>"+c4(x.cv)+"</td><td class='tc'>"+c4(x.cn)+"</td>"
+      +"<td class='tc' style='color:"+col+"'>"+(dc>=0?"+":"")+c4(dc)+"</td>"
+      +"<td class='tr' style='color:"+col+"'>"+fmt(ab)+"</td>"
+      +"<td class='tr' style='color:"+(ai>0?"var(--cr)":ai<0?"var(--vt)":"var(--ink-s)")+"'>"+(x.al>0?fmt(ai):"—")+"</td></tr>";
+  }).join("");
+  el("aj-tb").textContent=fmt(tb); el("aj-ti").textContent=fmt(ti);
+  var als="";
+  var sv=sumCV(), sn=sumCN();
+  if(t===0) als+="<div class='al warn'>Cargá los ingresos del primer trimestre para calcular el ajuste.</div>";
+  if(rows.length&&(Math.abs(sv-1)>0.0001||Math.abs(sn-1)>0.0001)) als+="<div class='al warn'>Los coeficientes no suman 1,0000 (viejo "+c4(sv)+" / nuevo "+c4(sn)+"). Revisá antes de tomar el ajuste.</div>";
+  if(Math.abs(tb)>1) als+="<div class='al info'>El ajuste de base total debería tender a $0 (es una redistribución entre jurisdicciones). Diferencia actual: "+fmt(tb)+".</div>";
+  if(rows.length) als+="<div class='al ok'>Sumá/restá el <strong>ajuste de base</strong> de cada jurisdicción a la base imponible del 4° anticipo. El ajuste de impuesto es el efecto neto en el saldo.</div>";
+  el("aj-alertas").innerHTML=als;
+  el("aj-kpis").innerHTML="<div class='g3'><div class='kpi'><div class='kl'>Ingresos 1er trimestre</div><div class='kv'>"+fmt(t)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Jurisdicciones con ajuste</div><div class='kv'>"+rows.length+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Ajuste neto de impuesto</div><div class='kv "+(ti>0?'w':'ok')+"'>"+fmt(ti)+"</div></div></div>";
+}
+function limpiar(){ if(!confirm("¿Limpiar todos los datos?")) return; ["razon","cuit","insc","anio","ene","feb","mar"].forEach(function(id){var e=el(id);if(e)e.value="";}); JUR.forEach(function(j){d[j[0]]={cv:0,cn:0,al:0};}); updateTag(); irA(0); }
+updateTag();
+</script>
+</body>
+</html>
