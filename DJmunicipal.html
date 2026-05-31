@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Municipal — Un municipio · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#8B0000;--cr-u:#F5E0E0;--bu:#2D0A0A;
+  --hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;
+  --ink:#1A0A0A;--ink-s:#8A6A6A;
+  --vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;
+  --ab:#FDF3E0;--at:#5A3800;
+  --rb:#FCEBEB;--rt:#791F1F;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:1000px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.5rem}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}
+.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.top-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.per-tag{font-size:12px;color:var(--ar)}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:4px;overflow-x:auto}
+.nb{font-size:12px;font-weight:500;padding:7px 12px;border:none;background:none;cursor:pointer;color:var(--ink-s);border-radius:7px;white-space:nowrap;font-family:var(--sans)}
+.nb.on{background:var(--cr);color:var(--hu)}
+.nb:hover:not(.on){background:var(--hu)}
+.panel{display:none}.panel.on{display:block}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--ar);padding-bottom:6px}
+.st:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}
+.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kv{font-family:var(--serif);font-size:18px;color:var(--bu)}
+.kv.w{color:var(--cr)}.kv.ok{color:var(--vt)}
+.ks{font-size:11px;color:var(--ink-s);margin-top:3px}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}
+.warn{background:var(--ab);color:var(--at);border-left-color:#BA7517}
+.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:500;padding:5px 6px;border:1px solid var(--bu);text-align:center;letter-spacing:.03em;text-transform:uppercase}
+.tbl th.tl{text-align:left}
+.tbl td{padding:4px 6px;border:1px solid var(--ar);vertical-align:middle}
+.tbl td.tr{text-align:right;font-weight:500;color:var(--bu)}
+.tbl td.tc{text-align:center}
+.tbl td.tl{text-align:left}
+.tbl tr:nth-child(even){background:#FDF8F0}
+.tbl tr.totf td{font-weight:600;background:var(--bu);color:var(--hu)}
+.tbl input{width:100%;background:var(--hu);border:1px solid var(--ar);border-radius:3px;padding:2px 5px;font-size:11px;text-align:right;font-family:var(--sans);height:24px}
+.sumrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--ar);font-size:13px}
+.sumrow:last-child{border-bottom:none}
+.sumrow .lbl{color:var(--ink-s)}
+.sumrow .val{font-weight:500;color:var(--bu);min-width:120px;text-align:right}
+.sumrow input{width:130px;background:var(--hu);border:1px solid var(--ar);border-radius:5px;padding:4px 8px;font-size:12px;text-align:right;font-family:var(--sans);height:30px}
+.sumrow.tot{border-top:2px solid var(--bu);margin-top:6px;padding-top:12px;font-size:15px}
+.sumrow.tot .lbl{color:var(--bu);font-weight:600}
+.nb-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--ar)}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.hint{font-size:12px;color:var(--ink-s)}
+.onb{text-align:center;padding:2.5rem 1rem}
+.onb h2{font-family:var(--serif);font-size:24px;color:var(--bu);margin-bottom:.5rem}
+.onb p{font-size:13px;color:var(--ink-s);max-width:520px;margin:0 auto 1.5rem;line-height:1.6}
+.chk{text-align:left;max-width:470px;margin:0 auto 1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1rem}
+.chi{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--ar);font-size:13px;line-height:1.4}
+.chi:last-child{border-bottom:none}
+.chn{width:22px;height:22px;border-radius:50%;background:var(--cr);color:var(--hu);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin:.75rem auto 1.25rem;max-width:500px;line-height:1.5}
+.sbtn{background:var(--cr);color:var(--hu);border:none;padding:11px 32px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+@media print{.nav,.nb-bar{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo">Tributo Municipal — DJ mensual<br>Comercio e Industria · Seguridad e Higiene</div>
+    <div class="logo-sub">Conta Club</div>
+  </div>
+  <div class="top-r">
+    <div class="per-tag" id="per-tag">—</div>
+    <button class="btn-cl" onclick="limpiar()">Limpiar datos</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="irA(0)">Inicio</button>
+  <button class="nb" onclick="irA(1)">Datos</button>
+  <button class="nb" onclick="irA(2)">Liquidación</button>
+  <button class="nb" onclick="irA(3)">Dashboard</button>
+</div>
+
+<!-- T0: INICIO -->
+<div class="panel on" id="panel-0">
+  <div class="onb">
+    <h2>DJ Municipal<br>Tributo sobre la actividad comercial</h2>
+    <p>Papel de trabajo para la declaración mensual del tributo municipal que grava la actividad —según la jurisdicción: <strong>Tasa de Seguridad e Higiene, Comercio e Industria, DReI o CCIES</strong>— sobre los ingresos atribuibles a <strong>un municipio</strong>.</p>
+    <div class="chk">
+      <div class="chi"><div class="chn">1</div><span>Datos del contribuyente, municipio y nombre del tributo</span></div>
+      <div class="chi"><div class="chn">2</div><span>Base imponible por actividad, alícuota (% o ‰), mínimo, importe fijo y pagos a cuenta</span></div>
+      <div class="chi"><div class="chn">3</div><span>Dashboard: composición por actividad y saldo</span></div>
+    </div>
+    <div class="disc">La denominación, la base, las alícuotas y los mínimos del tributo municipal varían según la ordenanza tarifaria de cada municipio. Verificá la ordenanza vigente. Este es un papel de trabajo de apoyo y no reemplaza el criterio profesional del contador.</div>
+    <button class="sbtn" onclick="irA(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- T1: DATOS -->
+<div class="panel" id="panel-1">
+  <p class="st">Identificación y período</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field" style="grid-column:span 2">
+      <label>Razón social / Apellido y nombre</label>
+      <input type="text" id="razon" placeholder="Ej: García Comercial SA" oninput="updateTag()">
+    </div>
+    <div class="field"><label>CUIT</label><input type="text" id="cuit" placeholder="30-12345678-9"></div>
+    <div class="field"><label>N° de cuenta / inscripción municipal</label><input type="text" id="cta" placeholder="Ej: 12345/0"></div>
+    <div class="field"><label>Provincia</label><select id="prov" onchange="updateTag()"></select></div>
+    <div class="field"><label>Municipio</label><input type="text" id="muni" placeholder="Ej: Río Tercero" oninput="updateTag()"></div>
+    <div class="field">
+      <label>Tributo</label>
+      <select id="tributo" onchange="onTributo()">
+        <option>Tasa de Seguridad e Higiene</option>
+        <option>Tasa de Comercio e Industria</option>
+        <option>Derecho de Registro e Inspección (DReI)</option>
+        <option>Contribución sobre Comercio, Industria y Servicios (CCIES)</option>
+        <option value="otro">Otro (especificar)</option>
+      </select>
+    </div>
+    <div class="field" id="tributo-otro-wrap" style="display:none"><label>Nombre del tributo</label><input type="text" id="tributo-otro" placeholder="Nombre según ordenanza" oninput="updateTag()"></div>
+    <div class="field">
+      <label>Unidad de alícuota</label>
+      <select id="unidad" onchange="unidad=this.value;renderActGrid();renderLiq()">
+        <option value="permil">‰ (por mil)</option>
+        <option value="pct">% (porcentaje)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Mes</label>
+      <select id="mes" onchange="updateTag()">
+        <option value="1">Enero</option><option value="2">Febrero</option>
+        <option value="3">Marzo</option><option value="4" selected>Abril</option>
+        <option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option>
+        <option value="9">Septiembre</option><option value="10">Octubre</option>
+        <option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Año</label>
+      <select id="anio" onchange="updateTag()">
+        <option value="2025">2025</option><option value="2026" selected>2026</option>
+      </select>
+    </div>
+  </div>
+  <p class="st">Actividades y alícuotas</p>
+  <div class="al info" style="margin-bottom:.75rem">Definí cada actividad con su alícuota en la unidad elegida (por mil o porcentaje). La base imponible de cada una la cargás en Liquidación.</div>
+  <div id="act-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem"></div>
+  <button onclick="agregarActividad()" style="background:var(--hu);color:var(--bu);border:1px solid var(--ar);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans)">+ Agregar actividad</button>
+  <div class="nb-bar">
+    <span class="hint">Paso 1 de 3</span>
+    <button class="bp" onclick="irA(2)">Continuar</button>
+  </div>
+</div>
+
+<!-- T2: LIQUIDACIÓN -->
+<div class="panel" id="panel-2">
+  <div class="al info">Cargá la base imponible (ingresos atribuibles al municipio) de cada actividad. El tributo se calcula solo. Abajo cargás mínimo, importe fijo, pagos a cuenta y saldo anterior.</div>
+  <table class="tbl">
+    <thead><tr>
+      <th class="tl" style="width:38%">Actividad</th>
+      <th style="width:24%">Base imponible ($)</th>
+      <th style="width:18%" id="th-alic">Alícuota ‰</th>
+      <th style="width:20%">Tributo det. ($)</th>
+    </tr></thead>
+    <tbody id="liq-body"></tbody>
+    <tfoot><tr class="totf">
+      <td class="tl">TOTAL</td>
+      <td id="tot-base" style="text-align:right">$ 0</td>
+      <td></td>
+      <td id="tot-imp" style="text-align:right">$ 0</td>
+    </tr></tfoot>
+  </table>
+
+  <p class="st">Determinación del saldo</p>
+  <div class="card" style="max-width:560px">
+    <div class="sumrow"><span class="lbl">Tributo determinado</span><span class="val" id="s-impdet">$ 0</span></div>
+    <div class="sumrow"><span class="lbl">Mínimo del período</span><input type="number" id="i-min" placeholder="0" oninput="dj.min=parseFloat(this.value)||0;renderLiq()"></div>
+    <div class="sumrow"><span class="lbl">Importe fijo / adicional</span><input type="number" id="i-fijo" placeholder="0" oninput="dj.fijo=parseFloat(this.value)||0;renderLiq()"></div>
+    <div class="sumrow"><span class="lbl">Tributo a ingresar (mayor entre det. y mínimo, + fijo)</span><span class="val" id="s-tributar">$ 0</span></div>
+    <div class="sumrow"><span class="lbl">(−) Retenciones municipales</span><input type="number" id="i-ret" placeholder="0" oninput="dj.ret=parseFloat(this.value)||0;renderLiq()"></div>
+    <div class="sumrow"><span class="lbl">(−) Percepciones municipales</span><input type="number" id="i-per" placeholder="0" oninput="dj.per=parseFloat(this.value)||0;renderLiq()"></div>
+    <div class="sumrow"><span class="lbl">(−) Saldo a favor del período anterior</span><input type="number" id="i-ant" placeholder="0" oninput="dj.ant=parseFloat(this.value)||0;renderLiq()"></div>
+    <div class="sumrow tot"><span class="lbl" id="s-saldolbl">Saldo a pagar</span><span class="val" id="s-saldo" style="font-family:var(--serif);font-size:20px">$ 0</span></div>
+  </div>
+  <div id="liq-kpis"></div>
+  <div class="nb-bar">
+    <button class="bs" onclick="irA(1)">Volver</button>
+    <button class="bp" onclick="irA(3)">Dashboard</button>
+  </div>
+</div>
+
+<!-- T3: DASHBOARD -->
+<div class="panel" id="panel-3">
+  <div id="dash-kpis" style="margin-bottom:1.25rem"></div>
+  <p class="st">Composición del tributo por actividad</p>
+  <div style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr>
+        <th class="tl">Actividad</th>
+        <th>Base ($)</th>
+        <th>% s/ total</th>
+        <th>Alícuota</th>
+        <th>Tributo det. ($)</th>
+      </tr></thead>
+      <tbody id="dash-body"></tbody>
+    </table>
+  </div>
+  <div id="dash-alert" style="margin-top:1rem"></div>
+  <div class="nb-bar">
+    <button class="bs" onclick="irA(2)">Volver</button>
+    <button class="bp" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+</div>
+
+</div>
+<script>
+var MESES=["","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+var PROVS=["CABA","Buenos Aires","Catamarca","Córdoba","Corrientes","Chaco","Chubut","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán"];
+
+var unidad="permil";
+var actividades=[
+  {nombre:"Comercio / Venta de bienes",alic:6.0,base:0,baseRaw:""}
+];
+var dj={min:0,fijo:0,ret:0,per:0,ant:0};
+
+function fmt(v){ if(!v||Math.round(v)===0) return "$ 0"; return "$ "+Math.round(v).toLocaleString("es-AR"); }
+function fmtP(v){ return v.toFixed(2)+"%"; }
+function el(id){ return document.getElementById(id); }
+function divisor(){ return unidad==="permil"?1000:100; }
+function uSym(){ return unidad==="permil"?"‰":"%"; }
+
+function irA(i){
+  document.querySelectorAll(".panel").forEach(function(p,j){ p.classList.toggle("on",j===i); });
+  document.querySelectorAll(".nb").forEach(function(b,j){ b.classList.toggle("on",j===i); });
+  if(i===2) renderLiq();
+  if(i===3) renderDash();
+}
+
+function tributoNom(){
+  var t=el("tributo"); if(!t) return "Tributo municipal";
+  if(t.value==="otro"){ var o=el("tributo-otro"); return (o&&o.value)||"Tributo municipal"; }
+  return t.value;
+}
+function onTributo(){
+  var t=el("tributo"); el("tributo-otro-wrap").style.display=(t.value==="otro")?"flex":"none";
+  updateTag();
+}
+
+function updateTag(){
+  var mes=parseInt(el("mes")&&el("mes").value)||4;
+  var anio=el("anio")&&el("anio").value||"2026";
+  var muni=(el("muni")&&el("muni").value)||"—";
+  var e=el("per-tag"); if(e) e.textContent=muni+" · "+MESES[mes]+" "+anio;
+}
+
+function renderProvSelect(){
+  var s=el("prov"); if(!s) return;
+  s.innerHTML=PROVS.map(function(p){ return "<option"+(p==="Córdoba"?" selected":"")+">"+p+"</option>"; }).join("");
+}
+
+// ── Actividades ──
+function renderActGrid(){
+  var wrap=el("act-grid"); if(!wrap) return;
+  wrap.innerHTML=actividades.map(function(a,i){
+    return "<div class='card' style='padding:12px;margin:0'>"
+      +"<div style='font-size:10px;color:var(--ink-s);margin-bottom:4px'>Actividad "+(i+1)+"</div>"
+      +"<div class='g2' style='gap:8px'>"
+      +"<div class='field'><label>Nombre</label><input type='text' value=\""+a.nombre.replace(/"/g,'&quot;')+"\" oninput=\"actividades["+i+"].nombre=this.value;renderLiq()\" placeholder='Ej: Comercio'></div>"
+      +"<div class='field'><label>Alícuota "+uSym()+"</label><input type='number' value='"+a.alic+"' step='0.01' oninput=\"actividades["+i+"].alic=parseFloat(this.value)||0;renderLiq()\"></div>"
+      +"</div>"
+      +(actividades.length>1?"<button onclick=\"quitarActividad("+i+")\" style='margin-top:6px;font-size:10px;color:var(--cr);background:none;border:none;cursor:pointer'>✕ Quitar</button>":"")
+      +"</div>";
+  }).join("");
+}
+function agregarActividad(){
+  if(actividades.length>=4){ alert("Máximo 4 actividades."); return; }
+  actividades.push({nombre:"Nueva actividad",alic:6.0,base:0,baseRaw:""});
+  renderActGrid();
+}
+function quitarActividad(i){ actividades.splice(i,1); renderActGrid(); renderLiq(); }
+
+// ── Liquidación ──
+function renderLiq(){
+  var th=el("th-alic"); if(th) th.textContent="Alícuota "+uSym();
+  var body=el("liq-body"); if(!body) return;
+  var totBase=0,totImp=0,div=divisor();
+  body.innerHTML=actividades.map(function(a,i){
+    var base=a.base||0, imp=base*(a.alic||0)/div;
+    totBase+=base; totImp+=imp;
+    return "<tr>"
+      +"<td class='tl'>"+(a.nombre||("Actividad "+(i+1)))+"</td>"
+      +"<td><input type='text' inputmode='numeric' value=\""+(a.baseRaw||"")+"\" placeholder='ej: 4.825.000' onblur=\"var v=this.value.replace(/\\./g,'').replace(',','.');actividades["+i+"].base=parseFloat(v)||0;actividades["+i+"].baseRaw=this.value;renderLiq()\" style='background:#FFF8EE;border:1.5px solid var(--cr);border-radius:5px;font-weight:600;color:var(--bu);text-align:right;padding:3px 6px;width:100%'></td>"
+      +"<td><input type='number' value='"+a.alic+"' step='0.01' oninput=\"actividades["+i+"].alic=parseFloat(this.value)||0;renderLiq()\"></td>"
+      +"<td class='tr'>"+fmt(imp)+"</td>"
+      +"</tr>";
+  }).join("");
+  el("tot-base").textContent=fmt(totBase);
+  el("tot-imp").textContent=fmt(totImp);
+
+  var tributar=Math.max(totImp, dj.min||0)+(dj.fijo||0);
+  var deduc=(dj.ret||0)+(dj.per||0)+(dj.ant||0);
+  var saldo=tributar-deduc;
+  el("s-impdet").textContent=fmt(totImp);
+  el("s-tributar").textContent=fmt(tributar);
+  var lbl=el("s-saldolbl"), sv=el("s-saldo");
+  lbl.textContent=saldo>=0?"Saldo a pagar":"Saldo a favor (próximo período)";
+  sv.textContent=fmt(Math.abs(saldo));
+  sv.style.color=saldo>0?"var(--cr)":saldo<0?"var(--vt)":"var(--bu)";
+
+  el("liq-kpis").innerHTML="<div class='g4' style='margin-top:1rem'>"
+    +"<div class='kpi'><div class='kl'>Base imponible</div><div class='kv'>"+fmt(totBase)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Tributo a ingresar</div><div class='kv'>"+fmt(tributar)+"</div></div>"
+    +"<div class='kpi'><div class='kl'>"+(saldo>=0?"Saldo a pagar":"Saldo a favor")+"</div><div class='kv "+(saldo>0?"w":"ok")+"'>"+fmt(Math.abs(saldo))+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Carga s/ base</div><div class='kv'>"+(totBase>0?fmtP((saldo>0?saldo:0)/totBase*100):"—")+"</div></div>"
+    +"</div>";
+}
+
+// ── Dashboard ──
+function renderDash(){
+  var div=divisor();
+  var totBase=actividades.reduce(function(s,a){return s+(a.base||0);},0);
+  var totImp=actividades.reduce(function(s,a){return s+(a.base||0)*(a.alic||0)/div;},0);
+  var tributar=Math.max(totImp, dj.min||0)+(dj.fijo||0);
+  var deduc=(dj.ret||0)+(dj.per||0)+(dj.ant||0);
+  var saldo=tributar-deduc;
+
+  el("dash-kpis").innerHTML="<div class='g4'>"
+    +"<div class='kpi'><div class='kl'>Base imponible</div><div class='kv'>"+fmt(totBase)+"</div><div class='ks'>"+tributoNom()+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Tributo determinado</div><div class='kv'>"+fmt(totImp)+"</div>"+(dj.min>totImp?"<div class='ks'>aplica mínimo "+fmt(dj.min)+"</div>":"")+"</div>"
+    +"<div class='kpi'><div class='kl'>"+(saldo>=0?"Saldo a pagar":"Saldo a favor")+"</div><div class='kv "+(saldo>0?"w":"ok")+"'>"+fmt(Math.abs(saldo))+"</div></div>"
+    +"<div class='kpi'><div class='kl'>Carga s/ base</div><div class='kv'>"+(totBase>0?fmtP((saldo>0?saldo:0)/totBase*100):"—")+"</div></div>"
+    +"</div>";
+
+  var body=el("dash-body"); if(!body) return;
+  body.innerHTML=actividades.filter(function(a){return (a.base||0)>0;})
+    .sort(function(a,b){return (b.base*b.alic)-(a.base*a.alic);})
+    .map(function(a){
+      var imp=(a.base||0)*(a.alic||0)/div;
+      var pct=totBase>0?(a.base/totBase):0;
+      return "<tr>"
+        +"<td class='tl'>"+a.nombre+"</td>"
+        +"<td class='tr'>"+fmt(a.base)+"</td>"
+        +"<td class='tc'>"+fmtP(pct*100)+"</td>"
+        +"<td class='tc'>"+a.alic.toFixed(2)+uSym()+"</td>"
+        +"<td class='tr'>"+fmt(imp)+"</td>"
+        +"</tr>";
+    }).join("");
+
+  var alEl=el("dash-alert");
+  if(dj.min>totImp && totImp>0){
+    alEl.innerHTML="<div class='al info'>En este período tributás el mínimo ("+fmt(dj.min)+"), mayor al determinado por actividad ("+fmt(totImp)+").</div>";
+  } else if(saldo<0 && totImp>0 && Math.abs(saldo)>totImp*3){
+    alEl.innerHTML="<div class='al warn'>⚠️ El saldo a favor supera 3 meses de tributo. Revisá retenciones/percepciones municipales en "+tributoNom()+".</div>";
+  } else alEl.innerHTML="";
+}
+
+function limpiar(){
+  if(!confirm("¿Limpiar todos los datos?")) return;
+  ["razon","cuit","cta","muni","tributo-otro"].forEach(function(id){ var e=el(id); if(e) e.value=""; });
+  unidad="permil"; if(el("unidad")) el("unidad").value="permil";
+  actividades=[{nombre:"Comercio / Venta de bienes",alic:6.0,base:0,baseRaw:""}];
+  dj={min:0,fijo:0,ret:0,per:0,ant:0};
+  ["i-min","i-fijo","i-ret","i-per","i-ant"].forEach(function(id){ var e=el(id); if(e) e.value=""; });
+  renderProvSelect(); renderActGrid(); updateTag();
+  irA(0);
+}
+
+// Init
+renderProvSelect();
+renderActGrid();
+updateTag();
+</script>
+</body>
+</html>
