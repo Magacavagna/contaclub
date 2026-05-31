@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devolución de percepciones ARCA — Árbol de decisión · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#8B0000;--bu:#2D0A0A;--hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;--ink:#1A0A0A;--ink-s:#8A6A6A;--vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;--ab:#FDF3E0;--at:#5A3800;--rb:#FCEBEB;--rt:#791F1F;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:780px;margin:0 auto;padding-bottom:3rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.25rem}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.datos{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem}
+.datos .field{flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px}
+.datos label{font-size:11px;color:var(--ink-s)}
+.datos input{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;height:34px;font-family:var(--sans)}
+.ruta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;font-size:11px;color:var(--ink-s)}
+.ruta .step{background:var(--hu);border:1px solid var(--ar);border-radius:20px;padding:3px 10px}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:14px;padding:1.5rem}
+.preg{font-family:var(--serif);font-size:20px;color:var(--bu);line-height:1.3;margin-bottom:1.25rem}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--hu);border:1px solid var(--ar);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--ink);cursor:pointer;font-family:var(--sans);transition:.12s;display:flex;align-items:center;gap:10px}
+.opt:hover{background:#fff;border-color:var(--cr);transform:translateX(2px)}
+.opt .ar{margin-left:auto;color:var(--cr);font-weight:600}
+.info-box{background:var(--hu);border-left:3px solid var(--ar);border-radius:8px;padding:12px 16px;font-size:13px;line-height:1.6;color:var(--bu);margin-bottom:1.25rem}
+.res-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cr);margin-bottom:6px}
+.res-tit{font-family:var(--serif);font-size:22px;color:var(--bu);margin-bottom:.5rem;line-height:1.25}
+.res-via{background:var(--vb);border:1px solid var(--vc);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--vt);margin:.75rem 0;line-height:1.5}
+.res-via.alt{background:var(--ab);border-color:#BA7517;color:var(--at)}
+.res-via.no{background:var(--rb);border-color:var(--cr);color:var(--rt)}
+.sub{font-size:11px;font-weight:600;color:var(--ink-s);letter-spacing:.08em;text-transform:uppercase;margin:1rem 0 .5rem}
+.lst{list-style:none;font-size:13px;line-height:1.6}
+.lst li{padding-left:20px;position:relative;margin-bottom:5px}
+.lst li:before{content:"•";color:var(--cr);position:absolute;left:4px;font-weight:700}
+.acts{display:flex;gap:8px;margin-top:1.5rem;flex-wrap:wrap}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.disc{font-size:11px;color:var(--ink-s);margin-top:1.25rem;line-height:1.5;border-top:1px solid var(--ar);padding-top:.75rem}
+@media print{.opts,.acts,.bs,.bp{display:none!important}.datos input{border:none}}
+</style>
+</head>
+<body>
+<div class="sys">
+<div class="topbar">
+  <div><div class="logo">Devolución de percepciones ARCA<br>Árbol de decisión</div><div class="logo-sub">Conta Club</div></div>
+  <div style="font-size:11px;color:var(--ar);text-align:right">Percepciones 30%<br>a cuenta Gan. / B.P.</div>
+</div>
+
+<div class="datos">
+  <div class="field"><label>Cliente (para el legajo)</label><input type="text" id="cli" placeholder="Apellido y nombre"></div>
+  <div class="field"><label>Período</label><input type="text" id="per" placeholder="Ej: 2025"></div>
+</div>
+
+<div class="ruta" id="ruta"></div>
+<div class="card" id="card"></div>
+
+<div class="disc">
+  Régimen vigente: RG (ARCA) 5617/2024 y modif. (RG 5672 y 5677). Reintegro del 30% percibido a cuenta de Ganancias / Bienes Personales (códigos 217 / 219; regímenes 592 a 600) sobre operaciones en moneda extranjera. Diagnóstico inicial orientativo: papel de trabajo de apoyo, no reemplaza el criterio profesional del contador ni la verificación de la normativa y los plazos vigentes en cada período.
+</div>
+</div>
+
+<script>
+var NODES={
+  start:{q:"¿El cliente sufrió percepciones del 30% (a cuenta de Ganancias / Bienes Personales) en compras o gastos en moneda extranjera abonados EN PESOS durante el período?",
+    opts:[
+      {t:"Sí, sufrió percepciones",to:"cond"},
+      {t:"No, pagó en dólares (sin percepción)",to:"r_nada"},
+      {t:"No estoy seguro / cómo lo verifico",to:"check"}
+    ]},
+  check:{info:"Verificalo en ARCA, servicio <strong>Mis Retenciones</strong>: buscá percepciones con <strong>código 217</strong> (Impuesto a las Ganancias) o <strong>219</strong> (Bienes Personales), regímenes 592 a 600. Tuvo percepción quien compró dólares (hasta abril 2025), gastó con tarjeta en el exterior, pagó pasajes/turismo fuera del país o servicios digitales del exterior, <strong>siempre que haya pagado en pesos</strong>. Si pagó directamente en dólares, no hubo percepción.",
+    opts:[{t:"Sí figura percepción (217/219) → continuar",to:"cond"},{t:"No figura ninguna",to:"r_nada"}]},
+  cond:{q:"¿Cuál es la condición fiscal del cliente frente a Ganancias y Bienes Personales?",
+    opts:[
+      {t:"Monotributista (no inscripto en Ganancias ni B.P.)",to:"r_mono"},
+      {t:"Jubilado / pensionado",to:"jub"},
+      {t:"Empleado en relación de dependencia",to:"emp"},
+      {t:"Inscripto en Ganancias y/o Bienes Personales (autónomo / R.I.)",to:"r_insc"}
+    ]},
+  jub:{q:"¿Le retienen Impuesto a las Ganancias en el haber jubilatorio?",
+    opts:[{t:"No le retienen",to:"r_directa"},{t:"Sí, tiene retención",to:"r_ret"}]},
+  emp:{q:"¿El empleador le retiene Impuesto a las Ganancias (4ª categoría)?",
+    opts:[{t:"No le retienen (sueldo bajo el mínimo)",to:"r_directa"},{t:"Sí le retienen",to:"r_ret"}]},
+
+  r_mono:{caso:1,tit:"Caso 1 — Monotributista",via:"Devolución directa online en ARCA",viaCls:"",
+    pts:["No es responsable de Ganancias ni de Bienes Personales: la percepción no puede computarse como pago a cuenta, por eso procede la devolución.",
+      "Servicio <strong>Devolución de percepciones</strong> en la web de ARCA: se elige el período y el sistema muestra los montos informados; si falta alguno, se carga manual con respaldo.",
+      "El monto aprobado se acredita en la CBU informada.",
+      "Habilitado desde el 1/1/2026 para las percepciones sufridas durante 2025."],
+    crit:"Percepción con carácter de pago a cuenta no computable por no ser sujeto de esos impuestos → devolución (RG 5617/2024)."},
+  r_directa:{caso:"2 / 3",tit:"Caso 2-3 — Jubilado o empleado SIN retención de Ganancias",via:"Devolución directa online en ARCA",viaCls:"",
+    pts:["No sufre retención de Ganancias, así que no tiene contra qué computar la percepción.",
+      "Mismo trámite que el monotributista: servicio <strong>Devolución de percepciones</strong>, selección de período, acreditación en CBU.",
+      "Alcanza a empleados con ingresos por debajo del mínimo imponible y a jubilados sin retención.",
+      "Habilitado desde el 1/1/2026 por el período 2025."],
+    crit:"Sujeto no alcanzado efectivamente por Ganancias/B.P. en el período → procede la devolución directa."},
+  r_ret:{caso:4,tit:"Caso 4 — Empleado o jubilado CON retención de Ganancias",via:"SIRADIG Trabajador (lo computa el agente de retención)",viaCls:"alt",
+    pts:["Las percepciones se informan en <strong>SIRADIG – Trabajador</strong> (vencimiento habitual 31/3) para que el agente de retención las compute en la liquidación anual.",
+      "El empleador/agente reintegra hasta el tope del impuesto retenido en el año.",
+      "Si las percepciones acumuladas <strong>superan</strong> el impuesto, el excedente se solicita por el régimen de devolución de ARCA.",
+      "Conviene controlar que las percepciones figuren con código 217 en Mis Retenciones."],
+    crit:"La percepción es computable contra el impuesto; solo el excedente no computable se devuelve."},
+  r_insc:{caso:5,tit:"Caso 5 — Inscripto en Ganancias y/o Bienes Personales",via:"Cómputo en la DDJJ anual del impuesto",viaCls:"alt",
+    pts:["Las percepciones se computan como pago a cuenta en la declaración jurada anual de Ganancias (código 217) o de Bienes Personales (código 219).",
+      "No corresponde el trámite de devolución directa: primero se computan en la DDJJ.",
+      "Si tras el cómputo queda un excedente, genera <strong>saldo a favor de libre disponibilidad</strong> (compensable, transferible o sujeto a devolución por el régimen general).",
+      "Verificar que el código de la percepción coincida con el impuesto en el que se computa."],
+    crit:"Sujeto alcanzado: la percepción es pago a cuenta del propio impuesto; el excedente sigue el régimen de saldos a favor."},
+  r_nada:{caso:"—",tit:"No corresponde solicitar devolución",via:"Sin percepción que recuperar",viaCls:"no",
+    pts:["Si las operaciones se pagaron directamente en dólares, no hubo percepción del 30%.",
+      "Si no figuran percepciones con código 217/219 en Mis Retenciones, no hay importe a devolver.",
+      "Revisá igualmente percepciones de otros regímenes (IVA, IIBB) que se tramitan por vías distintas."],
+    crit:"Sin hecho generador de la percepción (pago en dólares) o sin percepción informada → no hay devolución por este régimen."}
+};
+
+var hist=[], path=[];
+function el(id){return document.getElementById(id);}
+function go(id,label){ if(label) path.push(label); hist.push(id); render(id); }
+function volver(){ hist.pop(); path.pop(); var prev=hist[hist.length-1]||"start"; if(hist.length===0) hist=["start"]; render(prev); }
+function reiniciar(){ hist=["start"]; path=[]; render("start"); }
+
+function render(id){
+  var n=NODES[id]; var ruta=el("ruta");
+  ruta.innerHTML=path.map(function(p){return "<span class='step'>"+p+"</span>";}).join("");
+  var c=el("card");
+  if(n.q || n.info){
+    var body="";
+    if(n.info) body+="<div class='info-box'>"+n.info+"</div>";
+    if(n.q) body+="<div class='preg'>"+n.q+"</div>";
+    body+="<div class='opts'>"+n.opts.map(function(o){
+      return "<button class='opt' onclick=\"go('"+o.to+"','"+o.t.replace(/'/g,"")+"')\">"+o.t+"<span class='ar'>→</span></button>";
+    }).join("")+"</div>";
+    body+="<div class='acts'>"+(hist.length>1?"<button class='bs' onclick='volver()'>← Volver</button>":"")+"<button class='bs' onclick='reiniciar()'>Reiniciar</button></div>";
+    c.innerHTML=body;
+  } else {
+    var cli=el("cli").value, per=el("per").value;
+    var head=(cli||per)?"<div style='font-size:11px;color:var(--ink-s);margin-bottom:8px'>"+(cli||"")+(cli&&per?" · ":"")+(per?"Período "+per:"")+"</div>":"";
+    c.innerHTML=head
+      +"<div class='res-tag'>Diagnóstico</div>"
+      +"<div class='res-tit'>"+n.tit+"</div>"
+      +"<div class='res-via "+n.viaCls+"'><strong>Vía del trámite:</strong> "+n.via+"</div>"
+      +"<div class='sub'>Puntos clave</div><ul class='lst'>"+n.pts.map(function(p){return "<li>"+p+"</li>";}).join("")+"</ul>"
+      +"<div class='sub'>Criterio aplicable</div><div style='font-size:13px;line-height:1.6'>"+n.crit+"</div>"
+      +"<div class='acts'><button class='bs' onclick='volver()'>← Volver</button><button class='bs' onclick='reiniciar()'>Nuevo caso</button><button class='bp' onclick='window.print()'>Imprimir / PDF</button></div>";
+  }
+}
+hist=["start"]; render("start");
+</script>
+</body>
+</html>
