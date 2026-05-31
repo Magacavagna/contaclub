@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planilla de Aguinaldos (SAC) · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--cr:#8B0000;--bu:#2D0A0A;--hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;--ink:#1A0A0A;--ink-s:#8A6A6A;--vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;--ab:#FDF3E0;--at:#5A3800;--rb:#FCEBEB;--rt:#791F1F;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:1080px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.25rem}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.25rem 0 .6rem;border-bottom:1px solid var(--ar);padding-bottom:6px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}.warn{background:var(--ab);color:var(--at);border-left-color:#BA7517}.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:500;padding:7px 6px;border:1px solid var(--bu);text-align:center;letter-spacing:.03em;text-transform:uppercase}.tbl th.tl{text-align:left}
+.tbl td{padding:4px 6px;border:1px solid var(--ar);vertical-align:middle}.tbl td.tr{text-align:right;font-weight:500;color:var(--bu)}.tbl td.tc{text-align:center}
+.tbl tr:nth-child(even){background:#FDF8F0}.tbl tfoot td{font-weight:600;background:var(--bu);color:var(--hu);text-align:right}.tbl tfoot td.tl{text-align:left}
+.tbl input{width:100%;background:#FFF8EE;border:1.5px solid var(--ar);border-radius:3px;padding:3px 6px;font-size:12px;font-family:var(--sans);height:26px}
+.tbl input.txt{text-align:left}.tbl input.num{text-align:right}
+.del{background:none;border:none;color:var(--cr);cursor:pointer;font-size:14px;font-weight:700}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.kv{font-family:var(--serif);font-size:20px;color:var(--bu)}.kv.cr{color:var(--cr)}.kv.ok{color:var(--vt)}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:1rem}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin-top:1.25rem;line-height:1.5}
+@media print{.bar,.btn-cl,.del{display:none!important}}
+@media(max-width:760px){.g4,.g5{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+<div class="topbar">
+  <div><div class="logo">Planilla de Aguinaldos (SAC)<br>Liquidación de varios empleados</div><div class="logo-sub">Conta Club</div></div>
+  <button class="btn-cl" onclick="limpiar()">Limpiar</button>
+</div>
+
+<div class="card">
+  <div class="g5">
+    <div class="field" style="grid-column:span 2"><label>Empresa / cliente</label><input type="text" id="empresa" placeholder="Razón social"></div>
+    <div class="field"><label>Semestre</label>
+      <select id="sem" onchange="onSem()">
+        <option value="1">1° (ene–jun) · cobra 30/06</option>
+        <option value="2">2° (jul–dic) · cobra 18/12</option>
+      </select></div>
+    <div class="field"><label>Año</label><input type="text" id="anio" placeholder="2026"></div>
+    <div class="field"><label>Días del semestre</label><input type="number" id="diassem" value="181" oninput="recalc()"></div>
+  </div>
+  <div class="g4" style="margin-top:10px">
+    <div class="field"><label>Aportes del empleado %</label><input type="number" id="apo" value="17" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Contribuciones patronales % (incl. ART)</label><input type="number" id="contrib" value="24" step="0.01" oninput="recalc()"></div>
+    <div class="field"><label>Tope máximo base imponible ($)</label><input type="number" id="tope" step="any" placeholder="4303619,01" oninput="recalc()"></div>
+    <div class="field" style="justify-content:flex-end"><label style="cursor:pointer;font-size:12px"><input type="checkbox" id="topesac" onchange="recalc()" style="width:auto;height:auto;margin-right:6px;vertical-align:middle">Aplicar tope al SAC (½ tope)</label></div>
+  </div>
+  <div class="al info" style="margin-top:10px">Medio aguinaldo = 50% de la mejor remuneración mensual del semestre (Art. 121 LCT). Aportes 17% = 11% jubilación + 3% PAMI + 3% obra social (editable). El <strong>24% sugerido de contribuciones incluye seguridad social (18% o 20,4%) + obra social (6%) + estimado de ART</strong>; ajustalo a tu cliente. El tope máximo de base imponible aplica a los aportes del trabajador: tildá la casilla para que la base de aportes del SAC no supere medio tope (ref. mayo 2026, Res. ANSES 110/2026: $4.303.619,01; se actualiza mensualmente). Las contribuciones patronales no tienen tope (Dto. 814/01).</div>
+</div>
+
+<p class="st">Empleados</p>
+<div class="bar">
+  <button class="bp" onclick="agregar()">+ Agregar empleado</button>
+  <button class="bs" onclick="document.getElementById('file-imp').click()">📥 Importar Excel</button>
+  <input type="file" id="file-imp" accept=".xlsx,.xls,.csv" style="display:none" onchange="leerArchivo(this)">
+  <button class="bs" onclick="vaciar()">Vaciar lista</button>
+</div>
+<div id="map-wrap"></div>
+<div style="overflow-x:auto">
+  <table class="tbl">
+    <thead><tr>
+      <th class="tl" style="width:24%">Empleado</th>
+      <th style="width:16%">Mejor rem. semestre ($)</th>
+      <th style="width:11%">Días trab.</th>
+      <th style="width:13%">SAC bruto</th>
+      <th style="width:13%">Aportes</th>
+      <th style="width:13%">SAC neto</th>
+      <th style="width:10%">Costo empl.</th>
+      <th style="width:4%"></th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+    <tfoot><tr>
+      <td class="tl">TOTALES (<span id="cant">0</span>)</td>
+      <td id="t-mejor">$ 0</td><td></td>
+      <td id="t-bruto">$ 0</td><td id="t-apo">$ 0</td><td id="t-neto">$ 0</td><td id="t-costo">$ 0</td><td></td>
+    </tr></tfoot>
+  </table>
+</div>
+
+<div class="g3">
+  <div class="kpi"><div class="kl">Total SAC bruto</div><div class="kv" id="k-bruto">$ 0</div></div>
+  <div class="kpi"><div class="kl">Total a pagar (neto)</div><div class="kv ok" id="k-neto">$ 0</div></div>
+  <div class="kpi"><div class="kl">Costo total empleador</div><div class="kv cr" id="k-costo">$ 0</div></div>
+</div>
+
+<div class="bar" style="margin-top:1rem"><button class="bp" onclick="window.print()">Imprimir / PDF (planilla)</button></div>
+
+<div class="disc">El SAC bruto se calcula como (mejor remuneración ÷ 2) × (días trabajados ÷ días del semestre). El costo del empleador es el SAC bruto más las contribuciones patronales (sin tope, Dto. 814/01). Las alícuotas y la base son editables: verificá los valores vigentes del período. Papel de trabajo de apoyo; no reemplaza el criterio profesional.</div>
+</div>
+
+<script>
+var rows=[]; var impRows=null;
+function el(id){return document.getElementById(id);}
+function fmt(v){ if(!v||Math.round(v)===0) return "$ 0"; return "$ "+Math.round(v).toLocaleString("es-AR"); }
+function norm(s){ return (s==null?"":(""+s)).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,""); }
+function numof(v){ if(v==null) return 0; if(typeof v==="number") return v; var s=(""+v).replace(/[^0-9,.-]/g,"").replace(/\./g,"").replace(",","."); return parseFloat(s)||0; }
+function diasSem(){ return parseFloat(el("diassem").value)||181; }
+
+function onSem(){ el("diassem").value = el("sem").value==="2"?184:181; recalc(); }
+function agregar(){ rows.push({nom:"",mejor:0,dias:diasSem()}); render(); }
+function vaciar(){ rows=[]; el("map-wrap").innerHTML=""; render(); }
+function borrar(i){ rows.splice(i,1); render(); }
+function upd(i,campo,val){ if(campo==="nom") rows[i].nom=val; else rows[i][campo]=parseFloat(val)||0; recalc(); }
+
+function render(){
+  var b=el("body");
+  if(!rows.length){ b.innerHTML="<tr><td colspan='8' style='text-align:center;color:var(--ink-s);padding:18px'>Sin empleados. Agregá uno o importá un Excel.</td></tr>"; }
+  else b.innerHTML=rows.map(function(r,i){
+    return "<tr><td><input class='txt' value=\""+(r.nom||"").replace(/"/g,'&quot;')+"\" placeholder='Apellido y nombre' onchange=\"upd("+i+",'nom',this.value)\"></td>"
+      +"<td><input class='num' type='number' step='any' value=\""+(r.mejor||"")+"\" placeholder='0' oninput=\"upd("+i+",'mejor',this.value)\"></td>"
+      +"<td><input class='num' type='number' step='any' value=\""+(r.dias||"")+"\" placeholder='0' oninput=\"upd("+i+",'dias',this.value)\"></td>"
+      +"<td class='tr' id='b"+i+"'></td><td class='tr' id='a"+i+"'></td><td class='tr' id='n"+i+"'></td><td class='tr' id='c"+i+"'></td>"
+      +"<td class='tc'><button class='del' onclick='borrar("+i+")' title='Quitar'>✕</button></td></tr>";
+  }).join("");
+  recalc();
+}
+function recalc(){
+  var apo=(parseFloat(el("apo").value)||0)/100, contrib=(parseFloat(el("contrib").value)||0)/100, ds=diasSem();
+  var tope=parseFloat(el("tope").value)||0, topeOn=el("topesac")&&el("topesac").checked;
+  var tM=0,tB=0,tA=0,tN=0,tC=0;
+  rows.forEach(function(r,i){
+    var prop=ds>0?Math.min((r.dias||0)/ds,1):0;
+    var bruto=(r.mejor||0)/2*prop;
+    var baseAp=(topeOn&&tope>0)?Math.min(bruto,(tope/2)*prop):bruto;
+    var ap=baseAp*apo, neto=bruto-ap, costo=bruto*(1+contrib);
+    tM+=(r.mejor||0); tB+=bruto; tA+=ap; tN+=neto; tC+=costo;
+    var be=el("b"+i); if(be){ be.textContent=fmt(bruto); el("a"+i).textContent=fmt(ap); el("n"+i).textContent=fmt(neto); el("c"+i).textContent=fmt(costo); }
+  });
+  el("cant").textContent=rows.length;
+  el("t-mejor").textContent=fmt(tM); el("t-bruto").textContent=fmt(tB); el("t-apo").textContent=fmt(tA); el("t-neto").textContent=fmt(tN); el("t-costo").textContent=fmt(tC);
+  el("k-bruto").textContent=fmt(tB); el("k-neto").textContent=fmt(tN); el("k-costo").textContent=fmt(tC);
+}
+
+// Import
+function leerArchivo(input){
+  var f=input.files[0]; if(!f) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{ var wb=XLSX.read(new Uint8Array(e.target.result),{type:"array"}); impRows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,blankrows:false}); mostrarMapeo(); }
+    catch(err){ el("map-wrap").innerHTML="<div class='al warn'>No se pudo leer: "+err.message+"</div>"; }
+  };
+  reader.readAsArrayBuffer(f); input.value="";
+}
+function guess(head,keys){ for(var i=0;i<head.length;i++){ var h=norm(head[i]); for(var k=0;k<keys.length;k++) if(h.indexOf(keys[k])>=0) return i; } return 0; }
+function mostrarMapeo(){
+  if(!impRows||!impRows.length){ el("map-wrap").innerHTML="<div class='al warn'>Archivo vacío.</div>"; return; }
+  var head=impRows[0]||[];
+  var opts=head.map(function(h,i){ return "<option value='"+i+"'>"+(h!=null&&(""+h).trim()!==""?(""+h):("Columna "+(i+1)))+"</option>"; }).join("");
+  el("map-wrap").innerHTML="<div class='card'><div style='font-size:11px;color:var(--ink-s);margin-bottom:8px'>"+(impRows.length-1)+" filas detectadas. Indicá las columnas:</div>"
+    +"<div class='g4'><div class='field'><label>Empleado</label><select id='m-nom'>"+opts+"</select></div>"
+    +"<div class='field'><label>Mejor remuneración</label><select id='m-mejor'>"+opts+"</select></div>"
+    +"<div class='field'><label>Días trabajados (opcional)</label><select id='m-dias'><option value='-1'>(todos completos)</option>"+opts+"</select></div></div>"
+    +"<label style='font-size:11px;color:var(--ink-s);display:block;margin-top:8px'><input type='checkbox' id='m-head' checked style='width:auto'> La primera fila es encabezado</label>"
+    +"<div style='margin-top:10px;display:flex;gap:8px'><button class='bp' onclick='aplicarMapeo()'>Aplicar</button><button class='bs' onclick=\"el('map-wrap').innerHTML=''\">Cancelar</button></div></div>";
+  el("m-nom").value=guess(head,["empleado","nombre","apellido"]); el("m-mejor").value=guess(head,["mejor","remunera","sueldo","mayor"]);
+}
+function aplicarMapeo(){
+  var cn=parseInt(el("m-nom").value), cm=parseInt(el("m-mejor").value), cd=parseInt(el("m-dias").value);
+  var start=el("m-head").checked?1:0, ds=diasSem(), add=0;
+  for(var r=start;r<impRows.length;r++){
+    var row=impRows[r]||[]; var nom=row[cn]!=null?(""+row[cn]).trim():"";
+    var mejor=numof(row[cm]);
+    if(!nom && !mejor) continue;
+    var dias=(cd>=0)?(numof(row[cd])||ds):ds;
+    rows.push({nom:nom,mejor:mejor,dias:dias}); add++;
+  }
+  el("map-wrap").innerHTML="<div class='al ok'>Importados "+add+" empleados.</div>"; render();
+}
+function limpiar(){ if(!confirm("¿Limpiar todo?")) return; el("empresa").value=""; el("anio").value=""; el("tope").value=""; if(el("topesac"))el("topesac").checked=false; vaciar(); }
+
+agregar();
+</script>
+</body>
+</html>
