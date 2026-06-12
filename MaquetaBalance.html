@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balance RT · Papel de Trabajo · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#8B0000;--bu:#2D0A0A;--hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;--ink:#1A0A0A;--ink-s:#8A6A6A;--vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;--ab:#FDF3E0;--at:#5A3800;--rb:#FCEBEB;--rt:#791F1F;--serif:'DM Serif Display',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:1100px;margin:0 auto;padding-bottom:4rem}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--bu);border-radius:12px;margin-bottom:1.25rem;border-bottom:2px solid var(--cr)}
+.logo{font-family:var(--serif);font-size:17px;color:var(--hu);line-height:1.3}
+.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;font-weight:600}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+
+/* tabs */
+.tabs{display:flex;gap:3px;margin-bottom:0;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:8px 8px 0 0;background:var(--hu);border:1px solid var(--ar);border-bottom:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--ink-s);transition:all .15s}
+.tab.on{background:var(--bu);color:var(--hu);border-color:var(--bu)}
+.panel{display:none}.panel.on{display:block}
+.panel-body{background:var(--cm);border:1px solid var(--ar);border-radius:0 8px 8px 8px;padding:1.25rem;margin-bottom:1rem}
+
+/* misc */
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1rem 0 .5rem;border-bottom:1px solid var(--ar);padding-bottom:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:10px;color:var(--ink-s)}
+.field input,.field select,.field textarea{font-size:12px;background:var(--hu);border:1px solid var(--ar);border-radius:5px;padding:6px 9px;color:var(--ink);font-family:var(--sans)}
+.field textarea{resize:vertical;min-height:52px}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:1.1rem;margin-bottom:.9rem}
+
+/* botones */
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:.75rem 0}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans)}.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:8px 12px;border-radius:7px;font-size:12px;cursor:pointer;font-family:var(--sans)}
+
+/* tabla balance */
+.tbl-bal{width:100%;border-collapse:collapse;font-size:12px}
+.tbl-bal td{padding:3px 8px;border-bottom:1px solid #EDE4D4;vertical-align:middle}
+.tbl-bal tr.sec td{background:var(--cr);color:var(--hu);font-weight:700;font-size:11px;padding:5px 8px;text-transform:uppercase;letter-spacing:.04em}
+.tbl-bal tr.sub td{background:var(--hu);color:var(--cr);font-weight:700;font-size:11px}
+.tbl-bal tr.inp td:first-child{padding-left:20px;color:var(--ink)}
+.tbl-bal tr.tot td{background:var(--bu);color:var(--hu);font-weight:700;font-size:12px}
+.tbl-bal tr.check td{background:var(--cr);color:var(--hu);font-weight:800;font-size:13px}
+.tbl-bal tr.check.ok td{background:#1A4A0A}
+.tbl-bal input.num{width:130px;background:#FFFAF4;border:1.5px solid var(--ar);border-radius:3px;padding:2px 6px;font-size:12px;font-family:var(--sans);text-align:right;height:24px}
+.tbl-bal td.val{text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:var(--bu);min-width:130px}
+.tbl-bal td.val.neg{color:var(--cr)}
+.tbl-bal .col-lbl{width:55%}.tbl-bal .col-act{width:20%}.tbl-bal .col-ant{width:20%}
+
+/* KPIs */
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:9px;padding:11px 14px}
+.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.kv{font-family:var(--serif);font-size:20px;color:var(--bu)}.kv.cr{color:var(--cr)}.kv.ok{color:var(--vt)}.kv.warn{color:#BA7517}
+
+/* alerts */
+.al{padding:9px 14px;border-radius:7px;font-size:11px;font-weight:500;margin:.5rem 0;border-left:3px solid;line-height:1.5}
+.al.ok{background:var(--vb);color:var(--vt);border-color:var(--vc)}
+.al.err{background:var(--rb);color:var(--rt);border-color:var(--cr)}
+.al.info{background:var(--hu);color:var(--bu);border-color:var(--ar)}
+.al.warn{background:var(--ab);color:var(--at);border-color:#BA7517}
+
+/* Anexo tables */
+.tbl-anx{width:100%;border-collapse:collapse;font-size:11px}
+.tbl-anx th{background:var(--bu);color:var(--hu);padding:5px 7px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;border:1px solid var(--bu)}
+.tbl-anx th.tl{text-align:left}
+.tbl-anx td{padding:3px 7px;border:1px solid var(--ar);vertical-align:middle}
+.tbl-anx td.tr{text-align:right;font-variant-numeric:tabular-nums;color:var(--bu);font-weight:500}
+.tbl-anx td.calc{background:var(--vb);color:var(--vt);text-align:right;font-weight:600}
+.tbl-anx tfoot td{font-weight:700;background:var(--bu);color:var(--hu);text-align:right}
+.tbl-anx tfoot td.tl{text-align:left}
+.tbl-anx tr:nth-child(even){background:var(--hu)}
+.tbl-anx input.num{width:110px;background:#FFFAF4;border:1.5px solid var(--ar);border-radius:3px;padding:2px 5px;font-size:11px;font-family:var(--sans);text-align:right;height:22px}
+.tbl-anx input.txt{width:100%;background:#FFFAF4;border:1.5px solid var(--ar);border-radius:3px;padding:2px 5px;font-size:11px;font-family:var(--sans);height:22px}
+
+/* Notas */
+.nota-card{border:1px solid var(--ar);border-left:4px solid var(--cr);border-radius:8px;padding:14px 16px;margin-bottom:12px;background:var(--cm)}
+.nota-num{font-size:10px;font-weight:700;color:var(--cr);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.nota-title{font-family:var(--serif);font-size:15px;color:var(--bu);margin-bottom:10px}
+.nota-modelo{font-size:11px;color:var(--at);background:var(--ab);border-radius:5px;padding:8px 10px;margin-bottom:8px;line-height:1.6;font-style:italic}
+
+/* cuadre */
+.cuadre-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-radius:6px;margin-bottom:3px;font-size:12px}
+.cuadre-row.head{background:var(--bu);color:var(--hu);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+.cuadre-row.data{background:var(--cm);border:1px solid var(--ar)}
+.cuadre-row.ok{background:var(--vb);color:var(--vt);font-weight:600}
+.cuadre-row.err{background:var(--rb);color:var(--rt);font-weight:700}
+.cuadre-val{font-family:var(--serif);font-size:14px}
+
+/* disc */
+.disc{font-size:10px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:7px;padding:9px 13px;margin-top:1rem;line-height:1.5}
+
+@media print{.bar,.tabs,.btn-cl{display:none!important}.panel{display:block!important}.panel-body{border:none}.topbar{border-radius:0}}
+@media(max-width:760px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo">Balance RT · Papel de Trabajo</div>
+    <div class="logo-sub">Conta Club · RT 54 (NUA) · RT 9 · RT 41 · FACPCE</div>
+  </div>
+  <button class="btn-cl" onclick="if(confirm('¿Limpiar todos los datos?'))limpiarTodo()">Limpiar</button>
+</div>
+
+<!-- Datos del ente -->
+<div class="card">
+  <div class="g4">
+    <div class="field" style="grid-column:span 2"><label>Razón social / Nombre</label><input type="text" id="razon" placeholder="Empresa S.A."></div>
+    <div class="field"><label>CUIT</label><input type="text" id="cuit" placeholder="30-00000000-0"></div>
+    <div class="field"><label>Período de cierre</label><input type="text" id="periodo" placeholder="31/12/2024"></div>
+  </div>
+  <div class="g4" style="margin-top:8px">
+    <div class="field"><label>Norma aplicada</label>
+      <select id="norma">
+        <option>RT 54 – NUA (desde 01/07/2024)</option>
+        <option>RT 9 / RT 41 (ejercicios anteriores)</option>
+      </select></div>
+    <div class="field"><label>Moneda de presentación</label>
+      <select id="moneda"><option>Pesos argentinos ($)</option><option>Dólares estadounidenses (USD)</option></select></div>
+    <div class="field"><label>Ajuste por inflación (RT 6/17)</label>
+      <select id="ajuste"><option>No aplica</option><option>Aplica – moneda homogénea al cierre</option></select></div>
+    <div class="field"><label>Ejercicio N°</label><input type="text" id="ejercicio" placeholder="5°"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab on"  onclick="showTab('bal',this)">⚖️ Balance</div>
+  <div class="tab" onclick="showTab('er',this)">📊 Resultados</div>
+  <div class="tab" onclick="showTab('pn',this)">🏛 Var. PN</div>
+  <div class="tab" onclick="showTab('efe',this)">💧 Flujo EFE</div>
+  <div class="tab" onclick="showTab('anx',this)">📎 Anexos</div>
+  <div class="tab" onclick="showTab('notas',this)">📝 Notas</div>
+  <div class="tab" onclick="showTab('cuadre',this)">✅ Cuadre</div>
+</div>
+
+<!-- ═══════════════════════════════ BALANCE ═══════════════════════════════ -->
+<div class="panel on" id="panel-bal">
+<div class="panel-body">
+<p class="st">Estado de Situación Patrimonial</p>
+<table class="tbl-bal">
+  <thead><tr><th class="col-lbl" style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:left;font-size:11px">Rubro / Cuenta</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Actual ($)</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Anterior ($)</th></tr></thead>
+  <tbody id="bal-body"></tbody>
+</table>
+<div id="bal-alert" class="al info" style="margin-top:.75rem"></div>
+<div class="g3" style="margin-top:.75rem">
+  <div class="kpi"><div class="kl">Total Activo</div><div class="kv" id="k-activo">$ 0</div></div>
+  <div class="kpi"><div class="kl">Total Pasivo</div><div class="kv cr" id="k-pasivo">$ 0</div></div>
+  <div class="kpi"><div class="kl">Patrimonio Neto</div><div class="kv ok" id="k-pn">$ 0</div></div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ RESULTADOS ═══════════════════════════════ -->
+<div class="panel" id="panel-er">
+<div class="panel-body">
+<p class="st">Estado de Resultados</p>
+<table class="tbl-bal">
+  <thead><tr><th class="col-lbl" style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:left;font-size:11px">Concepto</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Actual ($)</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Anterior ($)</th></tr></thead>
+  <tbody id="er-body"></tbody>
+</table>
+<div class="g3" style="margin-top:.75rem">
+  <div class="kpi"><div class="kl">Resultado Bruto</div><div class="kv" id="k-rb">$ 0</div></div>
+  <div class="kpi"><div class="kl">Resultado Operativo</div><div class="kv" id="k-ro">$ 0</div></div>
+  <div class="kpi"><div class="kl">Resultado del Ejercicio</div><div class="kv" id="k-res">$ 0</div></div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ VARIACIONES PN ═══════════════════════════════ -->
+<div class="panel" id="panel-pn">
+<div class="panel-body">
+<p class="st">Estado de Evolución del Patrimonio Neto</p>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead>
+    <tr>
+      <th class="tl" style="width:28%">Concepto</th>
+      <th>Capital Social</th><th>Aj. Capital</th><th>Res. Legal</th>
+      <th>Otras Reservas</th><th>RNA</th><th>Res. Ejercicio</th><th>TOTAL PN</th>
+    </tr>
+  </thead>
+  <tbody id="pn-body"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ FLUJO EFE ═══════════════════════════════ -->
+<div class="panel" id="panel-efe">
+<div class="panel-body">
+<p class="st">Estado de Flujo de Efectivo — Método Indirecto</p>
+<table class="tbl-bal">
+  <thead><tr><th class="col-lbl" style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:left;font-size:11px">Concepto</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Actual ($)</th><th style="background:var(--bu);color:var(--hu);padding:6px 8px;text-align:center;font-size:11px;width:20%">Ejercicio Anterior ($)</th></tr></thead>
+  <tbody id="efe-body"></tbody>
+</table>
+<div class="g3" style="margin-top:.75rem">
+  <div class="kpi"><div class="kl">Flujo Operativo</div><div class="kv" id="k-fop">$ 0</div></div>
+  <div class="kpi"><div class="kl">Variación Neta Fondos</div><div class="kv" id="k-fvar">$ 0</div></div>
+  <div class="kpi"><div class="kl">Fondos al Cierre</div><div class="kv ok" id="k-fcie">$ 0</div></div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ ANEXOS ═══════════════════════════════ -->
+<div class="panel" id="panel-anx">
+<div class="panel-body">
+
+<div class="tabs" style="margin-bottom:0">
+  <div class="tab on" onclick="showAnx('a',this)" style="font-size:11px;padding:6px 12px">Anexo A – Bienes de Uso</div>
+  <div class="tab" onclick="showAnx('b',this)" style="font-size:11px;padding:6px 12px">Anexo B – Intangibles</div>
+  <div class="tab" onclick="showAnx('c',this)" style="font-size:11px;padding:6px 12px">Anexo C – Inversiones</div>
+  <div class="tab" onclick="showAnx('d',this)" style="font-size:11px;padding:6px 12px">Anexo D – Previsiones</div>
+  <div class="tab" onclick="showAnx('e',this)" style="font-size:11px;padding:6px 12px">Anexo E – PN</div>
+</div>
+
+<!-- Anexo A -->
+<div id="anx-a" style="margin-top:12px">
+<p class="st">Anexo A – Bienes de Uso</p>
+<div class="bar"><button class="bp" onclick="addAnxRow('bdu')">+ Agregar rubro</button><button class="bs" onclick="clearAnx('bdu')">Vaciar</button></div>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead><tr>
+    <th class="tl" style="width:22%">Rubro / Bien</th>
+    <th>Costo Origen Inicio</th><th>Altas</th><th>Bajas (costo)</th><th>Costo Origen Cierre</th>
+    <th>Dep. Acum. Inicio</th><th>Dep. Ejercicio</th><th>Dep. Acum. Cierre</th><th>Valor Residual</th>
+  </tr></thead>
+  <tbody id="bdu-body"></tbody>
+  <tfoot><tr>
+    <td class="tl">TOTAL</td>
+    <td id="bdu-t1">-</td><td id="bdu-t2">-</td><td id="bdu-t3">-</td><td id="bdu-t4">-</td>
+    <td id="bdu-t5">-</td><td id="bdu-t6">-</td><td id="bdu-t7">-</td><td id="bdu-t8">-</td>
+  </tr></tfoot>
+</table>
+</div>
+</div>
+
+<!-- Anexo B -->
+<div id="anx-b" style="display:none;margin-top:12px">
+<p class="st">Anexo B – Bienes Intangibles</p>
+<div class="bar"><button class="bp" onclick="addAnxRow('int')">+ Agregar rubro</button><button class="bs" onclick="clearAnx('int')">Vaciar</button></div>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead><tr>
+    <th class="tl" style="width:24%">Rubro</th>
+    <th>Costo Origen Inicio</th><th>Altas</th><th>Bajas</th><th>Costo Origen Cierre</th>
+    <th>Amort. Acum. Inicio</th><th>Amort. Ejercicio</th><th>Amort. Acum. Cierre</th><th>Valor Residual</th>
+  </tr></thead>
+  <tbody id="int-body"></tbody>
+  <tfoot><tr>
+    <td class="tl">TOTAL</td>
+    <td id="int-t1">-</td><td id="int-t2">-</td><td id="int-t3">-</td><td id="int-t4">-</td>
+    <td id="int-t5">-</td><td id="int-t6">-</td><td id="int-t7">-</td><td id="int-t8">-</td>
+  </tr></tfoot>
+</table>
+</div>
+</div>
+
+<!-- Anexo C -->
+<div id="anx-c" style="display:none;margin-top:12px">
+<p class="st">Anexo C – Inversiones</p>
+<div class="bar"><button class="bp" onclick="addAnxRow('inv')">+ Agregar inversión</button><button class="bs" onclick="clearAnx('inv')">Vaciar</button></div>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead><tr>
+    <th class="tl" style="width:26%">Detalle / Emisor</th>
+    <th>Tipo</th><th>Valor Inicio</th><th>Altas</th><th>Bajas</th><th>Result./Aj.VPP</th><th>Valor Cierre</th>
+  </tr></thead>
+  <tbody id="inv-body"></tbody>
+  <tfoot><tr>
+    <td class="tl" colspan="2">TOTAL</td>
+    <td id="inv-t1">-</td><td id="inv-t2">-</td><td id="inv-t3">-</td><td id="inv-t4">-</td><td id="inv-t5">-</td>
+  </tr></tfoot>
+</table>
+</div>
+</div>
+
+<!-- Anexo D -->
+<div id="anx-d" style="display:none;margin-top:12px">
+<p class="st">Anexo D – Previsiones</p>
+<div class="bar"><button class="bp" onclick="addAnxRow('pre')">+ Agregar previsión</button><button class="bs" onclick="clearAnx('pre')">Vaciar</button></div>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead><tr>
+    <th class="tl" style="width:32%">Concepto</th>
+    <th>Saldo Inicio</th><th>Cargos Ejercicio</th><th>Desafectaciones</th><th>Saldo Cierre</th>
+  </tr></thead>
+  <tbody id="pre-body"></tbody>
+  <tfoot><tr>
+    <td class="tl">TOTAL</td>
+    <td id="pre-t1">-</td><td id="pre-t2">-</td><td id="pre-t3">-</td><td id="pre-t4">-</td>
+  </tr></tfoot>
+</table>
+</div>
+</div>
+
+<!-- Anexo E -->
+<div id="anx-e" style="display:none;margin-top:12px">
+<p class="st">Anexo E – Composición del Patrimonio Neto</p>
+<div class="bar"><button class="bp" onclick="addAnxRow('pne')">+ Agregar cuenta</button><button class="bs" onclick="clearAnx('pne')">Vaciar</button></div>
+<div style="overflow-x:auto">
+<table class="tbl-anx">
+  <thead><tr>
+    <th class="tl" style="width:40%">Cuenta</th>
+    <th>Saldo Actual ($)</th><th>Saldo Anterior ($)</th>
+  </tr></thead>
+  <tbody id="pne-body"></tbody>
+  <tfoot><tr>
+    <td class="tl">TOTAL PATRIMONIO NETO</td>
+    <td id="pne-t1">-</td><td id="pne-t2">-</td>
+  </tr></tfoot>
+</table>
+</div>
+<div id="pne-alert" class="al info" style="margin-top:.5rem"></div>
+</div>
+
+</div><!-- panel-body -->
+</div><!-- panel-anx -->
+
+<!-- ═══════════════════════════════ NOTAS ═══════════════════════════════ -->
+<div class="panel" id="panel-notas">
+<div class="panel-body">
+<p class="st">Notas a los Estados Contables</p>
+<div class="al info" style="margin-bottom:1rem">Completar los campos en blanco. El texto en cursiva naranja es modelo orientativo — editarlo según el caso del cliente.</div>
+
+<div id="notas-container"></div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════ CUADRE ═══════════════════════════════ -->
+<div class="panel" id="panel-cuadre">
+<div class="panel-body">
+<p class="st">Panel de Control de Cuadre</p>
+<div id="cuadre-container"></div>
+<div class="bar" style="margin-top:1rem"><button class="bp" onclick="window.print()">Imprimir / PDF</button></div>
+</div>
+</div>
+
+<div class="disc">RT 54 (NUA) vigente para ejercicios iniciados desde 01/07/2024 · Unifica RT 9 y RT 41 · Ajuste por inflación (RT 6/17): activar si aplica · Papel de trabajo de apoyo; no reemplaza el juicio del contador actuante ni el dictamen.</div>
+</div><!-- sys -->
+
+<script>
+// ── Utilidades ───────────────────────────────────────────────────────────────
+function el(id){return document.getElementById(id)}
+function fmt(v){if(v===undefined||v===null||isNaN(v)||Math.abs(v)<0.005)return "$ 0";return(v<0?"($ ":"$ ")+Math.abs(Math.round(v)).toLocaleString("es-AR")+(v<0?")":"")}
+function n(v){return parseFloat((""+v).replace(/[^0-9,.-]/g,"").replace(/\./g,"").replace(",","."))||0}
+function showTab(name,e){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tabs > .tab').forEach(t=>t.classList.remove('on'));el('panel-'+name).classList.add('on');e.classList.add('on');recalcAll()}
+function showAnx(name,e){['a','b','c','d','e'].forEach(x=>{var d=el('anx-'+x);if(d)d.style.display='none'});document.querySelectorAll('#panel-anx .tabs .tab').forEach(t=>t.classList.remove('on'));el('anx-'+name).style.display='';e.classList.add('on')}
+
+// ── Estructura del Balance ───────────────────────────────────────────────────
+var BAL = [
+  {type:'sec', label:'ACTIVO'},
+  {type:'sub', label:'ACTIVO CORRIENTE'},
+  {type:'inp', id:'caja',       label:'Caja y Bancos'},
+  {type:'inp', id:'inv-tmp',    label:'Inversiones Temporarias'},
+  {type:'inp', id:'cred-vtas',  label:'Créditos por Ventas'},
+  {type:'inp', id:'otros-cred', label:'Otros Créditos'},
+  {type:'inp', id:'bdc',        label:'Bienes de Cambio'},
+  {type:'inp', id:'otros-ac',   label:'Otros Activos Corrientes'},
+  {type:'tot', id:'t-ac',       label:'TOTAL ACTIVO CORRIENTE', ids:['caja','inv-tmp','cred-vtas','otros-cred','bdc','otros-ac']},
+  {type:'sub', label:'ACTIVO NO CORRIENTE'},
+  {type:'inp', id:'cred-lp',    label:'Créditos (largo plazo)'},
+  {type:'inp', id:'inv-perm',   label:'Inversiones Permanentes'},
+  {type:'inp', id:'bdu-bal',    label:'Bienes de Uso (neto)'},
+  {type:'inp', id:'intang',     label:'Activos Intangibles (neto)'},
+  {type:'inp', id:'otros-anc',  label:'Otros Activos No Corrientes'},
+  {type:'tot', id:'t-anc',      label:'TOTAL ACTIVO NO CORRIENTE', ids:['cred-lp','inv-perm','bdu-bal','intang','otros-anc']},
+  {type:'tot', id:'t-act',      label:'TOTAL ACTIVO', ids:['t-ac','t-anc'], big:true},
+  {type:'sec', label:'PASIVO'},
+  {type:'sub', label:'PASIVO CORRIENTE'},
+  {type:'inp', id:'d-com',      label:'Deudas Comerciales'},
+  {type:'inp', id:'d-fin',      label:'Préstamos y Deudas Financieras'},
+  {type:'inp', id:'d-soc',      label:'Deudas Sociales'},
+  {type:'inp', id:'d-fis',      label:'Deudas Fiscales'},
+  {type:'inp', id:'ant-cli',    label:'Anticipos de Clientes'},
+  {type:'inp', id:'prev-c',     label:'Previsiones corrientes'},
+  {type:'inp', id:'otros-pc',   label:'Otras Deudas Corrientes'},
+  {type:'tot', id:'t-pc',       label:'TOTAL PASIVO CORRIENTE', ids:['d-com','d-fin','d-soc','d-fis','ant-cli','prev-c','otros-pc']},
+  {type:'sub', label:'PASIVO NO CORRIENTE'},
+  {type:'inp', id:'d-fin-lp',   label:'Deudas Financieras (largo plazo)'},
+  {type:'inp', id:'prev-nc',    label:'Previsiones no corrientes'},
+  {type:'inp', id:'otros-pnc',  label:'Otras Deudas No Corrientes'},
+  {type:'tot', id:'t-pnc',      label:'TOTAL PASIVO NO CORRIENTE', ids:['d-fin-lp','prev-nc','otros-pnc']},
+  {type:'tot', id:'t-pas',      label:'TOTAL PASIVO', ids:['t-pc','t-pnc'], big:true},
+  {type:'sec', label:'PATRIMONIO NETO'},
+  {type:'inp', id:'cap',        label:'Capital Social'},
+  {type:'inp', id:'aj-cap',     label:'Ajuste Integral del Capital'},
+  {type:'inp', id:'ap-nc',      label:'Aportes No Capitalizados'},
+  {type:'inp', id:'res-leg',    label:'Reserva Legal'},
+  {type:'inp', id:'otras-res',  label:'Otras Reservas'},
+  {type:'inp', id:'rna',        label:'Resultados No Asignados (inicio)'},
+  {type:'inp', id:'res-ej-bal', label:'Resultado del Ejercicio'},
+  {type:'tot', id:'t-pn',       label:'TOTAL PATRIMONIO NETO', ids:['cap','aj-cap','ap-nc','res-leg','otras-res','rna','res-ej-bal']},
+  {type:'check', id:'t-ppn',    label:'TOTAL PASIVO + PN', ids:['t-pas','t-pn']},
+];
+
+var ER = [
+  {type:'inp', id:'ventas',     label:'Ventas / Ingresos por Servicios'},
+  {type:'inp', id:'dev',        label:'(−) Devoluciones y Bonificaciones'},
+  {type:'tot', id:'vtas-netas', label:'VENTAS NETAS', ids:['ventas'], neg:['dev']},
+  {type:'inp', id:'costo',      label:'(−) Costo de Ventas / Costo del Servicio'},
+  {type:'tot', id:'res-bruto',  label:'RESULTADO BRUTO', ids:['vtas-netas'], neg:['costo']},
+  {type:'inp', id:'g-com',      label:'(−) Gastos de Comercialización'},
+  {type:'inp', id:'g-adm',      label:'(−) Gastos de Administración'},
+  {type:'tot', id:'ebit',       label:'RESULTADO OPERATIVO (EBIT)', ids:['res-bruto'], neg:['g-com','g-adm']},
+  {type:'inp', id:'cfi-act',    label:'Res. Financieros y por Tenencia – sector Activo'},
+  {type:'inp', id:'cfi-pas',    label:'Res. Financieros y por Tenencia – sector Pasivo'},
+  {type:'inp', id:'recpam',     label:'RECPAM (RT 6/17 – dejar en 0 si no aplica)'},
+  {type:'inp', id:'otros-res',  label:'Otros Ingresos y Egresos'},
+  {type:'tot', id:'res-ai',     label:'RESULTADO ANTES IMPUESTO', ids:['ebit','cfi-act','cfi-pas','recpam','otros-res']},
+  {type:'inp', id:'gg',         label:'(−) Impuesto a las Ganancias'},
+  {type:'tot', id:'res-ej',     label:'RESULTADO DEL EJERCICIO', ids:['res-ai'], neg:['gg'], big:true},
+];
+
+var EFE = [
+  {type:'sec', label:'ACTIVIDADES OPERATIVAS'},
+  {type:'inp', id:'efe-res',    label:'Resultado del ejercicio'},
+  {type:'inp', id:'efe-dep',    label:'(+) Amortizaciones y depreciaciones'},
+  {type:'inp', id:'efe-prev',   label:'(+) Cargos a previsiones'},
+  {type:'inp', id:'efe-cred',   label:'Variación Créditos por ventas'},
+  {type:'inp', id:'efe-bdc',    label:'Variación Bienes de cambio'},
+  {type:'inp', id:'efe-dcom',   label:'Variación Deudas comerciales'},
+  {type:'inp', id:'efe-otros',  label:'Otras variaciones operativas'},
+  {type:'tot', id:'efe-op',     label:'FLUJO NETO ACTIVIDADES OPERATIVAS', ids:['efe-res','efe-dep','efe-prev','efe-cred','efe-bdc','efe-dcom','efe-otros'], big:true},
+  {type:'sec', label:'ACTIVIDADES DE INVERSIÓN'},
+  {type:'inp', id:'efe-bdu',    label:'Adquisición / venta Bienes de Uso'},
+  {type:'inp', id:'efe-inv',    label:'Inversiones realizadas / cobradas'},
+  {type:'tot', id:'efe-inv-tot',label:'FLUJO NETO ACTIVIDADES DE INVERSIÓN', ids:['efe-bdu','efe-inv']},
+  {type:'sec', label:'ACTIVIDADES DE FINANCIACIÓN'},
+  {type:'inp', id:'efe-prest',  label:'Obtención / cancelación préstamos'},
+  {type:'inp', id:'efe-cap',    label:'Aportes de capital'},
+  {type:'inp', id:'efe-div',    label:'Dividendos / retiros pagados'},
+  {type:'tot', id:'efe-fin-tot',label:'FLUJO NETO ACTIVIDADES DE FINANCIACIÓN', ids:['efe-prest','efe-cap','efe-div']},
+  {type:'tot', id:'efe-var',    label:'VARIACIÓN NETA DE FONDOS', ids:['efe-op','efe-inv-tot','efe-fin-tot'], big:true},
+  {type:'inp', id:'efe-ini',    label:'Fondos al inicio del período'},
+  {type:'tot', id:'efe-cie',    label:'FONDOS AL CIERRE DEL PERÍODO', ids:['efe-var','efe-ini'], big:true},
+];
+
+var vals = {}; // {id: {a: value, p: value}}
+function getVal(id, col){ return (vals[id] && vals[id][col]) || 0; }
+function setVal(id, col, v){ if(!vals[id])vals[id]={}; vals[id][col]=v; recalcAll(); }
+
+function calcTot(item, col){
+  var s = (item.ids||[]).reduce((acc,id)=>acc+getVal(id,col),0);
+  s -= (item.neg||[]).reduce((acc,id)=>acc+getVal(id,col),0);
+  return s;
+}
+
+function renderTable(rows, bodyId, prefix){
+  var b = el(bodyId);
+  b.innerHTML = rows.map(row=>{
+    if(row.type==='sec') return `<tr class="sec"><td colspan="3">${row.label}</td></tr>`;
+    if(row.type==='sub') return `<tr class="sub"><td colspan="3" style="padding-left:8px">${row.label}</td></tr>`;
+    if(row.type==='inp') return `<tr class="inp">
+      <td>${row.label}</td>
+      <td><input class="num" type="number" step="any" id="${prefix}${row.id}-a" placeholder="0" oninput="setVal('${row.id}',\'a\',parseFloat(this.value)||0)"></td>
+      <td><input class="num" type="number" step="any" id="${prefix}${row.id}-p" placeholder="0" oninput="setVal('${row.id}',\'p\',parseFloat(this.value)||0)"></td>
+    </tr>`;
+    if(row.type==='tot'||row.type==='check'){
+      var cls = row.big ? 'tot' : 'sub';
+      if(row.type==='check') cls='check';
+      return `<tr class="${cls}">
+        <td>${row.label}</td>
+        <td class="val" id="${prefix}${row.id}-a-disp">$ 0</td>
+        <td class="val" id="${prefix}${row.id}-p-disp">$ 0</td>
+      </tr>`;
+    }
+    return '';
+  }).join('');
+}
+
+function updateTots(rows, prefix){
+  rows.forEach(row=>{
+    if(row.type==='tot'||row.type==='check'){
+      ['a','p'].forEach(col=>{
+        var v = calcTot(row,col);
+        vals[row.id] = vals[row.id]||{};
+        vals[row.id][col] = v;
+        var d = el(prefix+row.id+'-'+col+'-disp');
+        if(d){ d.textContent = fmt(v); d.className='val'+(v<0?' neg':''); }
+      });
+    }
+  });
+}
+
+function recalcAll(){
+  updateTots(BAL,'b-');
+  updateTots(ER,'e-');
+  updateTots(EFE,'f-');
+
+  // Propagar resultado ER → EFE y BAL hint
+  var resA = getVal('res-ej','a'), resP = getVal('res-ej','p');
+
+  // KPIs Balance
+  el('k-activo').textContent = fmt(getVal('t-act','a'));
+  el('k-pasivo').textContent = fmt(getVal('t-pas','a'));
+  el('k-pn').textContent     = fmt(getVal('t-pn','a'));
+
+  // Alert cuadre balance
+  var dif = getVal('t-act','a') - getVal('t-ppn','a');
+  var balAl = el('bal-alert');
+  if(Math.abs(dif)<1){balAl.className='al ok';balAl.textContent='✓ Balance cuadrado (Activo = Pasivo + PN)'}
+  else{balAl.className='al err';balAl.textContent='✗ Diferencia de '+fmt(dif)+' — Activo ≠ Pasivo + PN. Revisar carga.'}
+
+  // Marcar fila check
+  var chk = document.querySelector('#bal-body tr.check');
+  if(chk){ chk.className = Math.abs(dif)<1?'check ok':'check'; }
+
+  // KPIs ER
+  el('k-rb').textContent  = fmt(getVal('res-bruto','a'));
+  el('k-ro').textContent  = fmt(getVal('ebit','a'));
+  el('k-res').textContent = fmt(getVal('res-ej','a'));
+
+  // KPIs EFE
+  el('k-fop').textContent  = fmt(getVal('efe-op','a'));
+  el('k-fvar').textContent = fmt(getVal('efe-var','a'));
+  el('k-fcie').textContent = fmt(getVal('efe-cie','a'));
+
+  // Anexo E cuadre
+  recalcAnxE();
+
+  // Panel cuadre
+  renderCuadre();
+}
+
+// ── Render tablas principales ────────────────────────────────────────────────
+renderTable(BAL, 'bal-body', 'b-');
+renderTable(ER,  'er-body',  'e-');
+renderTable(EFE, 'efe-body', 'f-');
+
+// ── Evolución PN ─────────────────────────────────────────────────────────────
+var PN_ROWS = [
+  "Saldo inicio ejercicio anterior",
+  "Ajuste ejercicio anterior",
+  "Saldo ajustado inicio ant.",
+  "Distribución de resultados ant.",
+  "Resultado ejercicio anterior",
+  "Saldo cierre ejercicio anterior",
+  "Saldo inicio ejercicio actual",
+  "Ajuste ejercicio actual",
+  "Saldo ajustado inicio actual",
+  "Distribución resultados actual",
+  "Resultado del ejercicio actual",
+  "Saldo cierre ejercicio actual",
+];
+var PN_COLS = ['cap2','ajcap2','resleg2','otres2','rna2','resej2'];
+var pnVals = {};
+(function(){
+  var b = el('pn-body');
+  b.innerHTML = PN_ROWS.map((lbl,ri)=>{
+    var bold = lbl.startsWith('Saldo ');
+    return `<tr style="${bold?'background:var(--hu);font-weight:600':''}">
+      <td style="font-size:11px;padding:4px 8px">${lbl}</td>
+      ${PN_COLS.map((_,ci)=>`<td><input class="num" style="width:90px" type="number" step="any" id="pn-${ri}-${ci}" placeholder="0" oninput="recalcPN()"></td>`).join('')}
+      <td class="calc" id="pn-tot-${ri}">$ 0</td>
+    </tr>`;
+  }).join('');
+})();
+function recalcPN(){
+  PN_ROWS.forEach((_,ri)=>{
+    var tot=0;
+    PN_COLS.forEach((_,ci)=>{var v=parseFloat(el(`pn-${ri}-${ci}`).value)||0;tot+=v;});
+    el(`pn-tot-${ri}`).textContent=fmt(tot);
+  });
+}
+
+// ── Anexos dinámicos ─────────────────────────────────────────────────────────
+var anxData = {bdu:[],int:[],inv:[],pre:[],pne:[]};
+
+var anxCols = {
+  bdu:['Rubro/Bien','Costo Inicio','Altas','Bajas','Costo Cierre','Dep.Ini','Dep.Ej','Dep.Cie','Valor Res.'],
+  int:['Rubro','Costo Inicio','Altas','Bajas','Costo Cierre','Amort.Ini','Amort.Ej','Amort.Cie','Valor Res.'],
+  inv:['Detalle','Tipo','Val.Inicio','Altas','Bajas','Res/VPP','Val.Cierre'],
+  pre:['Concepto','Sdo.Inicio','Cargos','Desafect.','Sdo.Cierre'],
+  pne:['Cuenta PN','Sdo.Actual','Sdo.Anterior'],
+};
+var anxNumCols = {bdu:[1,2,3,4,5,6,7,8],int:[1,2,3,4,5,6,7,8],inv:[2,3,4,5,6],pre:[1,2,3,4],pne:[1,2]};
+var anxCalc = {
+  bdu: r=>{r[4]=r[1]+r[2]-r[3]; r[7]=r[5]+r[6]; r[8]=r[4]-r[7];},
+  int: r=>{r[4]=r[1]+r[2]-r[3]; r[7]=r[5]+r[6]; r[8]=r[4]-r[7];},
+  inv: r=>{r[6]=r[2]+r[3]-r[4]+r[5];},
+  pre: r=>{r[4]=r[1]+r[2]-r[3];},
+  pne: r=>{},
+};
+var anxCalcIdx = {bdu:[4,7,8],int:[4,7,8],inv:[6],pre:[4],pne:[]};
+
+function addAnxRow(type){
+  var cols = anxCols[type];
+  anxData[type].push(new Array(cols.length).fill(''));
+  renderAnx(type);
+}
+function clearAnx(type){ anxData[type]=[]; renderAnx(type); }
+function updAnx(type,ri,ci,v){
+  anxData[type][ri][ci] = isNaN(parseFloat(v)) ? v : (parseFloat(v)||0);
+  anxCalc[type](anxData[type][ri]);
+  renderAnx(type);
+}
+function renderAnx(type){
+  var rows=anxData[type], numC=anxNumCols[type], calcC=anxCalcIdx[type]||[];
+  var b=el(type+'-body');
+  if(!rows.length){b.innerHTML=`<tr><td colspan="${anxCols[type].length}" style="text-align:center;color:var(--ink-s);padding:10px">Sin datos. Agregar rubro.</td></tr>`;updateAnxTots(type);return}
+  b.innerHTML=rows.map((r,ri)=>`<tr>${r.map((v,ci)=>{
+    if(calcC.includes(ci)) return `<td class="calc" id="anx-${type}-${ri}-${ci}">${fmt(typeof v==='number'?v:parseFloat(v)||0)}</td>`;
+    if(numC.includes(ci)) return `<td><input class="num" type="number" step="any" value="${v||''}" placeholder="0" oninput="updAnx('${type}',${ri},${ci},this.value)"></td>`;
+    return `<td><input class="txt" value="${(v||'').toString().replace(/"/g,'&quot;')}" placeholder="Descripción" oninput="updAnx('${type}',${ri},${ci},this.value)"></td>`;
+  }).join('')}</tr>`).join('');
+  updateAnxTots(type);
+}
+function updateAnxTots(type){
+  var rows=anxData[type], numC=anxNumCols[type];
+  numC.forEach((ci,idx)=>{
+    var tot=rows.reduce((a,r)=>a+(typeof r[ci]==='number'?r[ci]:(parseFloat(r[ci])||0)),0);
+    var td=el(type+'-t'+(idx+1));
+    if(td) td.textContent=fmt(tot);
+  });
+  if(type==='pne') recalcAnxE();
+}
+function recalcAnxE(){
+  var rows=anxData['pne'];
+  var totA=rows.reduce((a,r)=>a+(parseFloat(r[1])||0),0);
+  var pnBal=getVal('t-pn','a');
+  var dif=totA-pnBal;
+  var al=el('pne-alert');
+  if(!al)return;
+  if(rows.length===0){al.className='al info';al.textContent='Completar el Anexo E para controlar el cuadre con el Balance.'}
+  else if(Math.abs(dif)<1){al.className='al ok';al.textContent='✓ PN Anexo E cuadra con el Balance General.'}
+  else{al.className='al err';al.textContent='✗ Diferencia de '+fmt(dif)+' entre PN del Anexo E y el Balance. Revisar.'}
+}
+
+// Default rows para anexos
+[['bdu',['Edificios y construcciones','Maquinaria y equipo','Rodados','Muebles y útiles','Equipos de cómputo']],
+ ['int',['Marcas y patentes','Licencias de software','Llave de negocio']],
+ ['inv',['Plazo fijo','Acciones en controladas']],
+ ['pre',['Previsión laboral','Previsión fiscal']],
+ ['pne',['Capital social','Reserva legal','Resultados no asignados','Resultado del ejercicio']],
+].forEach(([type,items])=>{
+  items.forEach(lbl=>{var r=new Array(anxCols[type].length).fill('');r[0]=lbl;anxData[type].push(r);});
+  renderAnx(type);
+});
+
+// ── Notas ────────────────────────────────────────────────────────────────────
+var NOTAS = [
+  {n:1, title:"Información General", campos:[
+    {lbl:"Domicilio legal"},
+    {lbl:"Actividad principal (CIIU)"},
+    {lbl:"Ejercicio N°"},
+    {lbl:"Fecha de cierre"},
+  ]},
+  {n:2, title:"Bases de Preparación y Criterios de Medición", modelo:
+    "Los estados contables se prepararon según NCPA (RT 54/NUA o RT 9 según corresponda). [Si aplica RT 6/17]: Se aplicó ajuste por inflación usando el IPC (INDEC), coeficiente al cierre: ___. Criterios: Caja a valor nominal · Créditos al VPR · Bienes de cambio al menor entre costo y VNR · Bienes de uso al costo menos depreciaciones acumuladas (línea recta) · Inversiones permanentes por VPP · Deudas a valor nominal o valor descontado si el efecto del tiempo es significativo.",
+    campos:[]
+  },
+  {n:3, title:"Contingencias y Compromisos", modelo:
+    "Al cierre [no existen / existen las siguientes] contingencias significativas: [describir juicios laborales, fiscales, comerciales y probabilidad]. Compromisos no registrados: [completar o indicar 'no existen'].",
+    campos:[{lbl:"Detalle de contingencias"}]
+  },
+  {n:4, title:"Hechos Posteriores al Cierre", modelo:
+    "Entre el cierre y la fecha de emisión [no han ocurrido / han ocurrido]: [describir o indicar 'ninguno'].",
+    campos:[{lbl:"Descripción de hechos posteriores"}]
+  },
+  {n:5, title:"Partes Relacionadas", modelo:
+    "Operaciones con partes relacionadas: [nombre, tipo de operación, monto, condiciones]. Si no existen: 'No se realizaron operaciones con partes relacionadas durante el ejercicio'.",
+    campos:[{lbl:"Detalle de operaciones con partes relacionadas"}]
+  },
+  {n:6, title:"Impuesto a las Ganancias", modelo:
+    "Se determina aplicando la alícuota del [35% sociedades / escala PH] sobre la ganancia neta imponible. Cargo del ejercicio: $ ___. [Si aplica impuesto diferido: Se reconocen activos/pasivos diferidos por diferencias temporarias.]",
+    campos:[{lbl:"Cargo por IG del ejercicio ($)"}]
+  },
+  {n:7, title:"Restricciones sobre Activos y Deudas", modelo:
+    "[No existen / Existen las siguientes] restricciones sobre activos: [prendas, hipotecas, embargos — bien, monto, acreedor]. Deudas garantizadas: [completar o 'no existen'].",
+    campos:[{lbl:"Detalle de restricciones"}]
+  },
+  {n:8, title:"Política de Distribución de Resultados", modelo:
+    "Los resultados quedan sujetos a aprobación de asamblea/reunión de socios. La distribución se limita a utilidades realizadas y líquidas (LGS). [Indicar restricción estatutaria adicional si existe.]",
+    campos:[]
+  },
+  {n:9, title:"Clasificación según RT 54 (NUA)", modelo:
+    "El ente se clasifica como [Entidad Pequeña / Mediana / Restante] según los parámetros de ingresos de la RT 54. Esta clasificación determina las simplificaciones de presentación aplicadas.",
+    campos:[{lbl:"Clasificación del ente"}]
+  },
+];
+
+(function(){
+  var cont=el('notas-container');
+  cont.innerHTML=NOTAS.map(nota=>`
+    <div class="nota-card">
+      <div class="nota-num">Nota ${nota.n}</div>
+      <div class="nota-title">${nota.title}</div>
+      ${nota.modelo?`<div class="nota-modelo">📝 Modelo orientativo: ${nota.modelo}</div>`:''}
+      ${nota.campos.map((c,i)=>`
+        <div class="field" style="margin-top:8px">
+          <label>${c.lbl}</label>
+          <textarea id="nota-${nota.n}-${i}" placeholder="Completar según el caso del cliente..." rows="2"></textarea>
+        </div>`).join('')}
+    </div>`).join('');
+})();
+
+// ── Panel de Cuadre ──────────────────────────────────────────────────────────
+function renderCuadre(){
+  var act=getVal('t-act','a'), ppn=getVal('t-ppn','a');
+  var actP=getVal('t-act','p'), ppnP=getVal('t-ppn','p');
+  var resEr=getVal('res-ej','a'), resBal=getVal('res-ej-bal','a');
+  var pnBal=getVal('t-pn','a');
+  var efeVar=getVal('efe-var','a');
+  var cajaAct=getVal('caja','a'), cajaAnt=getVal('caja','p');
+  var efeCie=getVal('efe-cie','a');
+
+  var controles=[
+    {lbl:"Activo = Pasivo + PN (ejercicio actual)", dif:act-ppn},
+    {lbl:"Activo = Pasivo + PN (ejercicio anterior)", dif:actP-ppnP},
+    {lbl:"Resultado ER = Resultado en Balance", dif:resEr-resBal},
+    {lbl:"Variación EFE = Caja Actual − Caja Anterior", dif:efeVar-(cajaAct-cajaAnt)},
+    {lbl:"Fondos al Cierre EFE = Caja y Bancos Balance", dif:efeCie-cajaAct},
+  ];
+
+  var todosOk = controles.every(c=>Math.abs(c.dif)<1);
+
+  el('cuadre-container').innerHTML=`
+    <div class="cuadre-row head"><span>Control</span><span>Diferencia / Estado</span></div>
+    ${controles.map(c=>{
+      var ok=Math.abs(c.dif)<1;
+      return `<div class="cuadre-row ${ok?'ok':'err'}">
+        <span>${c.lbl}</span>
+        <span class="cuadre-val">${ok?'✅ CUADRA':'❌ '+fmt(c.dif)}</span>
+      </div>`;
+    }).join('')}
+    <div class="al ${todosOk?'ok':'err'}" style="margin-top:.75rem">
+      ${todosOk?'✓ Todos los controles cuadran. Los estados contables son consistentes.':'✗ Hay diferencias. Revisá los controles marcados en rojo antes de presentar.'}
+    </div>`;
+}
+renderCuadre();
+
+// ── Limpiar todo ──────────────────────────────────────────────────────────────
+function limpiarTodo(){
+  vals={};
+  document.querySelectorAll('input[type=number],input[type=text],textarea').forEach(e=>e.value='');
+  recalcAll(); recalcPN();
+  anxData={bdu:[],int:[],inv:[],pre:[],pne:[]};
+  ['bdu','int','inv','pre','pne'].forEach(t=>{
+    var b=el(t+'-body');
+    if(b)b.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--ink-s);padding:10px">Sin datos.</td></tr>';
+    ['t1','t2','t3','t4','t5','t6','t7','t8'].forEach(x=>{var td=el(t+'-'+x);if(td)td.textContent='-';});
+  });
+}
+</script>
+</body>
+</html>
