@@ -1,0 +1,574 @@
+<title>Calculadora de Precio y Rentabilidad — Gestión Emprender</title>
+<style>
+  :root{
+    --paper:#EEF1EC;
+    --paper-raised:#FBFCFA;
+    --ink:#182420;
+    --ink-soft:#56655D;
+    --line:#D6DCD3;
+    --line-strong:#BFC8BB;
+    --accent:#1B6F5C;
+    --accent-ink:#0E4A3D;
+    --accent-soft:#DCEAE4;
+    --amber:#A8672A;
+    --amber-soft:#F1E1C9;
+    --danger:#A83F2B;
+    --danger-soft:#F3DED8;
+    --success:#2E7D4F;
+    --success-soft:#DCEEE1;
+
+    --font-display:"Iowan Old Style","Palatino Linotype","URW Palladio L","Book Antiqua",Georgia,"Times New Roman",serif;
+    --font-body:"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+
+    --radius:3px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#101815;
+      --paper-raised:#16211C;
+      --ink:#E7ECE8;
+      --ink-soft:#9FAEA5;
+      --line:#26332C;
+      --line-strong:#354339;
+      --accent:#57B79B;
+      --accent-ink:#BEE8DA;
+      --accent-soft:#1C3A32;
+      --amber:#DDA35C;
+      --amber-soft:#3A2E1A;
+      --danger:#E2907C;
+      --danger-soft:#3B231D;
+      --success:#84CBA2;
+      --success-soft:#1D3427;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101815;
+    --paper-raised:#16211C;
+    --ink:#E7ECE8;
+    --ink-soft:#9FAEA5;
+    --line:#26332C;
+    --line-strong:#354339;
+    --accent:#57B79B;
+    --accent-ink:#BEE8DA;
+    --accent-soft:#1C3A32;
+    --amber:#DDA35C;
+    --amber-soft:#3A2E1A;
+    --danger:#E2907C;
+    --danger-soft:#3B231D;
+    --success:#84CBA2;
+    --success-soft:#1D3427;
+  }
+  :root[data-theme="light"]{
+    --paper:#EEF1EC;
+    --paper-raised:#FBFCFA;
+    --ink:#182420;
+    --ink-soft:#56655D;
+    --line:#D6DCD3;
+    --line-strong:#BFC8BB;
+    --accent:#1B6F5C;
+    --accent-ink:#0E4A3D;
+    --accent-soft:#DCEAE4;
+    --amber:#A8672A;
+    --amber-soft:#F1E1C9;
+    --danger:#A83F2B;
+    --danger-soft:#F3DED8;
+    --success:#2E7D4F;
+    --success-soft:#DCEEE1;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .page{
+    max-width:960px;
+    margin:0 auto;
+    padding:clamp(28px,5vw,64px) clamp(18px,4vw,28px) 48px;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(28px,4vw,40px);
+  }
+
+  .masthead{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:clamp(20px,3vw,28px);
+  }
+  .eyebrow{
+    font-family:var(--font-body);
+    font-size:0.75rem;
+    font-weight:600;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+  }
+  .masthead h1{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:clamp(1.75rem,3.6vw,2.5rem);
+    line-height:1.15;
+    margin:0;
+    color:var(--ink);
+    text-wrap:balance;
+    max-width:20ch;
+  }
+  .lede{
+    margin:0;
+    max-width:58ch;
+    color:var(--ink-soft);
+    font-size:0.98rem;
+  }
+
+  .ledger{
+    display:grid;
+    grid-template-columns:1.05fr 1fr;
+    gap:clamp(18px,3vw,26px);
+    align-items:start;
+  }
+  @media (max-width:760px){
+    .ledger{ grid-template-columns:1fr; }
+  }
+
+  .panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:clamp(18px,3vw,26px);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .panel-head h2{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:1.15rem;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:14px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .field-row[hidden]{ display:none; }
+  .field-row label{
+    font-size:0.88rem;
+    color:var(--ink-soft);
+  }
+  .input-wrap{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    background:transparent;
+  }
+  .input-wrap .prefix,
+  .input-wrap .suffix{
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    font-variant-numeric:tabular-nums;
+  }
+  .input-wrap input{
+    width:9ch;
+    text-align:right;
+    border:none;
+    background:transparent;
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:1.05rem;
+    font-variant-numeric:tabular-nums;
+    padding:4px 2px;
+    border-bottom:1px solid transparent;
+  }
+  .input-wrap input:focus{
+    outline:none;
+    border-bottom:1px solid var(--accent);
+  }
+  .input-wrap input:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+    border-radius:2px;
+  }
+  /* remove native spinners for a cleaner ledger look, keep keyboard/scroll input functional */
+  .input-wrap input::-webkit-outer-spin-button,
+  .input-wrap input::-webkit-inner-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+  }
+  .input-wrap input[type="number"]{ -moz-appearance:textfield; }
+
+  .mode-toggle{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:16px 0 4px;
+  }
+  .mode-btn{
+    font-family:var(--font-body);
+    font-size:0.8rem;
+    line-height:1.3;
+    color:var(--ink-soft);
+    background:transparent;
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:10px 10px;
+    cursor:pointer;
+    transition:background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .mode-btn:hover{ border-color:var(--accent); color:var(--ink); }
+  .mode-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .mode-btn.is-active{
+    background:var(--accent-soft);
+    border-color:var(--accent);
+    color:var(--accent-ink);
+    font-weight:600;
+  }
+
+  .status-chip{
+    font-size:0.72rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    border-radius:999px;
+    background:var(--line);
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .status-chip[data-state="success"]{ background:var(--success-soft); color:var(--success); }
+  .status-chip[data-state="danger"]{ background:var(--danger-soft); color:var(--danger); }
+
+  .headline-result{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding:6px 0 18px;
+  }
+  .headline-label{
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+  .headline-value{
+    font-family:var(--font-mono);
+    font-size:clamp(2.1rem,5vw,2.75rem);
+    font-variant-numeric:tabular-nums;
+    color:var(--amber);
+    line-height:1.1;
+  }
+
+  .composition{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--line);
+  }
+  .composition-bar{
+    display:flex;
+    width:100%;
+    height:14px;
+    border-radius:999px;
+    overflow:hidden;
+    background:var(--line);
+  }
+  .seg{ height:100%; display:block; }
+  .seg-variable{ background:var(--ink-soft); }
+  .seg-fixed{ background:var(--accent); }
+  .seg-profit{ background:var(--amber); }
+  @media (prefers-reduced-motion: no-preference){
+    .seg{ transition:width .35s ease; }
+  }
+  .composition-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    font-size:0.76rem;
+    color:var(--ink-soft);
+  }
+  .composition-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot-variable{ background:var(--ink-soft); }
+  .dot-fixed{ background:var(--accent); }
+  .dot-profit{ background:var(--amber); }
+
+  .metric-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    margin:14px 0 0;
+  }
+  .metric{
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .metric:nth-child(odd){ padding-right:14px; border-right:1px solid var(--line); }
+  .metric:nth-child(even){ padding-left:14px; }
+  .metric dt{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .metric dd{
+    margin:0;
+    font-family:var(--font-mono);
+    font-size:1.02rem;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+  }
+
+  .footnote{
+    max-width:64ch;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div class="eyebrow">Gestión Emprender</div>
+    <h1>Calculadora de Precio y Rentabilidad</h1>
+    <p class="lede">Calcula el precio de venta que te conviene según tus costos, o revisá qué margen te está dejando el precio que ya usás. Todo se actualiza mientras escribís.</p>
+  </header>
+
+  <main class="ledger">
+    <section class="panel" aria-label="Tus datos">
+      <div class="panel-head">
+        <h2>Tus datos</h2>
+      </div>
+
+      <div class="field-row">
+        <label for="costoVariable">Costo variable por unidad</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="costoVariable" type="number" min="0" step="0.01" value="45" inputmode="decimal">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <label for="costosFijos">Costos fijos del mes</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="costosFijos" type="number" min="0" step="1" value="8000" inputmode="decimal">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <label for="unidades">Unidades vendidas al mes (estimado)</label>
+        <div class="input-wrap">
+          <input id="unidades" type="number" min="0" step="1" value="200" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="mode-toggle" role="tablist" aria-label="Qué querés calcular">
+        <button type="button" class="mode-btn is-active" data-mode="margen" role="tab" aria-selected="true">Calcular precio desde margen</button>
+        <button type="button" class="mode-btn" data-mode="precio" role="tab" aria-selected="false">Calcular margen desde precio</button>
+      </div>
+
+      <div class="field-row" data-field="margen">
+        <label for="margenDeseado">Margen de ganancia deseado</label>
+        <div class="input-wrap">
+          <input id="margenDeseado" type="number" min="0" max="95" step="1" value="35" inputmode="decimal">
+          <span class="suffix">%</span>
+        </div>
+      </div>
+
+      <div class="field-row" data-field="precio" hidden>
+        <label for="precioVenta">Precio de venta actual</label>
+        <div class="input-wrap">
+          <span class="prefix">$</span>
+          <input id="precioVenta" type="number" min="0" step="0.01" value="70" inputmode="decimal">
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Resultado">
+      <div class="panel-head">
+        <h2>Resultado</h2>
+        <span class="status-chip" id="statusChip">—</span>
+      </div>
+
+      <div class="headline-result">
+        <span class="headline-label" id="headlineLabel">Precio de venta sugerido</span>
+        <span class="headline-value" id="headlineValue">$0,00</span>
+      </div>
+
+      <div class="composition">
+        <div class="composition-bar" id="compBar">
+          <span class="seg seg-variable" id="segVariable" style="width:0%"></span>
+          <span class="seg seg-fixed" id="segFixed" style="width:0%"></span>
+          <span class="seg seg-profit" id="segProfit" style="width:0%"></span>
+        </div>
+        <div class="composition-legend">
+          <span><i class="dot dot-variable"></i>Costo variable</span>
+          <span><i class="dot dot-fixed"></i>Costo fijo asignado</span>
+          <span><i class="dot dot-profit"></i>Ganancia</span>
+        </div>
+      </div>
+
+      <dl class="metric-grid">
+        <div class="metric"><dt>Margen de ganancia</dt><dd id="mMargen">—</dd></div>
+        <div class="metric"><dt>Ganancia por unidad</dt><dd id="mGananciaUnidad">—</dd></div>
+        <div class="metric"><dt>Ganancia mensual</dt><dd id="mGananciaMensual">—</dd></div>
+        <div class="metric"><dt>Costo total por unidad</dt><dd id="mCostoTotal">—</dd></div>
+        <div class="metric"><dt>Punto de equilibrio</dt><dd id="mPuntoEquilibrio">—</dd></div>
+        <div class="metric"><dt>Ingresos en el equilibrio</dt><dd id="mIngresoEquilibrio">—</dd></div>
+      </dl>
+    </section>
+  </main>
+
+  <p class="footnote">Ingresá todos los montos en tu misma moneda local; la calculadora no asume ningún tipo de cambio. Los resultados son una guía de referencia — ajustá el precio final según tu mercado, tu competencia y el valor que percibe tu cliente.</p>
+</div>
+
+<script>
+  (function(){
+    var els = {
+      costoVariable: document.getElementById('costoVariable'),
+      costosFijos: document.getElementById('costosFijos'),
+      unidades: document.getElementById('unidades'),
+      margenDeseado: document.getElementById('margenDeseado'),
+      precioVenta: document.getElementById('precioVenta'),
+      headlineLabel: document.getElementById('headlineLabel'),
+      headlineValue: document.getElementById('headlineValue'),
+      statusChip: document.getElementById('statusChip'),
+      segVariable: document.getElementById('segVariable'),
+      segFixed: document.getElementById('segFixed'),
+      segProfit: document.getElementById('segProfit'),
+      mMargen: document.getElementById('mMargen'),
+      mGananciaUnidad: document.getElementById('mGananciaUnidad'),
+      mGananciaMensual: document.getElementById('mGananciaMensual'),
+      mCostoTotal: document.getElementById('mCostoTotal'),
+      mPuntoEquilibrio: document.getElementById('mPuntoEquilibrio'),
+      mIngresoEquilibrio: document.getElementById('mIngresoEquilibrio'),
+      fieldMargen: document.querySelector('[data-field="margen"]'),
+      fieldPrecio: document.querySelector('[data-field="precio"]'),
+      modeBtns: Array.prototype.slice.call(document.querySelectorAll('.mode-btn'))
+    };
+
+    var mode = 'margen';
+
+    var moneyFmt = new Intl.NumberFormat('es', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    var pctFmt = new Intl.NumberFormat('es', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    var intFmt = new Intl.NumberFormat('es', { maximumFractionDigits: 0 });
+
+    function money(n){
+      if (!isFinite(n)) return '—';
+      return '$' + moneyFmt.format(n);
+    }
+    function pct(n){
+      if (!isFinite(n)) return '—';
+      return pctFmt.format(n) + '%';
+    }
+    function units(n){
+      if (!isFinite(n) || n < 0) return '—';
+      return intFmt.format(Math.ceil(n)) + ' u.';
+    }
+
+    function num(el){
+      var v = parseFloat(el.value);
+      return isNaN(v) ? 0 : v;
+    }
+
+    function setMode(next){
+      mode = next;
+      els.modeBtns.forEach(function(btn){
+        var active = btn.getAttribute('data-mode') === mode;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      els.fieldMargen.hidden = mode !== 'margen';
+      els.fieldPrecio.hidden = mode !== 'precio';
+      els.headlineLabel.textContent = mode === 'margen' ? 'Precio de venta sugerido' : 'Margen de ganancia resultante';
+      compute();
+    }
+
+    function compute(){
+      var costoVariable = num(els.costoVariable);
+      var costosFijos = num(els.costosFijos);
+      var unidades = Math.max(0, num(els.unidades));
+
+      var costoFijoPorUnidad = unidades > 0 ? costosFijos / unidades : 0;
+      var costoTotalUnidad = costoVariable + costoFijoPorUnidad;
+
+      var precioVenta, margen;
+
+      if (mode === 'margen'){
+        var margenDeseado = Math.min(Math.max(num(els.margenDeseado), 0), 99);
+        var m = margenDeseado / 100;
+        precioVenta = m < 1 ? costoTotalUnidad / (1 - m) : costoTotalUnidad;
+        margen = m * 100;
+        els.headlineValue.textContent = money(precioVenta);
+      } else {
+        precioVenta = Math.max(0, num(els.precioVenta));
+        margen = precioVenta > 0 ? ((precioVenta - costoTotalUnidad) / precioVenta) * 100 : 0;
+        els.headlineValue.textContent = pct(margen);
+      }
+
+      var gananciaUnidad = precioVenta - costoTotalUnidad;
+      var gananciaMensual = gananciaUnidad * unidades;
+      var contribucionUnidad = precioVenta - costoVariable;
+      var puntoEquilibrioUnidades = contribucionUnidad > 0 ? costosFijos / contribucionUnidad : Infinity;
+      var ingresoEquilibrio = isFinite(puntoEquilibrioUnidades) ? puntoEquilibrioUnidades * precioVenta : Infinity;
+
+      els.mMargen.textContent = pct(margen);
+      els.mGananciaUnidad.textContent = money(gananciaUnidad);
+      els.mGananciaMensual.textContent = money(gananciaMensual);
+      els.mCostoTotal.textContent = money(costoTotalUnidad);
+      els.mPuntoEquilibrio.textContent = units(puntoEquilibrioUnidades);
+      els.mIngresoEquilibrio.textContent = money(ingresoEquilibrio);
+
+      // composition bar, relative to precioVenta
+      var base = precioVenta > 0 ? precioVenta : (costoTotalUnidad || 1);
+      var wVariable = Math.max(0, Math.min(100, (costoVariable / base) * 100));
+      var wFixed = Math.max(0, Math.min(100 - wVariable, (costoFijoPorUnidad / base) * 100));
+      var wProfit = Math.max(0, 100 - wVariable - wFixed);
+      els.segVariable.style.width = wVariable + '%';
+      els.segFixed.style.width = wFixed + '%';
+      els.segProfit.style.width = wProfit + '%';
+
+      // status chip
+      if (precioVenta <= 0 || gananciaUnidad <= 0){
+        els.statusChip.textContent = 'Sin margen a este precio';
+        els.statusChip.setAttribute('data-state', 'danger');
+      } else if (unidades > 0 && unidades < puntoEquilibrioUnidades){
+        els.statusChip.textContent = 'Bajo el punto de equilibrio';
+        els.statusChip.setAttribute('data-state', 'danger');
+      } else if (unidades > 0){
+        els.statusChip.textContent = 'Rentable este mes';
+        els.statusChip.setAttribute('data-state', 'success');
+      } else {
+        els.statusChip.textContent = 'Ingresá unidades estimadas';
+        els.statusChip.removeAttribute('data-state');
+      }
+    }
+
+    [els.costoVariable, els.costosFijos, els.unidades, els.margenDeseado, els.precioVenta].forEach(function(el){
+      el.addEventListener('input', compute);
+    });
+    els.modeBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){ setMode(btn.getAttribute('data-mode')); });
+    });
+
+    compute();
+  })();
+</script>
