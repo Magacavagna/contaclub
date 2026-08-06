@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bienes Personales 2025 · Conta Club</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#8B0000;--cr-u:#F5E0E0;--bu:#2D0A0A;
+  --hu:#F5ECD7;--ar:#C8B89A;--cm:#FAF5EE;
+  --ink:#1A0A0A;--ink-m:#4A2A2A;--ink-s:#8A6A6A;
+  --vb:#EFF5E8;--vt:#2A4A0A;--vc:#639922;
+  --ab:#FDF3E0;--at:#5A3800;--ac:#BA7517;
+  --rb:#FCEBEB;--rt:#791F1F;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--cm)}
+body{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--cm);min-height:100vh;padding:1.5rem}
+.sys{max-width:900px;margin:0 auto;padding-bottom:4rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--bu);border-radius:12px;margin-bottom:1.5rem}
+.logo{font-family:var(--serif);font-size:18px;color:var(--hu);line-height:1.3}
+.logo-sub{font-size:10px;color:var(--ar);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+.top-r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.top-tag{font-size:12px;color:var(--ar)}
+.btn-cl{font-size:10px;color:var(--ar);background:transparent;border:.5px solid var(--ar);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--sans)}
+.nav{display:flex;gap:2px;margin-bottom:1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:4px;overflow-x:auto}
+.nb{font-size:12px;font-weight:500;padding:7px 11px;border:none;background:none;cursor:pointer;color:var(--ink-s);border-radius:7px;white-space:nowrap;font-family:var(--sans)}
+.nb.on{background:var(--cr);color:var(--hu)}
+.nb:hover:not(.on){background:var(--hu);color:var(--ink)}
+.panel{display:none}.panel.on{display:block}
+.st{font-size:10px;font-weight:600;color:var(--ink-s);letter-spacing:.1em;text-transform:uppercase;margin:1.5rem 0 .75rem;border-bottom:1px solid var(--ar);padding-bottom:6px}
+.st:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpi{background:var(--cm);border:1px solid var(--ar);border-radius:10px;padding:12px 16px}
+.kl{font-size:10px;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kv{font-family:var(--serif);font-size:20px;color:var(--bu)}
+.kv.w{color:var(--cr)}.kv.ok{color:var(--vt)}
+.ks{font-size:11px;color:var(--ink-s);margin-top:3px}
+.card{background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.al{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:8px;border-left:3px solid;line-height:1.5}
+.ok{background:var(--vb);color:var(--vt);border-left-color:var(--vc)}
+.warn{background:var(--ab);color:var(--at);border-left-color:var(--ac)}
+.err{background:var(--rb);color:var(--rt);border-left-color:var(--cr)}
+.info{background:var(--hu);color:var(--bu);border-left-color:var(--ar)}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--ink-s)}
+.field input,.field select{font-size:13px;background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--ink);height:34px;font-family:var(--sans)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--cr)}
+.cc{font-size:13px;background:var(--cm);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;color:var(--bu);height:34px;font-weight:500;display:flex;align-items:center}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--bu);color:var(--hu);font-size:10px;font-weight:500;padding:7px 10px;border:1px solid var(--bu);text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.tbl th.tl{text-align:left}
+.tbl td{padding:6px 10px;border:1px solid var(--ar);vertical-align:middle}
+.tbl td.tr{text-align:right;font-weight:500;color:var(--bu)}
+.tbl td.neg{text-align:right;color:var(--cr);font-weight:500}
+.tbl td.ok-c{background:var(--vb);color:var(--vt);font-weight:500;text-align:center}
+.tbl td.ex-c{background:var(--ab);color:var(--at);font-weight:500;text-align:center}
+.tbl tr:nth-child(even){background:#FDF8F0}
+.tbl tr.subt td{font-weight:500;background:var(--hu);color:var(--bu)}
+.tbl tr.totf td{font-weight:600;background:var(--bu);color:var(--hu);font-size:13px}
+.tbl tr.act-tr{background:#FFF5F5}
+.nb-bar{display:flex;gap:8px;margin-top:1.5rem;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid var(--ar)}
+.bp{background:var(--cr);color:var(--hu);border:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.bp:hover{background:var(--bu)}
+.bs{background:transparent;color:var(--ink-s);border:1px solid var(--ar);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.bs:hover{background:var(--hu)}
+.hint{font-size:12px;color:var(--ink-s)}
+.onb{text-align:center;padding:3rem 1rem}
+.onb h2{font-family:var(--serif);font-size:26px;color:var(--bu);margin-bottom:.5rem}
+.onb p{font-size:13px;color:var(--ink-s);max-width:460px;margin:0 auto 2rem;line-height:1.6}
+.chk{text-align:left;max-width:440px;margin:0 auto 1.5rem;background:var(--cm);border:1px solid var(--ar);border-radius:12px;padding:1rem}
+.chi{display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--ar);font-size:13px;line-height:1.4}
+.chi:last-child{border-bottom:none}
+.chn{width:22px;height:22px;border-radius:50%;background:var(--cr);color:var(--hu);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.disc{font-size:11px;color:var(--ink-s);background:var(--hu);border:1px solid var(--ar);border-radius:8px;padding:10px 14px;margin:1rem auto 1.5rem;max-width:440px;line-height:1.5}
+.sbtn{background:var(--cr);color:var(--hu);border:none;padding:12px 36px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.sbtn:hover{background:var(--bu)}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--ar)}
+.check-item:last-child{border-bottom:none}
+.check-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.reibp-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;margin-bottom:1rem}
+@media print{.nav,.nb-bar{display:none!important}.panel{display:block!important}body{padding:.5rem}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="sys">
+
+<div class="topbar">
+  <div>
+    <div class="logo">Bienes Personales<br>Período fiscal 2025</div>
+    <div class="logo-sub">Conta Club</div>
+  </div>
+  <div class="top-r">
+    <div class="top-tag" id="top-tag"></div>
+    <button class="btn-cl" onclick="limpiar()">Limpiar datos</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="tab(0)">Inicio</button>
+  <button class="nb" onclick="tab(1)">Datos</button>
+  <button class="nb" onclick="tab(2)">Bienes en el país</button>
+  <button class="nb" onclick="tab(3)">Bienes en el exterior</button>
+  <button class="nb" onclick="tab(4)">Exenciones</button>
+  <button class="nb" onclick="tab(5)">Liquidación</button>
+  <button class="nb" onclick="tab(6)">Checklist</button>
+</div>
+
+<!-- INICIO -->
+<div class="panel on" id="t0">
+  <div class="onb">
+    <h2>Papel de trabajo<br>Bienes Personales 2025</h2>
+    <p>Patrimonio al 31/12/2025. Valores ARCA oficiales. MNI: $384.728.044,57. Escalas actualizadas +31,3% IPC. Incluye verificador REIBP y contribuyentes cumplidores.</p>
+    <div class="chk">
+      <div class="chi"><div class="chn">1</div><span>Datos del contribuyente y situación fiscal (REIBP, cumplidor)</span></div>
+      <div class="chi"><div class="chn">2</div><span>Bienes gravados en el país al 31/12/2025</span></div>
+      <div class="chi"><div class="chn">3</div><span>Bienes gravados en el exterior (misma escala desde 2024)</span></div>
+      <div class="chi"><div class="chn">4</div><span>Bienes exentos: plazo fijo, caja de ahorro, casa-habitación</span></div>
+      <div class="chi"><div class="chn">5</div><span>Liquidación con escala general o cumplidores, lectura de tramo</span></div>
+      <div class="chi"><div class="chn">6</div><span>Checklist de presentación con alertas automáticas</span></div>
+    </div>
+    <div class="disc">Esta herramienta no reemplaza el criterio profesional. La responsabilidad de la liquidación es del contador matriculado.</div>
+    <button class="sbtn" onclick="tab(1)">Empezar</button>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="panel" id="t1">
+  <p class="st">Identificación</p>
+  <div class="g2" style="gap:10px;margin-bottom:12px">
+    <div class="field" style="grid-column:span 2"><label>Apellido y nombre</label><input type="text" id="nombre" placeholder="Ej: García, Juan Carlos" oninput="updateTop()"></div>
+    <div class="field"><label>CUIL</label><input type="text" id="cuil" placeholder="20-12345678-9"></div>
+    <div class="field"><label>Estado civil</label>
+      <select id="estado-civil"><option value="soltero">Soltero/a</option><option value="casado">Casado/a</option></select></div>
+  </div>
+  <p class="st">Situación fiscal</p>
+  <div class="al info" style="margin-bottom:1rem">El REIBP (Ley 27.743) permite pagar por adelantado los períodos 2024-2027. Quienes adhirieron están exentos y no presentan DDJJ.</div>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>¿Adherido al REIBP (2024-2027)?</label>
+      <select id="reibp" onchange="checkREIBP()"><option value="no">No</option><option value="si">Sí — exento 2024 a 2027</option></select></div>
+    <div class="field"><label>¿Contribuyente cumplidor? (escala reducida)</label>
+      <select id="cumplidor" onchange="recalc()"><option value="no">No — escala general</option><option value="si">Sí — escala reducida</option></select></div>
+    <div class="field"><label>¿Residente en el país?</label>
+      <select id="residente"><option value="si">Sí — declara país y exterior</option><option value="no">No — solo bienes en el país</option></select></div>
+    <div class="field"><label>¿Obligado a DDJJ informativa? (ingresos ≥ $196.963.135)</label>
+      <select id="ddjj-info"><option value="no">No</option><option value="si">Sí</option></select></div>
+  </div>
+  <div id="reibp-alert"></div>
+  <div class="nb-bar">
+    <span class="hint">Paso 1 de 6</span>
+    <button class="bp" onclick="tab(2)">Continuar</button>
+  </div>
+</div>
+
+<!-- BIENES EN EL PAÍS -->
+<div class="panel" id="t2">
+  <div class="al info">Ingresá la valuación al 31/12/2025. Inmuebles: mayor valor entre escritura e índice fiscal actualizado IPC. Automotores: tabla ARCA 2025.</div>
+  <p class="st">Inmuebles</p>
+  <table class="tbl" style="margin-bottom:1rem">
+    <thead><tr><th class="tl">Bien</th><th style="width:22%">Valuación ($)</th><th style="width:22%">Saldo hipoteca deducible ($)</th><th style="width:14%">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Casa-habitación (vivienda única principal)</td>
+        <td><input type="number" id="inmueble-ch" placeholder="0" oninput="checkCasaHab();recalc()"></td>
+        <td><input type="number" id="hipoteca-ch" placeholder="0" oninput="recalc()"></td>
+        <td id="ch-estado" class="ex-c">Sin dato</td></tr>
+      <tr><td>Otros inmuebles urbanos</td>
+        <td><input type="number" id="inmueble-otros" placeholder="0" oninput="recalc()"></td>
+        <td><input type="number" id="hipoteca-otros" placeholder="0" oninput="recalc()"></td>
+        <td class="ok-c">Gravado</td></tr>
+      <tr><td>Otros inmuebles</td>
+        <td><input type="number" id="inmueble-3" placeholder="0" oninput="recalc()"></td>
+        <td><input type="number" id="hipoteca-3" placeholder="0" oninput="recalc()"></td>
+        <td class="ok-c">Gravado</td></tr>
+    </tbody>
+  </table>
+  <p class="st">Automotores</p>
+  <div class="g3" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Automotor 1 — tabla ARCA ($)</label><input type="number" id="auto1" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Automotor 2 ($)</label><input type="number" id="auto2" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Embarcaciones / aeronaves ($)</label><input type="number" id="embarcacion" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <p class="st">Cuentas bancarias y efectivo gravados</p>
+  <div class="g3" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Cuenta corriente al 31/12 ($)</label><input type="number" id="cta-cte" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Efectivo en pesos ($)</label><input type="number" id="efectivo" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Moneda extranjera al TC BNA ($)</label><input type="number" id="moneda-ext" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <p class="st">Inversiones y otros bienes gravados</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Acciones y participaciones societarias ($)</label><input type="number" id="acciones" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Títulos públicos y ON gravadas ($)</label><input type="number" id="titulos" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Criptomonedas ($)</label><input type="number" id="cripto" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Créditos y deudas activas ($)</label><input type="number" id="creditos" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Otros bienes gravados en el país ($)</label><input type="number" id="otros-pais" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="card">
+    <div class="g2" style="gap:10px">
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Total bienes gravados en el país</div><div id="tot-pais" class="cc">$ 0</div></div>
+      <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Casa-habitación: valuación vs umbral</div><div id="ch-info" class="cc" style="font-size:12px">Sin dato</div></div>
+    </div>
+  </div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(1)">Volver</button>
+    <button class="bp" onclick="tab(3)">Continuar</button>
+  </div>
+</div>
+
+<!-- BIENES EN EL EXTERIOR -->
+<div class="panel" id="t3">
+  <div class="al info">Desde 2024 aplica la misma escala para bienes del país y del exterior. Ingresá los importes en pesos al TC Comprador BNA del 31/12/2025, o usá el conversor.</div>
+  <div style="background:var(--hu);border:1px solid var(--ar);border-radius:10px;padding:14px 16px;margin-bottom:1rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="font-size:12px;font-weight:500;color:var(--bu);flex-shrink:0">Conversor USD → Pesos</div>
+    <div class="field" style="min-width:160px">
+      <label>TC Comprador BNA 31/12/2025 ($)</label>
+      <input type="number" id="tc-usd" value="1065" step="1" oninput="recalc()" style="max-width:160px">
+    </div>
+    <div class="field" style="min-width:140px">
+      <label>Importe en USD</label>
+      <input type="number" id="usd-input" placeholder="0" oninput="convertirUSD()">
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Equivalente en pesos</div>
+      <div id="usd-resultado" style="font-family:var(--serif);font-size:18px;color:var(--bu)">$ 0</div>
+    </div>
+    <button onclick="copiarConversor()" style="background:var(--cr);color:var(--hu);border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans);flex-shrink:0">Copiar importe</button>
+  </div>
+  <p class="st">Bienes en el exterior</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Inmuebles en el exterior ($)</label><input type="number" id="ext-inmueble" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Cuentas bancarias en el exterior ($)</label><input type="number" id="ext-cuentas" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Inversiones financieras en el exterior ($)</label><input type="number" id="ext-inversiones" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Acciones y participaciones en el exterior ($)</label><input type="number" id="ext-acciones" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Criptomonedas en exchange del exterior ($)</label><input type="number" id="ext-cripto" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Otros bienes en el exterior ($)</label><input type="number" id="ext-otros" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="card">
+    <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Total bienes gravados en el exterior</div><div id="tot-ext" class="cc">$ 0</div></div>
+  </div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(2)">Volver</button>
+    <button class="bp" onclick="tab(4)">Continuar</button>
+  </div>
+</div>
+
+<!-- EXENCIONES -->
+<div class="panel" id="t4">
+  <div class="al info">Los bienes exentos se declaran pero no integran la base de cálculo del impuesto. Igualmente deben informarse en la DDJJ.</div>
+  <p class="st">Bienes exentos (declarar pero no pagan)</p>
+  <div class="g2" style="gap:10px;margin-bottom:1rem">
+    <div class="field"><label>Depósitos a plazo fijo ($) — Art. 21 inc. h)</label><input type="number" id="plazo-fijo" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Saldo en caja de ahorro ($) — Art. 21 inc. h)</label><input type="number" id="caja-ahorro" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Cuotapartes FCI exentos ($) — Art. 21 inc. i)</label><input type="number" id="fci" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Obligaciones negociables en pesos ($)</label><input type="number" id="on-exentas" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Cuotas sociales cooperativas ($)</label><input type="number" id="cooperativas" placeholder="0" oninput="recalc()"></div>
+    <div class="field"><label>Otros bienes exentos ($)</label><input type="number" id="otros-exentos" placeholder="0" oninput="recalc()"></div>
+  </div>
+  <div class="card">
+    <div><div style="font-size:11px;color:var(--ink-s);margin-bottom:4px">Total bienes exentos (no entran en la base)</div><div id="tot-exentos" class="cc">$ 0</div></div>
+  </div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(3)">Volver</button>
+    <button class="bp" onclick="tab(5)">Ver liquidación</button>
+  </div>
+</div>
+
+<!-- LIQUIDACIÓN -->
+<div class="panel" id="t5">
+  <div id="liq-alertas"></div>
+  <div id="tramo-panel" style="display:none;background:var(--hu);border:1px solid var(--ar);border-radius:10px;padding:14px 16px;margin-bottom:1rem">
+    <div style="font-size:10px;font-weight:600;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Lectura de escala</div>
+    <div id="tramo-txt" style="font-family:var(--serif);font-size:18px;color:var(--bu)"></div>
+    <div id="tramo-prox" style="font-size:12px;color:var(--ink-s);margin-top:4px"></div>
+  </div>
+  <p class="st">Determinación del impuesto</p>
+  <div class="card">
+    <table class="tbl"><thead><tr><th class="tl">Concepto</th><th>Importe ($)</th></tr></thead>
+    <tbody id="liq-body"></tbody></table>
+  </div>
+  <p class="st">Escala aplicada — Período fiscal 2025</p>
+  <div class="card">
+    <table class="tbl"><thead><tr><th>Tramo</th><th>Base en tramo ($)</th><th>Alícuota</th><th>Impuesto ($)</th><th>Estado</th></tr></thead>
+    <tbody id="escala-body"></tbody></table>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <div style="font-size:11px;color:var(--ink-s);margin-bottom:8px">Anticipo ingresado ($)</div>
+    <input type="number" id="anticipo" placeholder="0" oninput="renderLiq()" style="background:var(--hu);border:1px solid var(--ar);border-radius:6px;padding:7px 10px;font-size:13px;height:34px;width:220px;font-family:var(--sans)">
+  </div>
+  <div id="kpis-liq" style="margin-top:1rem"></div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(4)">Volver</button>
+    <button class="bp" onclick="tab(6)">Checklist</button>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="panel" id="t6">
+  <p class="st">Verificaciones previas a la presentación</p>
+  <div id="checklist-body"></div>
+  <div class="nb-bar">
+    <button class="bs" onclick="tab(5)">Volver</button>
+    <button class="bp" onclick="window.print()">Imprimir / Exportar PDF</button>
+  </div>
+</div>
+
+</div>
+<script>
+// ── Valores ARCA 2025 ────────────────────────────────────────
+const MNI = 384728044.57;
+const MNI_CH = 1346548155.99;     // casa-habitación
+const UMBRAL_INFO = 196963134.52; // DDJJ informativa
+
+// Escala general 2025
+const ESC_G=[
+  {d:0,h:52664283.73,f:0,p:0.005},
+  {d:52664283.73,h:114105948.16,f:263321.42,p:0.0075},
+  {d:114105948.16,h:1e15,f:724133.89,p:0.01},
+];
+// Escala cumplidores 2025
+const ESC_C=[
+  {d:0,h:52664283.73,f:0,p:0.0},
+  {d:52664283.73,h:114105948.16,f:0,p:0.0025},
+  {d:114105948.16,h:1e15,f:153604.17,p:0.005},
+];
+
+function fmt(v){if(!v||v===0)return'$ 0';return'$ '+Math.round(v).toLocaleString('es-AR')}
+function fmtPct(v){return(v*100).toFixed(3)+'%'}
+function fmtPct2(v){return(v*100).toFixed(2)+'%'}
+function g(id){return parseFloat(document.getElementById(id)?.value)||0}
+function el(id){return document.getElementById(id)}
+
+function tab(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.nb').forEach((b,j)=>b.classList.toggle('on',j===i));
+  if(i===5)renderLiq();
+  if(i===6)renderChecklist();
+}
+
+function updateTop(){
+  const n=el('nombre')?.value.trim()||'';
+  el('top-tag').textContent=n||'Período fiscal 2025';
+}
+
+function checkREIBP(){
+  const reibp=el('reibp')?.value==='si';
+  const al=el('reibp-alert');
+  if(!al)return;
+  if(reibp){
+    al.innerHTML='<div class="al ok" style="font-size:13px">✅ REIBP adherido. Este contribuyente está EXENTO del impuesto sobre los Bienes Personales para los períodos fiscales 2024 a 2027. No corresponde presentar DDJJ determinativa ni informativa.</div>';
+  } else {
+    al.innerHTML='<div class="al info">Sin adhesión al REIBP. Corresponde liquidar y presentar DDJJ por el período fiscal 2025 con vencimiento en junio 2026.</div>';
+  }
+}
+
+function checkCasaHab(){
+  const val=g('inmueble-ch');
+  const estado=el('ch-estado');
+  const info=el('ch-info');
+  if(val===0){
+    if(estado)estado.textContent='Sin dato';
+    if(estado)estado.className='ex-c';
+    if(info)info.textContent='Sin dato';
+    return;
+  }
+  if(val<=MNI_CH){
+    if(estado){estado.textContent='Exenta';estado.className='ok-c';}
+    if(info)info.textContent=`Exenta: ${fmt(val)} ≤ umbral ${fmt(MNI_CH)}`;
+  } else {
+    if(estado){estado.textContent='Gravada';estado.className='ex-c';}
+    if(info)info.textContent=`⚠️ Gravada: ${fmt(val)} > umbral ${fmt(MNI_CH)}`;
+  }
+  recalc();
+}
+
+function getTotalPais(){
+  // Casa-habitación: solo si su valuación supera el umbral
+  const ch=g('inmueble-ch');
+  const chGravado=ch>MNI_CH?Math.max(ch-g('hipoteca-ch'),0):0;
+  return chGravado
+    +Math.max(g('inmueble-otros')-g('hipoteca-otros'),0)
+    +Math.max(g('inmueble-3')-g('hipoteca-3'),0)
+    +g('auto1')+g('auto2')+g('embarcacion')
+    +g('cta-cte')+g('efectivo')+g('moneda-ext')
+    +g('acciones')+g('titulos')+g('cripto')+g('creditos')+g('otros-pais');
+}
+
+function getTotalExt(){
+  return g('ext-inmueble')+g('ext-cuentas')+g('ext-inversiones')
+    +g('ext-acciones')+g('ext-cripto')+g('ext-otros');
+}
+
+function getTotalExentos(){
+  return g('plazo-fijo')+g('caja-ahorro')+g('fci')+g('on-exentas')+g('cooperativas')+g('otros-exentos');
+}
+
+function recalc(){
+  const tp=getTotalPais();
+  const elTP=el('tot-pais'); if(elTP)elTP.textContent=fmt(tp);
+  const te=getTotalExt();
+  const elTE=el('tot-ext'); if(elTE)elTE.textContent=fmt(te);
+  const tex=getTotalExentos();
+  const elTex=el('tot-exentos'); if(elTex)elTex.textContent=fmt(tex);
+}
+
+function getEscala(){
+  return el('cumplidor')?.value==='si'?ESC_C:ESC_G;
+}
+
+function calcImpuesto(base){
+  const esc=getEscala();
+  let imp=0,tramoAct=null;
+  for(const t of esc){
+    if(base>t.d){tramoAct=t;imp=t.f+(Math.min(base,t.h<1e14?t.h:base)-t.d)*t.p;}
+  }
+  return{imp:Math.max(imp,0),tramoAct,esc};
+}
+
+function renderLiq(){
+  recalc();
+  const totPais=getTotalPais();
+  const totExt=getTotalExt();
+  const totGrav=totPais+totExt;
+  const base=Math.max(totGrav-MNI,0);
+  const {imp,tramoAct,esc}=calcImpuesto(base);
+  const anticipo=g('anticipo');
+  const saldo=Math.max(imp-anticipo,0);
+  const aFavor=anticipo>imp?anticipo-imp:0;
+  const reibp=el('reibp')?.value==='si';
+  const cumplidor=el('cumplidor')?.value==='si';
+
+  // Alertas
+  let als='';
+  if(reibp){als='<div class="al ok">✅ REIBP adherido — exento. No corresponde liquidar ni presentar DDJJ para este período.</div>';el('liq-alertas').innerHTML=als;el('tramo-panel').style.display='none';el('escala-body').innerHTML='';el('liq-body').innerHTML='';el('kpis-liq').innerHTML='';return;}
+  if(totGrav===0)als+='<div class="al warn">No se ingresaron bienes. Completá los pasos anteriores.</div>';
+  if(totGrav>0&&totGrav<=MNI)als+=`<div class="al ok">✅ El patrimonio total (${fmt(totGrav)}) no supera el MNI (${fmt(MNI)}). No corresponde ingresar impuesto. Verificar si corresponde presentar DDJJ informativa.</div>`;
+  if(base>0&&!als)als+='<div class="al ok">Liquidación completa.</div>';
+  el('liq-alertas').innerHTML=als;
+
+  // Tramo
+  if(tramoAct&&base>0){
+    el('tramo-panel').style.display='block';
+    const pctEf=totGrav>0?imp/totGrav:0;
+    const idx=esc.indexOf(tramoAct);
+    const sig=esc[idx+1];
+    const dist=tramoAct.h<1e14?tramoAct.h-base:null;
+    el('tramo-txt').textContent=`Tramo ${(tramoAct.p*100).toFixed(2)}% marginal · ${fmtPct2(pctEf)} efectivo sobre patrimonio${cumplidor?' (cumplidor)':''}`;
+    el('tramo-prox').textContent=dist&&dist>0
+      ?`Faltan ${fmt(dist)} en la base para pasar al tramo del ${((sig?.p||0.01)*100).toFixed(2)}%`
+      :'En el tramo máximo del '+(cumplidor?'0,50%':'1,00%');
+  } else el('tramo-panel').style.display='none';
+
+  // Tabla liquidación
+  el('liq-body').innerHTML=[
+    ['Bienes gravados en el país',totPais,''],
+    ['Bienes gravados en el exterior',totExt,''],
+    ['Total patrimonio gravado',totGrav,'subt'],
+    ['(-) Mínimo no imponible',MNI,'neg'],
+    ['Base imponible neta',base,'subt'],
+    ['Impuesto determinado (escala Art. 25)',imp,''],
+    ['(-) Anticipo ingresado',anticipo,'neg'],
+  ].map(([c,v,cls])=>{
+    if(cls==='subt')return`<tr class="subt"><td>${c}</td><td class="tr">${fmt(v)}</td></tr>`;
+    if(cls==='neg')return`<tr><td>${c}</td><td class="neg">(${fmt(v)})</td></tr>`;
+    return`<tr><td>${c}</td><td class="tr">${fmt(v)}</td></tr>`;
+  }).join('')+(saldo>0
+    ?`<tr class="totf"><td>SALDO A INGRESAR</td><td class="tr">${fmt(saldo)}</td></tr>`
+    :`<tr class="totf"><td>${aFavor>0?'SALDO A FAVOR':'SIN SALDO A INGRESAR'}</td><td class="tr">${aFavor>0?fmt(aFavor):'$ 0'}</td></tr>`);
+
+  // Escala
+  el('escala-body').innerHTML=esc.map((t,i)=>{
+    const b=Math.max(Math.min(base,t.h<1e14?t.h:base)-t.d,0);
+    const impT=b>0?t.f+b*t.p:0;
+    const act=base>t.d&&b>0;
+    return`<tr class="${act?'act-tr':''}">
+      <td style="text-align:center">${(t.p*100).toFixed(2)}%</td>
+      <td class="tr">${b>0?fmt(b):'No alcanza'}</td>
+      <td style="text-align:center">${(t.p*100).toFixed(2)}%</td>
+      <td class="tr">${impT>0?fmt(impT):'—'}</td>
+      <td class="${act?'ok-c':''}">${act?'Activo':'—'}</td>
+    </tr>`;
+  }).join('');
+
+  // KPIs
+  el('kpis-liq').innerHTML=`<div class="g4">
+    <div class="kpi"><div class="kl">Patrimonio gravado</div><div class="kv">${fmt(totGrav)}</div></div>
+    <div class="kpi"><div class="kl">Base imponible neta</div><div class="kv">${fmt(base)}</div></div>
+    <div class="kpi"><div class="kl">${saldo>0?'A ingresar':'Sin saldo'}</div><div class="kv ${saldo>0?'w':'ok'}">${fmt(saldo)}</div></div>
+    <div class="kpi"><div class="kl">Alícuota efectiva</div><div class="kv">${totGrav>0?fmtPct2(imp/totGrav):'—'}</div><div class="ks">${cumplidor?'Cumplidor':'Escala general'}</div></div>
+  </div>`;
+}
+
+// Estado de checkboxes manuales
+let ckState={inmuebles:false,autos:false,exterior:false,siradig:false,vencimiento:false};
+
+function renderChecklist(){
+  recalc();
+  const totGrav=getTotalPais()+getTotalExt();
+  const reibp=el('reibp')?.value==='si';
+  const ddjjInfo=el('ddjj-info')?.value==='si';
+  const ch=g('inmueble-ch');
+
+  // Checks automáticos
+  const autoChecks=[
+    {id:'ck-reibp',ok:true,txt:'Adhesión al REIBP verificada',
+     detalle:reibp?'REIBP activo — exento períodos 2024-2027. Sin obligación de presentar.':'Sin REIBP — corresponde liquidar período 2025.',auto:true,pasaAuto:reibp?true:null},
+    {id:'ck-bienes',ok:totGrav>0,txt:'Todos los bienes al 31/12/2025 declarados',
+     detalle:totGrav>0?`Patrimonio total: ${fmt(totGrav)}`:'No se cargaron bienes.',auto:true,pasaAuto:totGrav>0},
+    {id:'ck-ch',ok:ch===0||ch<=MNI_CH,txt:'Casa-habitación comparada contra umbral $1.346.548.155,99',
+     detalle:ch===0?'Sin casa-habitación declarada.':ch<=MNI_CH?`Exenta: ${fmt(ch)} ≤ umbral.`:`Gravada: ${fmt(ch)} supera el umbral.`,auto:true,pasaAuto:ch===0||ch<=MNI_CH},
+  ];
+
+  // Checks manuales (el contador los tilda)
+  const manualChecks=[
+    {key:'inmuebles',txt:'Valuación de inmuebles verificada (mayor entre escritura e índice fiscal ARCA)'},
+    {key:'autos',txt:'Tabla de automotores ARCA 2025 consultada'},
+    {key:'exterior',txt:'Bienes en el exterior valuados al TC Comprador BNA 31/12/2025'},
+    {key:'siradig',txt:'DDJJ informativa analizada (ingresos ≥ $196.963.135 en 2025)'},
+    {key:'vencimiento',txt:'Fecha de vencimiento verificada en ARCA según terminación de CUIT (junio 2026)'},
+  ];
+
+  const totalChecks=autoChecks.length+manualChecks.length;
+  const autoPasan=autoChecks.filter(c=>c.pasaAuto===true).length;
+  const manualesTildados=manualChecks.filter(c=>ckState[c.key]).length;
+  const totalOK=autoPasan+manualesTildados;
+  const listo=totalOK===totalChecks;
+
+  const estadoFinal=listo
+    ?`<div class="al ok" style="font-size:14px;padding:14px 20px;margin-bottom:1rem">
+        <strong>✅ Listo para presentar.</strong> Todos los controles completados. Podés proceder con la presentación de la DDJJ.
+      </div>`
+    :`<div class="al warn" style="font-size:13px;margin-bottom:1rem">
+        <strong>${totalOK} de ${totalChecks} controles completados.</strong> Completá los que faltan antes de presentar.
+      </div>`;
+
+  const autoHTML=autoChecks.map(c=>{
+    const ok=c.pasaAuto===true;
+    const warn=c.pasaAuto===false;
+    const bg=ok?'var(--vb)':warn?'var(--rb)':'var(--hu)';
+    const col=ok?'var(--vt)':warn?'var(--rt)':'var(--bu)';
+    return`<div class="check-item">
+      <div class="check-icon" style="background:${bg};color:${col};font-size:14px">${ok?'✓':warn?'!':'?'}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;margin-bottom:2px">${c.txt}</div>
+        <div style="font-size:12px;color:${warn?'var(--rt)':'var(--ink-s)'}">${c.detalle}</div>
+      </div>
+      <div style="font-size:11px;color:var(--ink-s);flex-shrink:0">${ok?'Automático ✓':warn?'Revisar':'—'}</div>
+    </div>`;
+  }).join('');
+
+  const manualHTML=manualChecks.map(c=>{
+    const tildado=ckState[c.key];
+    return`<div class="check-item" style="cursor:pointer" onclick="toggleCk('${c.key}')">
+      <div class="check-icon" style="background:${tildado?'var(--vb)':'var(--cm)'};color:${tildado?'var(--vt)':'var(--ar)'};border:2px solid ${tildado?'var(--vc)':'var(--ar)'};font-size:14px;transition:all .15s">
+        ${tildado?'✓':''}
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:${tildado?'var(--vt)':'var(--ink)'};text-decoration:${tildado?'line-through':''}">${c.txt}</div>
+      </div>
+      <div style="font-size:11px;color:var(--ink-s);flex-shrink:0">${tildado?'✓ Tildado':'Tildar'}</div>
+    </div>`;
+  }).join('');
+
+  el('checklist-body').innerHTML=estadoFinal+`<div class="card">
+    <div style="font-size:10px;font-weight:600;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Controles automáticos</div>
+    ${autoHTML}
+    <div style="font-size:10px;font-weight:600;color:var(--ink-s);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px">Verificaciones manuales — hacer clic para tildar</div>
+    ${manualHTML}
+  </div>`;
+}
+
+function toggleCk(key){
+  ckState[key]=!ckState[key];
+  renderChecklist();
+}
+
+function convertirUSD(){
+  const usd=parseFloat(el('usd-input')?.value)||0;
+  const tc=parseFloat(el('tc-usd')?.value)||1065;
+  const resultado=usd*tc;
+  const el_r=el('usd-resultado');
+  if(el_r)el_r.textContent=fmt(resultado);
+}
+
+function copiarConversor(){
+  const usd=parseFloat(el('usd-input')?.value)||0;
+  const tc=parseFloat(el('tc-usd')?.value)||1065;
+  const pesos=Math.round(usd*tc);
+  // Copiar al portapapeles
+  navigator.clipboard?.writeText(pesos.toString()).catch(()=>{});
+  const btn=event.target;
+  const orig=btn.textContent;
+  btn.textContent='¡Copiado!';
+  setTimeout(()=>btn.textContent=orig,1500);
+}
+
+function limpiar(){
+  if(!confirm('¿Limpiar todos los datos?'))return;
+  ['nombre','cuil','inmueble-ch','hipoteca-ch','inmueble-otros','hipoteca-otros','inmueble-3','hipoteca-3',
+   'auto1','auto2','embarcacion','cta-cte','efectivo','moneda-ext','acciones','titulos','cripto','creditos','otros-pais',
+   'ext-inmueble','ext-cuentas','ext-inversiones','ext-acciones','ext-cripto','ext-otros',
+   'plazo-fijo','caja-ahorro','fci','on-exentas','cooperativas','otros-exentos','anticipo'
+  ].forEach(id=>{const e=el(id);if(e)e.value='';});
+  el('top-tag').textContent='';
+  Object.keys(ckState).forEach(k=>ckState[k]=false);
+  const tcEl=el('tc-usd'); if(tcEl)tcEl.value='1065';
+  const usdEl=el('usd-input'); if(usdEl)usdEl.value='';
+  const usdR=el('usd-resultado'); if(usdR)usdR.textContent='$ 0';
+  checkREIBP();
+  checkCasaHab();
+  tab(0);
+}
+
+// Init
+checkREIBP();
+recalc();
+</script>
+</body>
+</html>
