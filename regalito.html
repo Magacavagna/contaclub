@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Anto y Adri</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --bg: #F1EEE6;
+    --ink: #1B1F1B;
+    --ink-soft: #5B6459;
+    --accent: #55694F;
+    --accent-soft: #DCE3D3;
+    --gold: #B99239;
+    --paper: #FFFFFF;
+    --paper-edge: #E7E2D6;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0; min-height:100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(85,105,79,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(185,146,57,0.08), transparent 45%);
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+  }
+
+  .stage{
+    width:100%;
+    max-width:420px;
+    padding: 32px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    min-height:100vh;
+    justify-content:center;
+  }
+
+  .prompt{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color: var(--ink-soft);
+    margin-bottom:22px;
+    text-align:center;
+    opacity:1;
+    transition: opacity .4s ease;
+  }
+  .stage.open .prompt{ opacity:0; height:0; margin:0; pointer-events:none; }
+
+  /* ---------- ENVELOPE ---------- */
+  .envelope-wrap{
+    position:relative;
+    width:300px;
+    height:200px;
+    perspective: 1200px;
+  }
+
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 4px;
+    box-shadow: 0 18px 40px -18px rgba(27,31,27,0.35);
+    overflow:hidden;
+    transition: transform .8s cubic-bezier(.6,0,.2,1), opacity .8s ease .1s;
+    z-index:2;
+  }
+
+  .envelope-body::before,
+  .envelope-body::after{
+    content:'';
+    position:absolute;
+    top:0;
+    width:0; height:0;
+    border-top: 100px solid var(--accent-soft);
+  }
+  .envelope-body::before{
+    left:0;
+    border-left: 150px solid transparent;
+    opacity:.6;
+  }
+  .envelope-body::after{
+    right:0;
+    border-right: 150px solid transparent;
+    opacity:.6;
+  }
+
+  .flap{
+    position:absolute;
+    top:0; left:0;
+    width:0; height:0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-top: 108px solid var(--paper);
+    filter: drop-shadow(0 3px 6px rgba(27,31,27,0.12));
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform .7s cubic-bezier(.6,0,.2,1);
+    z-index:4;
+  }
+  .stage.open .flap{
+    transform: rotateX(180deg);
+  }
+
+  .seal{
+    position:absolute;
+    left:50%; top:88px;
+    transform: translate(-50%,0);
+    width:56px; height:56px;
+    border-radius:50%;
+    background: linear-gradient(155deg, var(--gold), #8f6f24);
+    color:#fff;
+    border:none;
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 8px 18px -6px rgba(185,146,57,0.6);
+    z-index:6;
+    transition: transform .35s ease, opacity .35s ease;
+  }
+  .seal:hover{ transform: translate(-50%,0) scale(1.05); }
+  .seal:focus-visible{ outline: 2px solid var(--ink); outline-offset:3px; }
+  .stage.open .seal{
+    opacity:0;
+    transform: translate(-50%,-10px) scale(.7);
+    pointer-events:none;
+  }
+
+  .letter{
+    position:absolute;
+    left:50%;
+    bottom:8px;
+    transform: translate(-50%, 0) scale(.94);
+    width:270px;
+    min-height:120px;
+    background: var(--paper);
+    border-radius:6px;
+    box-shadow: 0 10px 30px -12px rgba(27,31,27,0.25);
+    z-index:3;
+    opacity:0;
+    padding: 18px 16px 14px;
+    transition: transform .1s, opacity .1s;
+  }
+  .stage.open .letter{
+    animation: rise .9s cubic-bezier(.5,0,.2,1) .35s forwards;
+  }
+  @keyframes rise{
+    0%{ opacity:0; transform: translate(-50%, 0) scale(.94); }
+    100%{ opacity:1; transform: translate(-50%, -300px) scale(1); }
+  }
+
+  /* ---------- CARD CONTENT ---------- */
+  .card{
+    width:100%;
+    max-width:340px;
+    background: var(--paper);
+    border-radius: 18px;
+    box-shadow: 0 30px 60px -25px rgba(27,31,27,0.35);
+    padding: 34px 28px 28px;
+    margin-top: 26px;
+    opacity:0;
+    transform: translateY(24px);
+    transition: opacity .7s ease .9s, transform .7s cubic-bezier(.2,.7,.3,1) .9s;
+  }
+  .stage.open .card{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color: var(--accent);
+  }
+
+  .names{
+    font-family:'Fraunces', serif;
+    font-style: italic;
+    font-weight:500;
+    font-size:26px;
+    margin: 6px 0 16px;
+    color: var(--ink);
+  }
+
+  .message{
+    font-size:14.5px;
+    line-height:1.65;
+    color: var(--ink);
+    margin: 0 0 6px;
+  }
+
+  .signature{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:15px;
+    color: var(--ink-soft);
+    margin: 14px 0 22px;
+  }
+
+  .divider{
+    border:none;
+    border-top: 1px dashed var(--paper-edge);
+    margin: 0 0 20px;
+    position:relative;
+  }
+  .divider::before, .divider::after{
+    content:'';
+    position:absolute;
+    top:-6px;
+    width:12px; height:12px;
+    background: var(--bg);
+    border-radius:50%;
+  }
+  .divider::before{ left:-40px; }
+  .divider::after{ right:-40px; }
+
+  .receipt{
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 18px 18px 16px;
+    text-align:center;
+  }
+
+  .receipt-label{
+    font-family:'Space Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color: var(--accent);
+    margin-bottom:8px;
+  }
+
+  .amount{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:40px;
+    color: var(--ink);
+    line-height:1;
+    margin-bottom:10px;
+  }
+
+  .confirm-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-size:12.5px;
+    color: var(--accent);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  .confirm-row svg{ width:14px; height:14px; }
+
+  .receipt-meta{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color: var(--ink-soft);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    border-top: 1px solid rgba(27,31,27,0.08);
+    padding-top:12px;
+  }
+
+  .reset{
+    margin-top:18px;
+    background:none;
+    border:none;
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    color: var(--ink-soft);
+    text-decoration:underline;
+    cursor:pointer;
+    opacity:0;
+    transition: opacity .5s ease 1.4s;
+  }
+  .stage.open .reset{ opacity:.8; }
+
+  .confetti{
+    position:fixed;
+    top:-10px;
+    width:8px; height:14px;
+    border-radius:2px;
+    pointer-events:none;
+    z-index:10;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .flap, .letter, .card, .envelope-body{ transition:none !important; animation:none !important; }
+    .stage.open .letter{ opacity:1; transform:translate(-50%,-300px); }
+    .stage.open .card{ opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <p class="prompt">Tocá el sello para abrir</p>
+
+  <div class="envelope-wrap">
+    <div class="letter"></div>
+    <div class="envelope-body"></div>
+    <button class="seal" id="sealBtn" aria-label="Abrir sobre">A&amp;A</button>
+    <div class="flap"></div>
+  </div>
+
+  <section class="card" aria-live="polite">
+    <p class="eyebrow">Un regalo, con cariño</p>
+    <h1 class="names">Para Anto y Adri</h1>
+    <p class="message">Disfruten este nuevo comienzo en sus vidas, celebren el amor y acompáñense siempre, en toda ocasión. De corazón los abrazo a la distancia y brindo por ustedes, por lo que son y todo lo que vendrá.</p>
+    <p class="signature">Los quiero, Maga y mellis</p>
+
+    <hr class="divider">
+
+    <div class="receipt">
+      <p class="receipt-label">Regalo de casamiento</p>
+      <p class="amount">$100.000</p>
+      <p class="confirm-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Transferencia confirmada
+      </p>
+      <div class="receipt-meta">
+        <span>Viernes, 7 de agosto de 2026</span>
+        <span>De: Magali Eliana Cavagna</span>
+      </div>
+    </div>
+
+    <button class="reset" id="resetBtn">Volver a cerrar el sobre</button>
+  </section>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const sealBtn = document.getElementById('sealBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function launchConfetti(){
+    if(reduceMotion) return;
+    const colors = ['#55694F','#B99239','#DCE3D3','#8f6f24'];
+    for(let i=0;i<28;i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti';
+      piece.style.left = Math.random()*100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+      piece.style.animation = `fall ${2.2 + Math.random()*1.4}s ease-in forwards`;
+      piece.style.animationDelay = (Math.random()*0.5) + 's';
+      piece.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(piece);
+      setTimeout(()=>piece.remove(), 4200);
+    }
+  }
+
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = `@keyframes fall{ to{ transform: translateY(100vh) rotate(340deg); opacity:.9; } }`;
+  document.head.appendChild(styleSheet);
+
+  sealBtn.addEventListener('click', () => {
+    stage.classList.add('open');
+    setTimeout(launchConfetti, 700);
+  });
+
+  resetBtn.addEventListener('click', () => {
+    stage.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
